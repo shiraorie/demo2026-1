@@ -84,7 +84,8 @@
 Установим frr.
 
 ![](<images/module1/18..png>)
-> **(РЕКОМЕНДАЦИЯ: ПОКА FRR СКАЧИВАЕТСЯ ПЕРЕХОДИМ К НАСТРОЙКЕ BR-RTR)**
+> **РЕКОМЕНДАЦИЯ:**
+> ПОКА FRR СКАЧИВАЕТСЯ ПЕРЕХОДИМ К НАСТРОЙКЕ BR-RTR
 
 В файле /etc/frr/daemons - включим поддержку OSPFv2 (IPv4)
 
@@ -98,3 +99,110 @@
 
 ![](<images/module1/21..png>)
 
+Поставим пароль на frr
+
+![](<images/module1/22..png>)
+
+Не забываем перезапустить
+
+![](<images/module1/23..png>)
+
+И добавить в автозагрузку
+
+![](<images/module1/24..png>)
+
+*BR-RTR*
+
+Произведем те же манипуляции
+
+![](<images/module1/25..png>)
+
+![](<images/module1/26..png>)
+
+![](<images/module1/27..png>)
+
+![](<images/module1/28..png>)
+
+![](<images/module1/29..png>)
+
+![](<images/module1/30..png>)
+
+![](<images/module1/31..png>)
+
+![](<images/module1/32..png>)
+
+![](<images/module1/33..png>)
+
+> **РЕКОМЕНДАЦИЯ:**
+> ПОКА FRR СКАЧИВАЕТСЯ ДОДЕЛЫВАЕМ FRR НА HQ-RTR
+
+![](<images/module1/34..png>)
+
+![](<images/module1/35..png>)
+
+![](<images/module1/36..png>)
+
+![](<images/module1/37..png>)
+
+![](<images/module1/38..png>)
+
+![](<images/module1/39..png>)
+
+Ура сетевая связность у между hq и br настроена
+
+Для проверки пингуем с br-rtr:  
+***ping 192.168.100.1***
+
+> **РЕКОМЕНДАЦИЯ:**
+> сразу на HQ-RTR скачаем: apt update && apt install –y isc-dhcp-server
+
+*HQ-SRV*
+
+Задаем имя:  
+> **ВНИМАНИЕ:**
+> Нужно обновить изображение
+
+![](<images/module1/43..png>)
+
+Прокинем инет:
+
+![](<images/module1/40. hq-srv.png>)
+
+Перезапускаем сервис:  
+***Systemctl restart networking***
+
+Проверяем:
+
+![](<images/module1/41..png>)
+
+*BR-SRV*
+
+![](<images/module1/43..png>)
+
+![](<images/module1/42. br-srv.png>)
+
+Перезапускаем сервис:  
+***Systemctl restart networking***
+
+Проверяем:
+
+![](<images/module1/41..png>)
+
+> **РЕКОМЕНДАЦИЯ:**
+> сразу скачиваем на HQ-SRV: apt update && apt install -y dnsmasq
+
+### Создание локальных учетных записей
+
+Создайте пользователя sshuser на серверах
+
+*HQ-SRV и BR-SRV*
+
+![](<images/module1/44. sshuser.png>)
+
+Пользователь sshuser должен иметь возможность запускать sudo без дополнительной аутентификации.
+
+В дебиане нету судо поэтому скачаем:
+
+![](<images/module1/45..png>)
+
+![](<images/module1/46..png>)
