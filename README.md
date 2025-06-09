@@ -462,7 +462,7 @@
 
 После настройки dns-сервера прописываем всем машинам в /etc/resolv.conf:
 
-***ameserver 192.168.100.2***
+***nameserver 192.168.100.2***
 
 <p align="center">
   <img src="images/module1/67. таблица доменных имен.png" width="600" />
