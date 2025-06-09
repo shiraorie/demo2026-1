@@ -383,7 +383,7 @@
 </p>
 
 <p align="center">
-  <img src="images/module1/57. dhcp.png" width="600" />
+  <img src="images/module1/57..png" width="600" />
 </p>
 
 Настройка протокола динамической конфигурации хостов. 
@@ -402,11 +402,11 @@
 </p>
 
 <p align="center">
-  <img src="images/module1/59. dhcp.png" width="600" />
+  <img src="images/module1/59..png" width="600" />
 </p>
 
 <p align="center">
-  <img src="images/module1/60. dhcp.png" width="600" />
+  <img src="images/module1/60..png" width="600" />
 </p>
 
 > **Примечание:**
@@ -428,29 +428,29 @@
 </p>
 
 <p align="center">
-  <img src="images/module1/62. dns.png" width="600" />
+  <img src="images/module1/62..png" width="600" />
 </p>
 
 <p align="center">
-  <img src="images/module1/63. dns.png" width="600" />
+  <img src="images/module1/63..png" width="600" />
 </p>
 
 Теперь открываем скрипт-инициализации сервиса dnsmasq
 
 <p align="center">
-  <img src="images/module1/64. dns.png" width="600" />
+  <img src="images/module1/64..png" width="600" />
 </p>
 
 ищем строчку DNSMASQ_OPTS
 
 <p align="center">
-  <img src="images/module1/65. dns.png" width="600" />
+  <img src="images/module1/65..png" width="600" />
 </p>
 
 Убираем оттуда –local-service
 
 <p align="center">
-  <img src="images/module1/66. dns.png" width="600" />
+  <img src="images/module1/66..png" width="600" />
 </p>
 
 Перезагружаем службу dnsmasq:  
