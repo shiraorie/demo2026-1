@@ -14,14 +14,14 @@
   <img src="images/module1/2. топология сети.png" width="600" />
 </p>
 
-![Схема топологии](<images/module1/2. топология сети.png>)
+<p align="center">
+  <img src="images/module1/1. Таблица IP-адресов.png" width="600" />
+</p>
 
-![Таблица узлов](<images/module1/1. Таблица IP-адресов.png>)
-
- Чтобы зайти на стенд для 1 модуля. 
+<p align="center"><b>Чтобы зайти на стенд для 1 модуля.</b></p>
  
- User name: m1  
- Password: modul1
+<p align="center"><b>User name: m1</b></p>  
+<p align="center"><b>Password: modul1</b></p>
 
 Перед включением виртуалок Настроем вланы. По заданию HQ-SRV в 100 влане, а  HQ-CLI в 200
 > **Примечание:**
