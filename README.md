@@ -249,7 +249,7 @@
 Прокинем инет:
 
 <p align="center">
-  <img src="images/module1/40..png" width="600" />
+  <img src="images/module1/40. hq-srv.png" width="600" />
 </p>
 
 Перезапускаем сервис:  
