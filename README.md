@@ -54,7 +54,7 @@
 > **Примечание:**
 > Сведения об адресах занесите в отчёт, в качестве примера используйте Таблицу 3
 
- *HQ-RTR*
+ <p align="center"><b>*HQ-RTR*</b></p>
 
 Задаём сразу FQDN - выбор имени домена произвольный:
 
@@ -160,7 +160,7 @@
 </p>
 
 
- *BR-RTR*
+ <p align="center"><b>*BR-RTR*</b></p>
 
 Произведем те же манипуляции
 
@@ -236,7 +236,7 @@
 > сразу на HQ-RTR скачаем: apt update && apt install –y isc-dhcp-server
 
 
- *HQ-SRV*
+<p align="center"><b>*HQ-SRV*</b></p>
 
 Задаем имя:  
 > **ВНИМАНИЕ:**
@@ -262,7 +262,7 @@
 </p>
 
 
- *BR-SRV*
+<p align="center"><b>*BR-SRV*</b></p>
 
 <p align="center">
   <img src="images/module1/43..png" width="600" />
@@ -289,7 +289,7 @@
 
 <p align="center"><b>Создайте пользователя sshuser на серверах</b></p>
 
- *HQ-SRV и BR-SRV*
+<p align="center"><b>*HQ-SRV и BR-SRV*</b></p>
 
 <p align="center">
   <img src="images/module1/44. sshuser.png" width="600" />
@@ -312,7 +312,7 @@
 
 <p align="center"><b>Создайте пользователя net_admin на маршрутизаторах</b></p>
 
- *HQ-RTR и BR-RTR*
+<p align="center"><b>*HQ-RTR и BR-RTR*</b></p>
 
 <p align="center">
   <img src="images/module1/47. net_admin.png" width="600" />
@@ -341,7 +341,7 @@
 - Разрешите подключения только пользователю sshuser ● Ограничьте количество попыток входа до двух 
 - Настройте баннер «Authorized access only»
 
- *HQ-SRV и BR-SRV*
+<p align="center"><b>*HQ-SRV и BR-SRV*</b></p>
 
 <p align="center">
   <img src="images/module1/51. ssh.png" width="600" />
@@ -372,7 +372,7 @@
 
 и зарезервируем адрес для HQ-SRV, чтобы потом на всех остальных оконечных устройствах задавая адреса сразу создавать пользователей
 
- *HQ-RTR:*
+<p align="center"><b>*HQ-RTR:*</b></p>
 
 Скачаем: apt install –y isc-dhcp-server
 
@@ -421,7 +421,7 @@
 
 Нам необходимо настроить DNS сервер. Будем использовать dnsmasq.
 
- *HQ-SRV*
+<p align="center"><b>*HQ-SRV*</b></p>
 
 <p align="center">
   <img src="images/module1/61. dns.png" width="600" />
@@ -466,7 +466,7 @@
 
 ### <p align="center"><b>Настройте часовой пояс на всех устройствах, согласно месту проведения экзамена.</b></p>
 
- *HQ-SRV, HQ-CLI, BR-SRV*
+<p align="center"><b>*HQ-SRV, HQ-CLI, BR-SRV*</b></p>
 
 Проверяем какой часовой пояс установлен:  
 ***timedatectl status***
@@ -497,7 +497,7 @@
 - Пользователи группы hq должны иметь возможность повышать привилегии для выполнения ограниченного набора команд: cat, grep, id. Запускать другие команды с повышенными привилегиями пользователи группы не имеют права 
 - Выполните импорт пользователей из файла users.csv. Файл будет располагаться на виртуальной машине BR-SRV в папке /opt
 
- *BR-SRV*
+<p align="center"><b>*BR-SRV*</b></p>
 
 > **Обязательно:**
 > Временно заменяем в /etc/resolv.conf 192.168.100.2 на  10.0.1.4, чтобы samba быстрее скачивалось
