@@ -565,13 +565,11 @@
 </p>
 
 > **Обязательно:**
-> ВВОДИМ МАШИНУ обратно В ДОМЕН:
->  
+> ВВОДИМ МАШИНУ обратно В ДОМЕН:  
 > nano /etc/resolv.conf – nameserver 192.168.100.2
 
 > **РЕКОМЕНДАЦИЯ:**
-> НА BR-SRV здесь же скачиваем: apt install ansible -y
-> 
+> НА BR-SRV здесь же скачиваем: apt install ansible -y  
 > НА HQ-SRV скачиваем: apt install nfs-kernel-server -y
 
 <p align="center"><b>На клиента ставим необходимые пакеты</b></p>
