@@ -845,7 +845,7 @@ ________________________________________________________________________________
 
 Запускаем и добавляем в автозагрузку службу chronyd, и не забываем рестартать сервис:
 
-***systemctl enable --now chrony***
+***systemctl enable --now chrony***  
 ***systemctl restart chrony***
 
 <p align="center">
