@@ -20,23 +20,34 @@
 
 <p align="center"><b>Чтобы зайти на стенд для 1 модуля.</b></p>
  
-<p align="center"><b>User name: m1</b></p><p align="center"><b>Password: modul1</b></p>
+<p align="center"><b>User name: m1</b></p>
+<p align="center"><b>Password: modul1</b></p>
 
 Перед включением виртуалок Настроем вланы. По заданию HQ-SRV в 100 влане, а  HQ-CLI в 200
 > **Примечание:**
 > Основные сведения о настройке коммутатора и выбора реализации разделения на VLAN занесите в отчёт
 
-![](<images/module1/4. vlan.png>)
+<p align="center">
+  <img src="images/module1/4. vlan.png" width="600" />
+</p>
 
-![](<images/module1/5. vlan.png>)
+<p align="center">
+  <img src="images/module1/5. vlan.png" width="600" />
+</p>
 
-![](<images/module1/6. vlan.png>)
+<p align="center">
+  <img src="images/module1/6. vlan.png" width="600" />
+</p>
 
-![](<images/module1/7. vlan.png>)
+<p align="center">
+  <img src="images/module1/7. vlan.png" width="600" />
+</p>
 
 **ISP преднастроена, но включать ее надо**
 
-![](<images/module1/8. таблица адресации.png>)
+<p align="center">
+  <img src="images/module1/8. таблица адресации.png" width="600" />
+</p>
 
 
 ### <p align="center"><b>Сетевая связность - между HQ и BRANCH</b></p>
@@ -47,25 +58,37 @@
 
 Задаём сразу FQDN - выбор имени домена произвольный:
 
-![](<images/module1/9. сетевая связность.png>)
+<p align="center">
+  <img src="images/module1/9. сетевая связность.png" width="600" />
+</p>
 
 По такой же аналогии настройте остальные имена
 
 Чтобы настроить адресацию переходим:
 
-![](<images/module1/10..png>)
+<p align="center">
+  <img src="images/module1/10..png" width="600" />
+</p>
 
 Заодно настроим GRE туннель
 
-![](<images/module1/11..png>)
+<p align="center">
+  <img src="images/module1/11..png" width="600" />
+</p>
 
-![](<images/module1/12..png>)
+<p align="center">
+  <img src="images/module1/12..png" width="600" />
+</p>
 
 Включаем пересылку пакетов между портами (интерфейсами)
 
-![](<images/module1/13..png>)
+<p align="center">
+  <img src="images/module1/13..png" width="600" />
+</p>
 
-![](<images/module1/14..png>)
+<p align="center">
+  <img src="images/module1/14..png" width="600" />
+</p>
 
 Применяем: 
 
@@ -73,13 +96,19 @@
 
 Прокинем PAT так, как по приколу тачки, что подключены к роутеру пинговать инет не будут.
 
-![](<images/module1/15..png>)
+<p align="center">
+  <img src="images/module1/15..png" width="600" />
+</p>
 
-![](<images/module1/16. nftables.png>)
+<p align="center">
+  <img src="images/module1/16. nftables.png" width="600" />
+</p>
 
 Обязательно добавим в автозагрузку и активируем
 
-![](<images/module1/17..png>)
+<p align="center">
+  <img src="images/module1/17..png" width="600" />
+</p>
 
 Туннель мы допустим подняли, но чтобы пакеты через него пошли, нужна маршрутизация.
 > **Примечание:**
@@ -87,33 +116,48 @@
 
 Установим frr.
 
-![](<images/module1/18..png>)
+<p align="center">
+  <img src="images/module1/18..png" width="600" />
+</p>
+
 > **РЕКОМЕНДАЦИЯ:**
 > ПОКА FRR СКАЧИВАЕТСЯ ПЕРЕХОДИМ К НАСТРОЙКЕ BR-RTR
 
 В файле /etc/frr/daemons - включим поддержку OSPFv2 (IPv4)
 
-![](<images/module1/19..png>)
+<p align="center">
+  <img src="images/module1/19..png" width="600" />
+</p>
 
 Не забываем перезапускать, чтобы изменения вступили в силу
 
-![](<images/module1/20..png>)
+<p align="center">
+  <img src="images/module1/20..png" width="600" />
+</p>
 
 Переходим к настройке frr (ospf)
 
-![](<images/module1/21..png>)
+<p align="center">
+  <img src="images/module1/21..png" width="600" />
+</p>
 
 Поставим пароль на frr
 
-![](<images/module1/22..png>)
+<p align="center">
+  <img src="images/module1/22..png" width="600" />
+</p>
 
 Не забываем перезапустить
 
-![](<images/module1/23..png>)
+<p align="center">
+  <img src="images/module1/23..png" width="600" />
+</p>
 
 И добавить в автозагрузку
 
-![](<images/module1/24..png>)
+<p align="center">
+  <img src="images/module1/24..png" width="600" />
+</p>
 
 
  *BR-RTR*
