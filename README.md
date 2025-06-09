@@ -444,7 +444,7 @@
 ищем строчку DNSMASQ_OPTS
 
 <p align="center">
-  <img src="images/module1/65..png" width="600" />
+  <img src="images/module1/65.png" width="600" />
 </p>
 
 Убираем оттуда –local-service
