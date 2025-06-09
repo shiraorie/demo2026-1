@@ -489,7 +489,7 @@
 
 ## <p align="center"><b>МОДУЛЬ 2</b></p>
 
-<p align="center"><b>Чтобы зайти на стенд для 1 модуля.</b></p>
+<p align="center"><b>Чтобы зайти на стенд для 2-3 модуля.</b></p>
  
 <p align="center"><b>User name: m2</b></p>
 <p align="center"><b>Password: modul2</b></p>
