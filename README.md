@@ -658,7 +658,7 @@ ________________________________________________________________________________
   <img src="images/module2/16.png" width="600" />
 </p>
 
-### <p align="center"><b>Создаем группу hq и в нее добавляем раннее созданных пользователей</b></p>
+### Создаем группу hq и в нее добавляем раннее созданных пользователей
 
 Пользователи группы hq должны иметь возможность повышать привилегии для выполнения ограниченного набора команд: cat, grep, id. Запускать другие команды с повышенными привилегиями пользователи группы не имеют права
 
@@ -670,3 +670,322 @@ ________________________________________________________________________________
 > **РЕКОМЕНДАЦИЯ:**
 > НА BR-SRV скачиваем: apt install –y mariadb-*  
 > НА HQ-SRV скачиваем: apt install -y php php8.2 php-curl php-zip php-xml libapache2-mod-php php-mysql php-mbstring php-gd php-intl php-soap -y
+
+
+### <p align="center"><b>Сконфигурируйте файловое хранилище</b></p>
+
+<p align="center"><b>(СДЕЛАТЬ SNAPSHOT на HQ-SRV)</b></p>
+
+- При помощи трёх дополнительных дисков, размером 1Гб каждый, на HQ-SRV сконфигурируйте дисковый массив уровня 5 
+- Имя устройства – md0, конфигурация массива размещается в файле /etc/mdadm.conf 
+- Обеспечьте автоматическое монтирование в папку /raid5 
+- Создайте раздел, отформатируйте раздел, в качестве файловой системы используйте ext4 
+- Настройте сервер сетевой файловой системы(nfs), в качестве папки общего доступа выберите /raid5/nfs, доступ для чтения и записи для всей сети в сторону HQ-CLI 
+- На HQ-CLI настройте автомонтирование в папку /mnt/nfs
+- Основные параметры сервера отметьте в отчёте
+
+Подготовка дисков
+
+<p align="center"><b>*HQ-SRV*</b></p>
+
+Убедитесь, что дополнительные диски распознаны системой. Список подключенных дисков можно проверить командой:
+
+<p align="center">
+  <img src="images/module2/17.mdadm.png" width="600" />
+</p>
+
+Создайте RAID 5 массив из трех 1Гб дисков (предположим, они определены как /dev/sdb, /dev/sdc, и /dev/sdd):
+
+Скачаем службу mdadm:
+
+<p align="center">
+  <img src="images/module2/18.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/19.png" width="600" />
+</p>
+
+Проверяем:
+
+<p align="center">
+  <img src="images/module2/20.png" width="600" />
+</p>
+
+Проверьте статус RAID массива:
+
+<p align="center">
+  <img src="images/module2/21.png" width="600" />
+</p>
+
+Сохраните конфигурацию массива в файл /etc/mdadm.conf:
+
+<p align="center">
+  <img src="images/module2/22.png" width="600" />
+</p>
+
+### 1. Создание файловой системы и настройка монтирования
+
+Создайте раздел и отформатируйте его в ext4:
+
+<p align="center">
+  <img src="images/module2/23.png" width="600" />
+</p>
+
+Создайте точку монтирования и настройте автоматическое монтирование в /etc/fstab:
+
+<p align="center">
+  <img src="images/module2/24.png" width="600" />
+</p>
+
+Смонтируйте файловую систему:
+
+<p align="center">
+  <img src="images/module2/25.png" width="600" />
+</p>
+
+### 2. Настройка NFS-сервера на HQ-SRV
+
+Установите NFS-сервер (если он еще не установлен):
+
+<p align="center">
+  <img src="images/module2/26.nfs-server.png" width="600" />
+</p>
+
+Создайте директорию для общего доступа:
+
+<p align="center">
+  <img src="images/module2/27.png" width="600" />
+</p>
+
+Настройте права доступа для общей папки:
+
+<p align="center">
+  <img src="images/module2/28.png" width="600" />
+</p>
+
+Настройте экспорт NFS для всей сети с разрешением на чтение и запись.  
+Откройте файл /etc/exports и добавьте строку:
+
+<p align="center">
+  <img src="images/module2/29.png" width="600" />
+</p>
+
+Примените изменения в конфигурации NFS:
+
+<p align="center">
+  <img src="images/module2/30.png" width="600" />
+</p>
+
+Перезапустите NFS-сервер:
+
+<p align="center">
+  <img src="images/module2/31.png" width="600" />
+</p>
+
+> **ПРИМЕЧАНИЕ**
+> Основные параметры сервера отметьте в отчёте
+
+### 3. Настройка автомонтирования на HQ-CLI (под ALT Workstation)
+
+<p align="center"><b>*HQ-CLI*</b></p>
+
+Создайте точку монтирования:
+
+<p align="center">
+  <img src="images/module2/32.cli-automount.png" width="600" />
+</p>
+
+Настройте автомонтирование в /etc/fstab, откройте этот файл и добавьте следующую строку:
+
+<p align="center">
+  <img src="images/module2/33.png" width="600" />
+</p>
+
+Смонтируйте папку вручную (или перезагрузите систему для применения настроек):
+
+<p align="center">
+  <img src="images/module2/34.png" width="600" />
+</p>
+
+Проверка подключения NFS на HQ-CLI: 
+
+<p align="center">
+  <img src="images/module2/35.png" width="600" />
+</p>
+
+> **РЕКОМЕНДАЦИЯ:**
+> НА HQ-SRV скачиваем: apt install -y mariadb-* -y
+
+### <p align="center"><b>Настройте службу сетевого времени на базе сервиса chrony</b></p>
+
+- В качестве сервера выступает HQ-RTR 
+- На HQ-RTR настройте сервер chrony, выберите стратум 5 43 
+- В качестве клиентов настройте HQ-SRV, HQ-CLI, BR-RTR, BR-SRV
+
+<p align="center"><b>*HQ-RTR*</b></p>
+
+Установим пакет chrony на каждой машине:
+
+***apt install -y chrony*** 
+
+Приводим конфигурационный файл "chrony.conf" к следующему виду:
+
+***nano /etc/chrony/chrony.conf***
+
+<p align="center">
+  <img src="images/module2/36.chrony.png" width="600" />
+</p>
+
+> где: server 127.0.0.1 iburst prefer - указываем сервером синхронизации самого себя,  
+> опция «iburst» принудительно отправляет сразу несколько пакетов для точности синхронизации,  
+> hwtimestamp * - опция, чтобы сетевой интерфейс считал собственный источник времени верным и синхронизировал клиентов с ним;  
+> local stratum 5 - устанавливаем для себя значение по stratum = 5;  
+> allow - кому разрешается подключаться к серверу и запрашивать время: чтобы не перечеслять все используемые в задании IPv4 и IPv6 сети, используется 0/0 и ::/0;  
+
+Запускаем и добавляем в автозагрузку службу chronyd, и не забываем рестартать сервис:
+
+***systemctl enable --now chrony***
+***systemctl restart chrony***
+
+<p align="center">
+  <img src="images/module2/37.png" width="600" />
+</p>
+
+Проверяем:
+
+<p align="center">
+  <img src="images/module2/38.png" width="600" />
+</p>
+
+### Настройка NTP клиентов:
+
+<p align="center"><b>*HQ-SRV, BR-SRV, BR-RTR, HQ-CLI*</b></p>
+
+Установим пакет chrony:
+
+***apt install -y chrony***
+Приводим конфигурационный файл "chrony.conf" к следующему виду:
+
+***nano /etc/chrony/chrony.conf***
+
+<p align="center">
+  <img src="images/module2/39.png" width="600" />
+</p>
+
+> где: 192.168.100.1 - IPv4 адрес HQ-R;
+
+Запускаем и добавляем в автозагрузку службу chronyd:
+
+systemctl enable --now chrony 
+> на cli chronyd
+
+systemctl restart chrony
+> на cli chronyd
+
+Проверяем с клиента HQ-SRV:
+
+<p align="center">
+  <img src="images/module2/40.png" width="600" />
+</p>
+
+Проверяем с сервера HQ-R:
+
+<p align="center">
+  <img src="images/module2/41.png" width="600" />
+</p>
+
+BR-R | BR-SRV | CLI: Настройка аналогична HQ-SRV - за исключением указания соответствующих адресов
+
+> **РЕКОМЕНДАЦИЯ:**
+> НА HQ-SRV скачиваем: apt install -y git
+
+### <p align="center"><b>Сконфигурируйте ansible на сервере BR-SRV</b></p>
+
+<p align="center"><b>(СДЕЛАЙ SNAPSHOT НА BR-SRV)</b></p>
+
+- Сформируйте файл инвентаря, в инвентарь должны входить HQSRV, HQ-CLI, HQ-RTR и BR-RTR 
+- Рабочий каталог ansible должен располагаться в /etc/ansible 
+- Все указанные машины должны без предупреждений и ошибок отвечать pong на команду ping в ansible посланную с BR-SRV
+
+<p align="center"><b>*BR-SRV*</b></p>
+
+1. Установите Ansible (если он еще не установлен):
+
+***apt update && apt install ansible -y***
+
+2. Создание рабочего каталога Ansible
+
+Ansible обычно уже использует /etc/ansible как рабочий каталог, но если его нет, создайте его вручную:
+
+<p align="center">
+  <img src="images/module2/42.png" width="600" />
+</p>
+
+3. Создание файла инвентаря
+
+Создайте инвентарь файла : /etc/ansible/hosts. Откройте файл /etc/ansible/hosts для редактирования:
+
+<p align="center">
+  <img src="images/module2/43.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/44.png" width="600" />
+</p>
+
+4. Настройка SSH-доступа к машинам
+
+Для того чтобы Ansible мог управлять машинами без необходимости ввода пароля, настройте SSH-доступ:
+
+<p align="center">
+  <img src="images/module2/45.png" width="600" />
+</p>
+
+______________________________________________________________________________________
+
+<p align="center"><b>(ДОПОЛНЕНИЕ)</b></p>
+
+<p align="center"><b>*HQ-CLI*</b></p>
+
+Для hq-cli нужно установить ssh службу: ***apt-get install -y openssh-server***
+
+Перезагружаем ssh на hq-cli: ***systemctl restart sshd***
+
+Для того чтобы зайти в конфиг ssh на альт линукс(cli) нужно ввести команду:
+***nano /etc/openssh/sshd_config***
+
+______________________________________________________________________________________
+
+Скопируйте SSH-ключ на всех машинах в инвентаре : Выполните эту команду для каждой машины, чтобы разрешить безпарольный доступ:
+
+<p align="center">
+  <img src="images/module2/46.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/47.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/48.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/49.png" width="600" />
+</p>
+
+5. Проверка подключения в Ansible
+
+Выполните команду "ansible all -m ping" для проверки соединения со всеми хостами из инвентаря файла:
+
+<p align="center">
+  <img src="images/module2/50.png" width="600" />
+</p>
+
+> **РЕКОМЕНДАЦИЯ:**
+> НА HQ-SRV скачиваем: git clone git://git.moodle.org/moodle.git
+
+### <p align="center"><b>Развертывание приложений в Docker на сервере BR-SRV.</b></p>
+
+
