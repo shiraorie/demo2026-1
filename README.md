@@ -20,8 +20,7 @@
 
 <p align="center"><b>Чтобы зайти на стенд для 1 модуля.</b></p>
  
-<p align="center"><b>User name: m1</b></p>  
-<p align="center"><b>Password: modul1</b></p>
+<p align="center"><b>User name: m1</b></p><p align="center"><b>Password: modul1</b></p>
 
 Перед включением виртуалок Настроем вланы. По заданию HQ-SRV в 100 влане, а  HQ-CLI в 200
 > **Примечание:**
