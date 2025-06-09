@@ -991,4 +991,172 @@ ________________________________________________________________________________
 
 ### <p align="center"><b>Развертывание приложений в Docker на сервере BR-SRV.</b></p>
 
+- Создайте в домашней директории пользователя файл wiki.yml для приложения MediaWiki. 
+- Средствами docker compose должен создаваться стек контейнеров с приложением MediaWiki и базой данных. 
+- Используйте два сервиса 
+- Основной контейнер MediaWiki должен называться wiki и использовать образ mediawiki 
+- Файл LocalSettings.php с корректными настройками должен находиться в домашней папке пользователя и автоматически монтироваться в образ. 
+- Контейнер с базой данных должен называться mariadb и использовать образ mariadb (субд).
+- Разверните 
+- Он должен создавать базу с названием mediawiki, доступную по стандартному порту, пользователя wiki с паролем WikiP@ssw0rd должен иметь права доступа к этой базе данных 
+- MediaWiki должна быть доступна извне через порт 8080.
 
+<p align="center"><b>*BR-SRV*</b></p>
+
+1. Скачиваем докер:
+
+***apt install -y docker.io docker-compose***
+
+2. Включаем и добавляем в автозагрузку службу docker:
+
+***systemctl enable --now docker.service***
+
+3. В домашней директории пользователя root создаём файл wiki.yml со следующим содержимым:
+
+***nano ~/wiki.yml***
+
+
+<p align="center">
+  <img src="images/module2/51.png" width="600" />
+</p>
+
+> где:
+> - services — основной раздел, где мы будем создавать и описывать наши сервисы (контейнеры docker). В данном примере сервиса два: MediaWiki - для приложения mediawiki и database - для базы данных; container_name — имя, которое получит созданный контейнер;
+> - image — имя образа, который будет использоваться для создания контейнера;
+> - restart  поведения контейнера при падении;
+> - ports (внешняя публикация). С помощью данной опции мы можем указывать, на каких портах должен слушать контейнер и на какие порты должны пробрасываться запросы
+> - environment — задаем переменные окружения;
+> - volumes - проброс папок;
+> - links - ссылайтесь на контейнеры в другом сервисе. Укажите либо имя сервиса, либо псевдоним ссылки (SERVICE:ALIAS)
+
+***apt install –y mariadb-****
+
+> P.S. После первоначальной настройки через Web-интерфейс с CLI загрузите LocalSettings.php в тот же каталог, что и эта wiki.yml и раскомментируйте следующую строку "# - ./LocalSettings.php:/var/www/html/LocalSettings.php" и используйте docker-compose для перезапуска службы mediawiki
+
+4. Чтобы отдельный volume для хранения базы данных имел правильное имя - создаём его средствами docker:
+
+***docker volume create dbvolume***
+
+5. Выполняем сборку и запуск стека контейнеров с приложением MediaWiki и базой данных описанных в файле wiki.yml:
+
+***docker-compose -f wiki.yml up -d***
+
+Проверяем:
+
+<p align="center">
+  <img src="images/module2/52.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/53.png" width="600" />
+</p>
+
+<p align="center"><b>*HQ-CLI*</b></p>
+
+***su -***
+
+***echo “192.168.200.2 wiki.au-team.irpo mediawiki” >> /etc/hosts***
+
+1. Переходим в браузер http://wiki.au-team.irpo:8080/ для продолжения установки через веб-интерфейс - нажимаем set up the wiki:
+
+<p align="center">
+  <img src="images/module2/54.png" width="600" />
+</p>
+
+2. Выбираем необходимый Язык - нажимаем Далее:
+
+<p align="center">
+  <img src="images/module2/55.png" width="600" />
+</p>
+
+3. После успешной проверки внешней среды - нажимаем Далее:
+
+<p align="center">
+  <img src="images/module2/56.png" width="600" />
+</p>
+
+4. Заполняем параметры подключение к Базе Данных в соответствие с заданными переменными окружения в wiki.yml, которые соответствуют требованиям задания:
+
+<p align="center">
+  <img src="images/module2/57.png" width="600" />
+</p>
+
+Пример заполнения:
+
+Хост базы данных: db  
+Имя базы данных: mediawiki  
+Имя пользователя базы данных: wiki  
+Пароль базы данных: WikiP@ssw0rd  
+
+<p align="center">
+  <img src="images/module2/58.png" width="600" />
+</p>
+
+5. Заполняем необходимые сведения:
+
+<p align="center">
+  <img src="images/module2/59.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/60.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/61.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/62.png" width="600" />
+</p>
+
+6. После чего будет автоматически скачен файл LocalSettings.php - который необходимо передать на BR-SRV в домашнюю директорию пользователя root туда же где лежит wiki.yml:
+
+<p align="center">
+  <img src="images/module2/63.png" width="600" />
+</p>
+
+7. Забираем файл LocalSettings.php с CLI:
+
+<p align="center"><b>*HQ-CLI:*</b></p>
+
+<p align="center">
+  <img src="images/module2/64.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/65.png" width="600" />
+</p>
+
+<p align="center"><b>*BR-SRV:</b></p>
+
+Перемещаем в домашнюю директорию пользователя /root:
+
+<p align="center">
+  <img src="images/module2/66.png" width="600" />
+</p>
+
+Проверяем:
+
+<p align="center">
+  <img src="images/module2/67.png" width="600" />
+</p>
+
+_____________________________________________________________________________________
+
+Прямой поиск файла поиск файла LocalSettings.php командой find:
+
+***find / -name LocalSettings.php 2>/dev/null***
+
+<p align="center">
+  <img src="images/module2/69.png" width="600" />
+</p>
+
+Команда "ls"(list) показывает файлы и директории в текущем каталоге.  
+Команда "pwd" показывает каталоr в котором ты находишься.
+
+_____________________________________________________________________________________
+
+<p align="center">
+  <img src="images/module2/70.png" width="600" />
+</p>
