@@ -1077,10 +1077,6 @@ ________________________________________________________________________________
 
 4. Заполняем параметры подключение к Базе Данных в соответствие с заданными переменными окружения в wiki.yml, которые соответствуют требованиям задания:
 
-<p align="center">
-  <img src="images/module2/57.png" width="600" />
-</p>
-
 Пример заполнения:
 
 Хост базы данных: db  
@@ -1089,14 +1085,14 @@ ________________________________________________________________________________
 Пароль базы данных: WikiP@ssw0rd  
 
 <p align="center">
+  <img src="images/module2/57.png" width="600" />
+</p>
+
+<p align="center">
   <img src="images/module2/58.png" width="600" />
 </p>
 
 5. Заполняем необходимые сведения:
-
-<p align="center">
-  <img src="images/module2/59.png" width="600" />
-</p>
 
 <p align="center">
   <img src="images/module2/60.png" width="600" />
@@ -1110,10 +1106,14 @@ ________________________________________________________________________________
   <img src="images/module2/62.png" width="600" />
 </p>
 
+<p align="center">
+  <img src="images/module2/63.png" width="600" />
+</p>
+
 6. После чего будет автоматически скачен файл LocalSettings.php - который необходимо передать на BR-SRV в домашнюю директорию пользователя root туда же где лежит wiki.yml:
 
 <p align="center">
-  <img src="images/module2/63.png" width="600" />
+  <img src="images/module2/64.png" width="600" />
 </p>
 
 7. Забираем файл LocalSettings.php с CLI:
@@ -1121,11 +1121,11 @@ ________________________________________________________________________________
 <p align="center"><b>*HQ-CLI:*</b></p>
 
 <p align="center">
-  <img src="images/module2/64.png" width="600" />
+  <img src="images/module2/65.png" width="600" />
 </p>
 
 <p align="center">
-  <img src="images/module2/65.png" width="600" />
+  <img src="images/module2/66.png" width="600" />
 </p>
 
 <p align="center"><b>*BR-SRV:</b></p>
@@ -1133,13 +1133,13 @@ ________________________________________________________________________________
 Перемещаем в домашнюю директорию пользователя /root:
 
 <p align="center">
-  <img src="images/module2/66.png" width="600" />
+  <img src="images/module2/67.png" width="600" />
 </p>
 
 Проверяем:
 
 <p align="center">
-  <img src="images/module2/67.png" width="600" />
+  <img src="images/module2/68.png" width="600" />
 </p>
 
 _____________________________________________________________________________________
@@ -1149,7 +1149,7 @@ ________________________________________________________________________________
 ***find / -name LocalSettings.php 2>/dev/null***
 
 <p align="center">
-  <img src="images/module2/69.png" width="600" />
+  <img src="images/module2/70.png" width="600" />
 </p>
 
 Команда "ls"(list) показывает файлы и директории в текущем каталоге.  
