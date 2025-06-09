@@ -489,7 +489,7 @@
  
  <span style="font-size:18px">**(СДЕЛАТЬ SNAPSHOT BR-SRV)**</span>
 
-<p align="center"><b>Настройте доменный контроллер Samba на машине BR-SRV.</b></p>
+### <p align="center"><b>Настройте доменный контроллер Samba на машине BR-SRV.</b></p>
 
 - Создайте 5 пользователей для офиса HQ: имена пользователей формата user№.hq. Создайте группу hq, введите в эту группу созданных пользователей 
 - Введите в домен машину HQ-CLI 
@@ -503,3 +503,156 @@
 > Временно заменяем в /etc/resolv.conf 192.168.100.2 на  10.0.1.4, чтобы samba быстрее скачивалось
 
 Переходим к настройкам самого контроллера домена на BR-SRV
+
+<p align="center">
+  <img src="images/module2/1.samba.png" width="600" />
+</p>
+
+> **РЕКОМЕНДАЦИЯ:**
+> НА CLI: apt-get update && apt-get remove -y alterator-datetime && apt-get install -y task-auth-ad-sssd && apt-get install -y admc
+> НА HQ-SRV: apt update && apt install mdadm -y
+> НА CLI: apt-get install -y openssh-server && systemctl restart sshd.
+
+Появится синее окно, не пугайтесь, так и должно быть. В первом окне вводим имя домена au-team.irpo, а во втором — имя нашего сервера hq-srv
+
+Удаляем докер:  
+***apt remove docker.io -y && ip link delete docker0;***
+
+Проверяем что установлено имя в формате FQDN;  
+Задаём domainname;  
+Очищаем конфигурацию samba;  
+Разворачиваем контроллер домена Active Directory на базе SambaDC с Dnsmasq в качестве DNS
+
+<p align="center">
+  <img src="images/module2/2.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/3.png" width="600" />
+</p>
+
+Подготовка домена Samba-tool --realm=au-team.irpo --domain=au-team –adminpass=”PAssw0rd” --dnsbackend=SAMBA_INTERNAL --option=”dns forwrder=192.168.100.2” --server-role=dc
+
+ВЫ МОЖЕТЕ НАПИСАТЬ ТОЛЬКО «Samba-tool domain provision», А ОСТАЛЬНОЕ ОНО СПРОСИТ САМО
+
+<p align="center">
+  <img src="images/module2/4.png" width="600" />
+</p>
+
+Как видим че то не так, надо перезапустить машинку:  
+***reboot***
+
+Вводим все заново  
+Проверяем:
+
+<p align="center">
+  <img src="images/module2/5.png" width="600" />
+</p>
+
+Ничего не показывает, надо перезапустить машину, снова проверяем:
+
+<p align="center">
+  <img src="images/module2/6.png" width="600" />
+</p>
+
+> **Обязательно:**
+> ВВОДИМ МАШИНУ обратно В ДОМЕН:  
+> nano /etc/resolv.conf – nameserver 192.168.100.2
+
+> **РЕКОМЕНДАЦИЯ:**
+> НА BR-SRV здесь же скачиваем: apt install ansible -y  
+> НА HQ-SRV скачиваем: apt install nfs-kernel-server -y
+
+<p align="center"><b>На клиента ставим необходимые пакеты</b></p>
+
+<p align="center"><b>*CLI*</b></p>
+
+Установим пакет task-auth-ad-sssd:  
+***apt-get update && apt-get install -y task-auth-ad-sssd***
+
+У вас возникнет ошибка, связанная с конфликтом с пакетом alterator-datetime, его необходимо удалить  
+***apt-get remove -y alterator-datetime***
+
+После пропишем инсталл еще раз  
+***apt-get install -y task-auth-ad-sssd***
+
+Переходим к редактированию временного соединения и в качестве DNS-сервера прописываем адрес HQ-SRV, а также указываем поисковый домен:
+
+<p align="center">
+  <img src="images/module2/7.png" width="600" />
+</p>
+
+переходим в Центр управления системой на вкладке Пользователи выбираем Аутентификация
+
+<p align="center">
+  <img src="images/module2/8.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/9.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/10.png" width="600" />
+</p>
+
+Вводим пароль администратора домена:
+
+<p align="center">
+  <img src="images/module2/11.png" width="600" />
+</p>
+
+нажимаем ОК и перезагружаем систему:
+
+<p align="center">
+  <img src="images/module2/12.png" width="600" />
+</p>
+
+> **РЕКОМЕНДАЦИЯ:** 
+> НА BR-SRV скачиваем: apt install -y docker.io docker-compose  
+> НА HQ-SRV скачиваем: apt install -y apache* -y
+
+В качестве проверки после перезагрузки можно выполнить аутентификацию от имени доменного пользователя Administrator:
+
+<p align="center">
+  <img src="images/module2/13.png" width="600" />
+</p>
+
+Организуем отслеживание подключения к домену: CLI: На клиенте с граф. интерфейсом установим Модуль удаленного управления базой данных конфигурации (ADMC) • Установим пакет admc:  
+***apt-get install -y admc***
+
+Для использования ADMC необходимо предварительно получить ключ Kerberos для администратора домена. Получить ключ Kerberos можно, например, выполнив следующую команду:  
+из под обычного пользователя  
+***kinit Administrator***
+
+ADMC запускается из меню запуска приложений: пункт «Системные» → ADMC или из командной строки (команда admc).
+
+Если admc долго не может запуститься(не выдает ошибок, но не запускается), то внесите изменения в файл /etc/krb5.conf
+
+<p align="center">
+  <img src="images/module2/14.png" width="600" />
+</p>
+
+На вкладке «Компьютеры» в графическом режиме удобно отслеживать подключение к домену;  
+Создаем пять юзеров
+
+<p align="center">
+  <img src="images/module2/15.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/16.png" width="600" />
+</p>
+
+**Создаем группу hq и в нее добавляем раннее созданных пользователей**
+
+Пользователи группы hq должны иметь возможность повышать привилегии для выполнения ограниченного набора команд: cat, grep, id. Запускать другие команды с повышенными привилегиями пользователи группы не имеют права
+
+<p align="center"><b>*CLI*</b></p>
+
+Настройте файл /etc/sudoers на рабочей станции Linux, как описано в предыдущем ответе, используя синтаксис для доменных групп:  
+%hq ALL=(ALL) NOPASSWD: /bin/cat, /bin/grep, /usr/bin/id
+
+> **РЕКОМЕНДАЦИЯ:**
+> НА BR-SRV скачиваем: apt install –y mariadb-*  
+> НА HQ-SRV скачиваем: apt install -y php php8.2 php-curl php-zip php-xml libapache2-mod-php php-mysql php-mbstring php-gd php-intl php-soap -y
