@@ -269,7 +269,7 @@
 </p>
 
 <p align="center">
-  <img src="images/module1/42..png" width="600" />
+  <img src="images/module1/42. br-srv.png" width="600" />
 </p>
 
 Перезапускаем сервис:  
