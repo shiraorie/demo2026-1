@@ -253,7 +253,8 @@
   <img src="images/module1/40. hq-srv.png" width="600" />
 </p>
 
-Перезапускаем сервис:  
+Перезапускаем сервис:
+
 ***Systemctl restart networking***
 
 Проверяем:
@@ -273,7 +274,8 @@
   <img src="images/module1/42. br-srv.png" width="600" />
 </p>
 
-Перезапускаем сервис:  
+Перезапускаем сервис:
+
 ***Systemctl restart networking***
 
 Проверяем:
@@ -375,7 +377,7 @@
 
 <p align="center"><b>*HQ-RTR:*</b></p>
 
-Скачаем: apt install –y isc-dhcp-server
+Скачаем: ***apt install –y isc-dhcp-server***
 
 Первым делом нам необходимо указать, что наш DHCP сервер должен принимать запросы только с ens20 интерфейса.
 
@@ -454,10 +456,12 @@
   <img src="images/module1/66..png" width="600" />
 </p>
 
-Перезагружаем службу dnsmasq:  
+Перезагружаем службу dnsmasq:
+
 ***systemctl restart dnsmasq***
 
-После настройки dns-сервера прописываем всем машинам в /etc/resolv.conf:  
+После настройки dns-сервера прописываем всем машинам в /etc/resolv.conf:
+
 ***ameserver 192.168.100.2***
 
 <p align="center">
@@ -469,14 +473,16 @@
 
 <p align="center"><b>*HQ-SRV, HQ-CLI, BR-SRV*</b></p>
 
-Проверяем какой часовой пояс установлен:  
+Проверяем какой часовой пояс установлен:
+
 ***timedatectl status***
 
 <p align="center">
   <img src="images/module1/68. часовой пояс.png" width="600" />
 </p>
 
-Если отличается, то устанавливаем:  
+Если отличается, то устанавливаем:
+
 ***timedatectl set-timezone Asia/Yekaterinburg***
 
 
