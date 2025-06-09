@@ -493,10 +493,10 @@
  
 <p align="center"><b>User name: m2</b></p>
 <p align="center"><b>Password: modul2</b></p>
- 
-<p align="center"><b>**(СДЕЛАТЬ SNAPSHOT BR-SRV)**</b></p>
 
 ### <p align="center"><b>Настройте доменный контроллер Samba на машине BR-SRV.</b></p>
+
+**<p align="center"><b>(СДЕЛАТЬ SNAPSHOT BR-SRV)</b></p>**
 
 - Создайте 5 пользователей для офиса HQ: имена пользователей формата user№.hq. Создайте группу hq, введите в эту группу созданных пользователей 
 - Введите в домен машину HQ-CLI 
