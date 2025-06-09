@@ -494,7 +494,7 @@
 <p align="center"><b>User name: m2</b></p>
 <p align="center"><b>Password: modul2</b></p>
  
- <span style="font-size:40px">**(СДЕЛАТЬ SNAPSHOT BR-SRV)**</span>
+<span style="font-size:24px"><b>(СДЕЛАТЬ SNAPSHOT BR-SRV)</b></span>
 
 ### <p align="center"><b>Настройте доменный контроллер Samba на машине BR-SRV.</b></p>
 
