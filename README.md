@@ -1158,5 +1158,333 @@ ________________________________________________________________________________
 _____________________________________________________________________________________
 
 <p align="center">
-  <img src="images/module2/70.png" width="600" />
+  <img src="images/module2/71.png" width="600" />
 </p>
+
+Перезапускаем сервисы средствами docker-compose:
+
+***docker-compose -f wiki.yml stop***  
+***docker-compose -f wiki.yml up -d***
+
+
+<p align="center">
+  <img src="images/module2/72.png" width="600" />
+</p>
+
+<p align="center"><b>*Снова HQ-CLI:*</b></p>
+
+1. Проверяем доступ к http://wiki.au-team.irpo:8080
+
+
+<p align="center">
+  <img src="images/module2/73.png" width="600" />
+</p>
+
+2. Вход, в моем случае, из под пользователя admin с паролем P@ssw0rddd
+
+<p align="center">
+  <img src="images/module2/74.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/75.png" width="600" />
+</p>
+
+### <p align="center"><b>На маршрутизаторах сконфигурируйте статическую трансляцию портов</b></p>
+
+- Пробросьте порт 80 в порт 8080 на BR-SRV на маршрутизаторе BR-RTR, для обеспечения работы сервиса wiki 
+- Пробросьте порт 2024 в порт 2024 на HQ-SRV на маршрутизаторе HQ-RTR 
+- Пробросьте порт 2024 в порт 2024 на BR-SRV на маршрутизаторе BR-RTR
+
+<p align="center"><b>*BR-RTR*</b></p>
+
+<p align="center">
+  <img src="images/module2/76.br-rtr.png" width="600" />
+</p>
+
+<p align="center"><b>*HQ-RTR*</b></p>
+
+<p align="center">
+  <img src="images/module2/77.hq-rtr.png" width="600" />
+</p>
+
+### <p align="center"><b>Запустите сервис moodle на сервере HQ-SRV</b></p>
+
+- Используйте веб-сервер apache 
+- В качестве системы управления базами данных используйте mariadb 
+- Создайте базу данных moodledb 
+- Создайте пользователя moodle с паролем P@ssw0rd и предоставьте ему права доступа к этой базе данных 
+- У пользователя admin в системе обучения задайте пароль P@ssw0rd 
+- На главной странице должен отражаться номер рабочего места в виде арабской цифры, других подписей делать не надо 
+- Основные параметры отметьте в отчёт
+
+<p align="center"><b>*HQ-SRV*</b></p>
+> !По сути у нас уже все скачено!
+
+Устанавливаем веб-сервер Apache2 и необходимые пакеты:
+
+***apt install -y apache* -y***
+
+Устанавливаем PHP и необходимые модули:
+
+***apt install -y php php8.2 php-curl php-zip php-xml libapache2-mod-php php-mysql php-mbstring php-gd php-intl php-soap -y***
+
+Установка СУБД MySQL:
+
+***apt install -y mariadb-* -y***
+> !По сути у нас уже все скачено!
+
+Включаем и добавляем в автозагрузку MySQL:
+
+***systemctl enable --now mariadb***  
+***systemctl enable --now apache2***
+
+Подключаемся к MySQL, создаём базу данных и пользователя:  
+имя базы даных - " moodledb ";  
+имя пользователя - "moodle", пароль "P@ssw0rd";
+
+***mysql  
+***> CREATE DATABASE moodledb DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;***  
+***> CREATE USER 'moodle'@'localhost' IDENTIFIED BY 'P@ssw0rd';***  
+***> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER ON moodle.* TO 'moodle'@'localhost';***  
+***> EXIT;***
+
+______________________________________________________________________________________
+
+Если вдруг в веб при вводе данных параметров базы данных будет вылазить ошибка – *данной базы данных не существует, данному пользователю не даны права на создание базы данных*, то удаляем их и создаем заново:
+
+***>DROP DATABASE moodledb;***
+***>DROP USER 'moodle'@'localhost';***
+
+______________________________________________________________________________________
+
+Устанавливаем git, чтобы можно было скачать проект Moodle:
+> !По сути у нас уже все скачено!
+
+***apt install -y git***
+
+Загружаем код проекта Moodle:
+
+***git clone git://git.moodle.org/moodle.git***
+> !По сути у нас уже все скачено!
+
+Переходим в загруженный каталог moodle:
+
+***cd moodle***
+
+Извлекаем список каждой доступной ветви:
+
+***git branch -a***
+
+<p align="center">
+  <img src="images/module2/78.moodle.png" width="600" />
+</p>
+
+Сообщаем git, какую ветку отслеживать или использовать:
+
+***git branch --track MOODLE_403_STABLE origin/MOODLE_403_STABLE*** 
+
+проверяем: 
+
+***git checkout MOODLE_403_STABLE***
+
+<p align="center">
+  <img src="images/module2/79.png" width="600" />
+</p>
+
+Копируем локальный репозиторий в /var/www/html/:
+
+***cd ..***  
+***cp -R moodle /var/www/html***
+
+Создаём необходимую структуру каталагов для корректной установки и работы Moodle:
+
+***mkdir /var/moodledata***  
+***chown -R www-data /var/moodledata***  
+***chmod -R 777 /var/moodledata***  
+***chmod -R 0755 /var/www/html/moodle***  
+***chown -R www-data:www-data /var/www/html/moodle***  
+
+Описываем конфигурационный файл для веб-сервера Apache:
+
+***nano /etc/apache2/sites-available/moodle.conf***
+
+<p align="center">
+  <img src="images/module2/80.png" width="600" />
+</p>
+
+> где:
+> - ServerName - основное имя домена
+> - ServerAlias - дополнительное имя, по которому будет доступен сайт
+> - DocumentRoot - путь до проекта для этого домена
+> - AllowOverride All - когда сервер находит .htaccess файл (как определено AccessFileName) ему необходимо знать какие директивы, объявленные в том файле могут отменять ранее утановленную информацию доступа. Эта директива может быть установлена в None, т.е. чтобы сервер не читал файл .htaccess. Если она установленна в All - сервер будет допускать все директивы .htaccess файла.
+> - Options -Indexes +FollowSymLinks - означает, что если каталог является символьной ссылкой, перейдите по ссылке 
+
+Создаём символьную ссылку из sites-available на sites-enabled:
+
+***ln -s /etc/apache2/sites-available/moodle.conf  /etc/sites-enabled***
+
+Проверяем синтаксис файла виртуального хоста: ***apachectl configtest***
+
+<p align="center">
+  <img src="images/module2/81.png" width="600" />
+</p>
+
+Правим количество входных переменных, которые могут быть приняты в одном запросе, для работы Moodle - необходимо 5000, а значение в php.ini по умолчанию 1000:
+
+<p align="center">
+  <img src="images/module2/82.png" width="600" />
+</p>
+
+Проверяем:
+
+***nano /etc/php/8.2/apache2/php.ini***
+
+<p align="center">
+  <img src="images/module2/83.png" width="600" />
+</p>
+
+Перезагружаем apache:
+
+***systemctl restart apache2***
+
+<p align="center"><b>*HQ-CLI*</b></p>
+
+После можно переходить в браузер для установки Moodle по http://<IP | domain-name>/install.php 
+
+1. Перед тем как зайти на сайт в hq-cli в файле /etc/hosts прописываем следующее:
+
+***192.168.100.2 moodle.au-team.irpo moodle***
+
+2. Открываем firefox переходим на *http://moodle.au-team.irpo/moodle*  
+- выбираем Язык - нажимаем "Далее":
+
+<p align="center">
+  <img src="images/module2/84.png" width="600" />
+</p>
+
+3. Подтверждаем пути - правим Каталог данных (в соответствии с созданной ранее директорией - /var/moodledata) - нажимаем "Далее":
+
+<p align="center">
+  <img src="images/module2/85.png" width="600" />
+</p>
+
+4. Выбираем драйвер баз данных MariaDB - нажимаем "Далее":
+
+<p align="center">
+  <img src="images/module2/86.png" width="600" />
+</p>
+
+5. Заполняем параметры ранее созданной Базы данных - "пользователя БД, пароль и порт":
+
+***СЕРВЕР БАЗ ДАННЫХ (ХОСТ) localhost***  
+***НАЗВАНИЕ БАЗЫ ДАННЫХ moodle***  
+***ПОЛЬЗОВАТЕЛЬ БАЗЫ ДАННЫХ moodle***  
+***ПАРОЛЬ P@ssw0rd***
+
+6. нажимаем - "Продолжить":
+
+<p align="center">
+  <img src="images/module2/87.png" width="600" />
+</p>
+
+7. Нажимаем - "Продолжить": не обращаем внимание на то, что у нас не настроен https
+
+<p align="center">
+  <img src="images/module2/88.png" width="600" />
+</p>
+
+> **РЕКОМЕНДАЦИЯ:**
+> пока идет долгая установка делаем nginx на hq-rtr, он идет сразу после moodle
+
+8. заполняем необходимые сведения и нажимаем - "Обновить профиль":
+
+<p align="center">
+  <img src="images/module2/89.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/90.png" width="600" />
+</p>
+
+9. Заполняем необходимые сведения и нажимаем - "Сохранить изменения":
+
+<p align="center">
+  <img src="images/module2/91.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/92.png" width="600" />
+</p>
+
+### <p align="center"><b>8. Настройте веб-сервер nginx как обратный прокси-сервер на HQ-RTR</b></p>
+
+- При обращении к HQ-RTR по доменному имени moodle.au-team.irpo клиента должно перенаправлять на HQ-SRV на стандартный порт, на сервис moodle 
+- При обращении к HQ-RTR по доменному имени wiki. au-team.irpo клиента должно перенаправлять на BR-SRV на порт, на сервис mediwiki
+
+<p align="center"><b>*HQ-RTR*</b></p>
+
+1. Установите Nginx 
+
+***apt install nginx -y***
+
+Запустите и активируйте Nginx:
+
+***systemctl start nginx***  
+***systemctl enable nginx***
+
+2. Настройка Nginx как обратного прокси
+
+Создадим конфигурационный файл для сайта в Nginx, в котором настроим виртуальные хосты:
+
+<p align="center">
+  <img src="images/module2/93.nginx.png" width="600" />
+</p>
+
+Добавьте конфигурацию для проксирования запросов в файл reverse-proxy.conf:
+
+<p align="center">
+  <img src="images/module2/94.png" width="600" />
+</p>
+
+Сохраните файл и закройте редактор.
+
+Создайте символическую ссылку на этот файл в папке sites-enabled для активации конфигурации:
+
+<p align="center">
+  <img src="images/module2/95.png" width="600" />
+</p>
+
+Проверьте конфигурацию Nginx на наличие синтаксических ошибок:
+
+<p align="center">
+  <img src="images/module2/96.png" width="600" />
+</p>
+> на hq-rtr в файле /etc/resolv.conf должно быть прописано dns 192.168.100.2
+
+*Если конфигурация правильная, вы увидите сообщение syntax is ok.*
+
+Перезагрузите Nginx, чтобы применить изменения:
+
+***systemctl reload nginx***
+
+### <p align="center"><b>9. Удобным способом установите приложение Яндекс Браузере для организаций</b></p>
+
+<p align="center"><b>*HQ-CLI*</b></p>
+
+<p align="center">
+  <img src="images/module2/97.yandex.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/98.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module2/99.png" width="600" />
+</p>
+> **ПРИМЕЧАНИЕ:**
+> Установку браузера отметьте в отчёте
+
+## <p align="center"><b>МОДУЛЬ 3</b></p>
+<p align="center"><b>(1,2 заданий не будет, 7ое задание будет)</b></p>
