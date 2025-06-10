@@ -1865,3 +1865,48 @@ apt install rsyslog
 > Настройка ротации на этом закончена, каждую неделю будут проверяться логи и если какие-то из них больше 10МБ, они будут сжаты в архив.
 
 ### <p align="center"><b>8.	Реализуйте механизм инвентаризации машин HQ-SRV и HQ-CLI через Ansible на BR-SRV</b></p>
+
+1. Для начала необходимо создать каталог, в котором будут размещены отчеты о рабочих местах:
+
+***mkdir /etc/ansible/PC_INFO***
+
+<p align="center">
+  <img src="images/module3/39.inventory_ansible.png" width="600" />
+</p>
+
+2. Далее, создадим плейбук /etc/ansible/inventory.yml:
+
+<p align="center">
+  <img src="images/module3/40.png" width="600" />
+</p>
+
+со следующим содержимым:
+
+<p align="center">
+  <img src="images/module3/41.png" width="600" />
+</p>
+
+3. Проверим работу, командой:
+
+***ansible-playbook /etc/ansible/inventory.yml***
+
+<p align="center">
+  <img src="images/module3/42.png" width="600" />
+</p>
+
+> Ansible помечает результат как changed, так как фактическое состояние системы меняется. При первом запуске плейбука это ожидаемое поведение.
+> Если запустить плейбук ещё раз, то Ansible покажет для тех же задач статус ok, потому что требуемое состояние уже достигнуто и ничего менять не нужно.
+
+4. Проверим наличие и содержимое, созданных отчетов:
+
+***ls -la /etc/ansible/PC_INFO***  
+***cat /etc/ansible/PC_INFO/hq-cli.yml***  
+***cat /etc/ansible/PC_INFO/hq-srv.yml***
+
+<p align="center">
+  <img src="images/module3/43.png" width="600" />
+</p>
+
+> Как можно заметить, отчеты созданы и содержат необходимую информацию. Задание выполнено.
+
+### <p align="center"><b>9.	Реализуйте механизм резервного копирования конфигурации для машин HQ-RTR и BR-RTR, через Ansible на BR-SRV</b></p>
