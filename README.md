@@ -240,11 +240,9 @@
 <p align="center"><b>*HQ-SRV*</b></p>
 
 Задаем имя:  
-> **ВНИМАНИЕ:**
-> Нужно обновить изображение
 
 <p align="center">
-  <img src="images/module1/43..png" width="600" />
+  <img src="images/module1/hq-srv.FQDN..png" width="600" />
 </p>
 
 Прокинем инет:
@@ -1598,8 +1596,7 @@ ________________________________________________________________________________
 <p align="center">
   <img src="images/module3/isp-end.png" width="600" />
 </p>
-
-> <p align="center"><b>Слева HQ-RTR - Cправа BR-RTR</b></p>
+<p align="center"><b>Слева HQ-RTR - Cправа BR-RTR</b></p>
 
 > Если IPsec настроен правильно, вы должны видеть защищённый трафик между вашими серверами.
 
