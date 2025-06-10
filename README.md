@@ -1490,3 +1490,111 @@ ________________________________________________________________________________
 
 ## <p align="center"><b>МОДУЛЬ 3</b></p>
 <p align="center"><b>(1,2 заданий не будет, 7ое задание будет)</b></p>
+
+### <p align="center"><b>3.	Перенастройте ip-туннель с базового до уровня туннеля, обеспечивающего шифрование трафика</b></p>
+
+<p align="center"><b>*HQ-RTR*</b></p>
+
+1. Для начала необходимо установить пакет на наш роутер HQ-RTR:
+
+***apt update***  
+***apt install strongswan***
+
+<p align="center">
+  <img src="images/module3/1.ipsec.png" width="600" />
+</p>
+
+2. Конфигурация IPsec:
+
+На обоих роутерах отредактируйте файл /etc/ipsec.conf, добавив следующее:
+
+<p align="center">
+  <img src="images/module3/2.png" width="600" />
+</p>
+
+Далее нужно настроить файл ipsec.secrets. Вносим туда строку:
+
+***172.16.4.2 172.16.5.2 : PSK “123qweR%”***
+
+<p align="center">
+  <img src="images/module3/3.png" width="600" />
+</p>
+
+Ещё один конфиг charon.conf, открываем его b редактируем в нём следующую строку, приводя к виду:
+
+***install_routes = no***
+
+<p align="center">
+  <img src="images/module3/4.png" width="600" />
+</p>
+
+И осталось только перезагрузить службу ipsec:
+
+***ipsec restart***
+
+<p align="center">
+  <img src="images/module3/5.png" width="600" />
+</p>
+
+<p align="center"><b>*BR-RTR*</b></p>
+
+1. Для начала необходимо установить пакет на наш роутер BR-RTR:
+
+***apt update***  
+***apt install strongswan***
+
+<p align="center">
+  <img src="images/module3/6.png" width="600" />
+</p>
+
+2. Конфигурация IPsec:
+
+На обоих роутерах отредактируйте файл /etc/ipsec.conf, добавив следующее:
+
+<p align="center">
+  <img src="images/module3/7.png" width="600" />
+</p>
+
+Далее нужно настроить файл ipsec.secrets. Вносим туда строку:
+
+***172.16.5.2 172.16.4.2 : PSK “123qweR%”***
+
+<p align="center">
+  <img src="images/module3/8.png" width="600" />
+</p>
+
+Ещё один конфиг charon.conf, открываем его и редактируем в нём следующую строку, приводя к виду:
+
+***install_routes = no***
+
+<p align="center">
+  <img src="images/module3/9.png" width="600" />
+</p>
+
+И осталось только перезагрузить службу ipsec:
+
+***ipsec restart***
+
+<p align="center">
+  <img src="images/module3/5.png" width="600" />
+</p>
+
+3. Также можно проверить передаются ли зашифрованные пакеты по сети, для этого нам пригодится утилита tcpdump:
+
+***apt install tcpdump***
+
+И теперь мы можем проверить это, пропишем на роутере BR-RTR команду:
+  
+***tcpdump -i eth18 -n -p esp***
+
+А на роутере HQ-RTR отправим эхо-запрос на порту в сторону branch:
+
+***ping 192.168.200.2***
+
+Как можно заметить, на правом роутере мы видим зашифрованные пакеты с меткой ESP:
+
+<p align="center">
+  <img src="images/module3/10.png" width="600" />
+</p>
+
+Если IPsec настроен правильно, вы должны видеть защищённый трафик между вашими серверами.
