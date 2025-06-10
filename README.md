@@ -1642,7 +1642,6 @@ ________________________________________________________________________________
 
 ***ping 192.168.200.2***
 
-
 <p align="center">
   <img src="images/module3/16.png" width="600" />
 </p>
@@ -1651,3 +1650,217 @@ ________________________________________________________________________________
 
 ### <p align="center"><b>5.	Настройте принт-сервер cups на сервере HQ-SRV.</b></p>
 
+1. Для начала необходимо установить пакеты cups и cups-pdf на HQ-SRV:
+
+<p align="center">
+  <img src="images/module3/17.png" width="600" />
+</p>
+
+Теперь необходимо включить службу cups, чтобы она запускалась вместе с системой:
+
+***systemctl enable –now cups***
+
+Далее, необходимо отредактировать конфиг /etc/cups/cupsd.conf  
+Во всех блоках Location необходимо добавить строку Allow all, как на скриншоте:
+
+<p align="center">
+  <img src="images/module3/18.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module3/19.png" width="600" />
+</p>
+
+Перезапускаем службу cups для применения изменений:
+
+systemctl restart cups
+
+2. Переходим к подключению клиента HQ-CLI
+
+Скачиваем cups:
+
+***apt-get install cups cups-pdf -y***
+
+<p align="center">
+  <img src="images/module3/20.png" width="600" />
+</p>
+
+На HQ-CLI выполняем следующую команду для подключения к принт-серверу:
+
+***lpadmin -p CUPS -E -v ipp://hq-srv.au-team.irpo:631/printers/PDF -m everywhere***
+
+Установим принтер CUPS, как принтер по умолчанию:
+
+***lpoptions -d CUPS***
+
+<p align="center">
+  <img src="images/module3/21.png" width="600" />
+</p>
+
+> Как можно заметить, принтер CUPS успешно подключен. 
+
+Из-за того, что на HQ-CLI также установлен принт-сервер, можно отключить локальный принтер “Cups-PDF”, чтобы он не мешал.
+
+***lpadmin -x Cups-PDF***
+
+<p align="center">
+  <img src="images/module3/22.png" width="600" />
+</p>
+
+Теперь у нас остался один принтер. Проверим его работу. Откроем любой текстовый документ и попробуем его распечатать.
+
+<p align="center">
+  <img src="images/module3/23.png" width="600" />
+</p>
+
+Перейдем в веб-интерфейс CUPS по адресу https://hq-srv.au-team.irpo:631    
+- Вкладка *Принтеры*
+- Выбираем наш принтер.
+- Жмем кнопку Показать все задания
+
+### <p align="center"><b>6.	 Реализуйте логирование при помощи rsyslog на устройствах HQ-RTR, BR-RTR, BR-SRV</b></p>
+
+1. Сперва необходимо настроить наш сервер для сбора логов.
+
+Установим пакет rsyslog на HQ-SRV:
+
+apt install rsyslog
+
+Далее, отредактируем файл конфигурации, расположенный по пути
+/etc/rsyslog.conf:
+
+<p align="center">
+  <img src="images/module3/24.rsyslog.png" width="600" />
+</p>
+
+> Для передачи логов будем использовать протокол TCP, поэтому раскомментируем (уберем #) модуль imtcp, чтобы rsyslog мог получать логи с удаленных узлов.
+
+<p align="center">
+  <img src="images/module3/25.png" width="600" />
+</p>
+
+> Также необходимо в конец конфига добавить шаблон для сбора логов, чтобы rsyslog сохранял логи по пути, который указан в задании.
+
+Включаем службу rsyslog, чтобы она запускалась вместе с системой и перезапускаем ее для применения изменений:
+
+***systemctl enable rsyslog***  
+***systemctl restart rsyslog***
+
+<p align="center">
+  <img src="images/module3/26.png" width="600" />
+</p>
+
+> Сервер для приема логов настроен
+
+2. Переходим к настройке клиентов. Начнем с роутеров.
+
+Установим пакет rsyslog на HQ-RTR:
+
+<p align="center">
+  <img src="images/module3/27.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module3/28.png" width="600" />
+</p>
+
+Далее, отредактируем файл конфигурации, расположенный по пути
+/etc/rsyslog.conf:
+
+<p align="center">
+  <img src="images/module3/29.png" width="600" />
+</p>
+
+> В блоке MODULES необходимо раскомментировать модули, которые обеспечивают поддержку логирования. (Все кроме модуля imuxsock, потому что вместо него будет использован модуль imjournal). Модуль imjournal придется дописать вручную.
+
+Теперь опускаемся в самый низ конфига, там расположены правила.
+
+Добавляем в самый конец строку, которая отвечает за отправку логов уровня предупреждения (warning) и выше:
+
+****.warning @@192.168.100.2:514***
+
+<p align="center">
+  <img src="images/module3/30.png" width="600" />
+</p>
+
+Теперь перезапускаем службу rsyslog, чтобы применить изменения.
+
+***systemctl restart rsyslog***
+
+*НА BR-RTR НУЖНО ПОВТОРИТЬ АНАЛАГИЧНО.*
+
+3. Продолжаем настройку клиентов на BR-SRV
+
+Установим на BR-SRV пакет rsyslog:
+
+***apt install rsyslog***
+
+<p align="center">
+  <img src="images/module3/31.png" width="600" />
+</p>
+
+Далее, отредактируем файл конфигурации, расположенный по пути /etc/rsyslog.conf:
+
+<p align="center">
+  <img src="images/module3/32.png" width="600" />
+</p>
+
+> Здесь также необходимо раскомментировать модули imjournal, imklog, immark
+
+<p align="center">
+  <img src="images/module3/33.png" width="600" />
+</p>
+
+> И добавить строку в конец конфига для того, чтобы логи отправлялись на сервер.
+
+Включаем службу rsyslog, чтобы она запускалась вместе с системой и перезапускаем ее для применения изменений:
+
+***systemctl enable rsyslog***  
+***systemctl restart rsyslog***
+
+<p align="center">
+  <img src="images/module3/34.png" width="600" />
+</p>
+
+4. За время пока выполнялась настройка клиентов уже должны появиться логи, проверим каталог /opt на HQ-SRV:
+
+<p align="center">
+  <img src="images/module3/35.png" width="600" />
+</p>
+
+> Как можно заметить, были автоматически созданы каталоги с именами клиентов. В каждом из них есть файл rsyslog.txt
+
+Проверим, что логируются только сообщения уровня warning и выше.
+
+Добавим несколько записей различного уровня в лог на любом из клиентов, например на BR-SRV, командами:
+
+***logger -p user.info “Test info”***
+
+***logger -p user.warning “Test warning”***
+> сообщения уровня warning:
+
+***logger -p user.error “Test error”***
+> сообщения уровня error:
+
+<p align="center">
+  <img src="images/module3/36.png" width="600" />
+</p>
+
+Теперь проверим на HQ-SRV содержимое файла /opt/br-srv/rsyslog.txt:
+
+<p align="center">
+  <img src="images/module3/37.png" width="600" />
+</p>
+
+> Как можно заметить, здесь появились только сообщения уровня warning и error.
+
+5. Перейдем к настройке ротации логов. На HQ-SRV создадим файл /etc/logrotate.d/rsyslog
+Запишем в него следующее содержимое:
+
+<p align="center">
+  <img src="images/module3/38.png" width="600" />
+</p>
+
+> Настройка ротации на этом закончена, каждую неделю будут проверяться логи и если какие-то из них больше 10МБ, они будут сжаты в архив.
+
+### <p align="center"><b>8.	Реализуйте механизм инвентаризации машин HQ-SRV и HQ-CLI через Ansible на BR-SRV</b></p>
