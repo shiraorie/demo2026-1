@@ -1956,7 +1956,7 @@ apt install rsyslog
 
 А также их содержимое, если хотите убедиться, что действительно скопировалось, для примера покажем файл interfaces с маршрутизатора HQ-RTR, остальные можете сами:
 
-cat /etc/ansible/NETWORK_INFO/HQ-RTR/interfaces
+***cat /etc/ansible/NETWORK_INFO/HQ-RTR/interfaces***
 
 <p align="center">
   <img src="images/module3/49.png" width="600" />
