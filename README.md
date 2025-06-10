@@ -664,8 +664,9 @@ ________________________________________________________________________________
 
 <p align="center"><b>*CLI*</b></p>
 
-Настройте файл /etc/sudoers на рабочей станции Linux, как описано в предыдущем ответе, используя синтаксис для доменных групп:  
-%hq ALL=(ALL) NOPASSWD: /bin/cat, /bin/grep, /usr/bin/id
+Настройте файл */etc/sudoers* на рабочей станции Linux, как описано в предыдущем ответе, используя синтаксис для доменных групп:  
+
+***%hq ALL=(ALL) NOPASSWD: /bin/cat, /bin/grep, /usr/bin/id***
 
 > **РЕКОМЕНДАЦИЯ:**
 > НА BR-SRV скачиваем: apt install –y mariadb-*  
@@ -1485,8 +1486,481 @@ ________________________________________________________________________________
 <p align="center">
   <img src="images/module2/99.png" width="600" />
 </p>
+
 > **ПРИМЕЧАНИЕ:**
 > Установку браузера отметьте в отчёте
 
 ## <p align="center"><b>МОДУЛЬ 3</b></p>
 <p align="center"><b>(1,2 заданий не будет, 7ое задание будет)</b></p>
+
+### <p align="center"><b>3.	Перенастройте ip-туннель с базового до уровня туннеля, обеспечивающего шифрование трафика</b></p>
+
+<p align="center"><b>*HQ-RTR*</b></p>
+
+1. Для начала необходимо установить пакет на наш роутер *HQ-RTR*:
+
+***apt update***  
+***apt install strongswan***
+
+<p align="center">
+  <img src="images/module3/1.ipsec.png" width="600" />
+</p>
+
+2. Конфигурация IPsec:
+
+На обоих роутерах отредактируйте файл /etc/ipsec.conf, добавив следующее:
+
+<p align="center">
+  <img src="images/module3/2.png" width="600" />
+</p>
+
+Далее нужно настроить файл ipsec.secrets. Вносим туда строку:
+
+***172.16.4.2 172.16.5.2 : PSK “123qweR%”***
+
+<p align="center">
+  <img src="images/module3/3.png" width="600" />
+</p>
+
+Ещё один конфиг charon.conf, открываем его b редактируем в нём следующую строку, приводя к виду:
+
+***install_routes = no***
+
+<p align="center">
+  <img src="images/module3/4.png" width="600" />
+</p>
+
+И осталось только перезагрузить службу ipsec:
+
+***ipsec restart***
+
+<p align="center">
+  <img src="images/module3/5.png" width="600" />
+</p>
+
+<p align="center"><b>*BR-RTR*</b></p>
+
+1. Для начала необходимо установить пакет на наш роутер *BR-RTR*:
+
+***apt update***  
+***apt install strongswan***
+
+<p align="center">
+  <img src="images/module3/6.png" width="600" />
+</p>
+
+2. Конфигурация IPsec:
+
+На обоих роутерах отредактируйте файл /etc/ipsec.conf, добавив следующее:
+
+<p align="center">
+  <img src="images/module3/7.png" width="600" />
+</p>
+
+Далее нужно настроить файл ipsec.secrets. Вносим туда строку:
+
+***172.16.5.2 172.16.4.2 : PSK “123qweR%”***
+
+<p align="center">
+  <img src="images/module3/8.png" width="600" />
+</p>
+
+Ещё один конфиг charon.conf, открываем его и редактируем в нём следующую строку, приводя к виду:
+
+***install_routes = no***
+
+<p align="center">
+  <img src="images/module3/9.png" width="600" />
+</p>
+
+И осталось только перезагрузить службу ipsec:
+
+***ipsec restart***
+
+<p align="center">
+  <img src="images/module3/5.png" width="600" />
+</p>
+
+3. Также можно проверить передаются ли зашифрованные пакеты по сети, для этого нам пригодится утилита tcpdump *на BR-RTR*:
+
+***apt install tcpdump***
+
+И теперь мы можем проверить это, пропишем на роутере *BR-RTR* команду:
+  
+***tcpdump -i ens18 -n -p esp***
+
+А на роутере *HQ-RTR* отправим эхо-запрос на порту в сторону branch(br-srv):
+
+***ping 192.168.200.2***
+
+Как можно заметить, на правом роутере мы видим зашифрованные пакеты с меткой ESP:
+
+<p align="center">
+  <img src="images/module3/10.png" width="600" />
+</p>
+
+> Если IPsec настроен правильно, вы должны видеть защищённый трафик между вашими серверами.
+
+### <p align="center"><b>4.	Настройте межсетевой экран на маршрутизаторах HQ-RTR и BR-RTR на сеть в сторону ISP</b></p>
+
+Для выполнения этого задания нам нужно обеспечить работу только нужных протоколов, а именно: HTTP, HTTPS, DNS, NTP, ICMP. А также запретить остальные подключения из сети Интернет во внутреннюю сеть.
+
+<p align="center"><b>*HQ-RTR*</b></p>
+
+Отредактируем nftables под текст задания:
+
+<p align="center">
+  <img src="images/module3/12.png" width="600" />
+</p>
+
+Не забываем применять:
+
+<p align="center">
+  <img src="images/module3/11.firewall.png" width="600" />
+</p>
+
+<p align="center"><b>*BR-RTR *</b></p>
+
+<p align="center">
+  <img src="images/module3/13.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module3/14.png" width="600" />
+</p>
+
+И проверим, не отвалился ли туннель ipsec после настройки правил на HQ-RTR:
+
+***ipsec status***
+
+<p align="center">
+  <img src="images/module3/15.png" width="600" />
+</p>
+
+> Видим, что соединение установлено и всё хорошо!
+
+Проверим также наличие связи между конечными устройствами, отправим эхо-запрос с *HQ-CLI на BR-SRV*:
+
+***ping 192.168.200.2***
+
+<p align="center">
+  <img src="images/module3/16.png" width="600" />
+</p>
+
+> Связь есть, всё отлично! Задание выполнено!
+
+### <p align="center"><b>5.	Настройте принт-сервер cups на сервере HQ-SRV.</b></p>
+
+1. Для начала необходимо установить пакеты cups и cups-pdf на HQ-SRV:
+
+<p align="center">
+  <img src="images/module3/17.png" width="600" />
+</p>
+
+Теперь необходимо включить службу cups, чтобы она запускалась вместе с системой:
+
+***systemctl enable –now cups***
+
+Далее, необходимо отредактировать конфиг /etc/cups/cupsd.conf  
+
+<p align="center">
+  <img src="images/module3/18.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module3/19.png" width="600" />
+</p>
+
+> Во всех блоках Location необходимо добавить строку Allow all, как на скриншоте
+
+Перезапускаем службу cups для применения изменений:
+
+systemctl restart cups
+
+2. Переходим к подключению клиента HQ-CLI
+
+Скачиваем cups:
+
+***apt-get install cups cups-pdf -y***
+
+<p align="center">
+  <img src="images/module3/20.png" width="600" />
+</p>
+
+На HQ-CLI выполняем следующую команду для подключения к принт-серверу:
+
+***lpadmin -p CUPS -E -v ipp://hq-srv.au-team.irpo:631/printers/PDF -m everywhere***
+
+Установим принтер CUPS, как принтер по умолчанию:
+
+***lpoptions -d CUPS***
+
+<p align="center">
+  <img src="images/module3/21.png" width="600" />
+</p>
+
+> Как можно заметить, принтер CUPS успешно подключен. 
+
+Из-за того, что на HQ-CLI также установлен принт-сервер, можно отключить локальный принтер “Cups-PDF”, чтобы он не мешал.
+
+***lpadmin -x Cups-PDF***
+
+<p align="center">
+  <img src="images/module3/22.png" width="600" />
+</p>
+
+Теперь у нас остался один принтер. Проверим его работу. Откроем любой текстовый документ и попробуем его распечатать.
+
+<p align="center">
+  <img src="images/module3/23.png" width="600" />
+</p>
+
+Перейдем в веб-интерфейс CUPS по адресу https://hq-srv.au-team.irpo:631    
+- Вкладка *Принтеры*
+- Выбираем наш принтер.
+- Жмем кнопку Показать все задания
+
+### <p align="center"><b>6.	 Реализуйте логирование при помощи rsyslog на устройствах HQ-RTR, BR-RTR, BR-SRV</b></p>
+
+1. Сперва необходимо настроить наш сервер для сбора логов.
+
+Установим пакет rsyslog на HQ-SRV:
+
+apt install rsyslog
+
+Далее, отредактируем файл конфигурации, расположенный по пути
+/etc/rsyslog.conf:
+
+<p align="center">
+  <img src="images/module3/24.rsyslog.png" width="600" />
+</p>
+
+> Для передачи логов будем использовать протокол TCP, поэтому раскомментируем (уберем #) модуль imtcp, чтобы rsyslog мог получать логи с удаленных узлов.
+
+<p align="center">
+  <img src="images/module3/25.png" width="600" />
+</p>
+
+> Также необходимо в конец конфига добавить шаблон для сбора логов, чтобы rsyslog сохранял логи по пути, который указан в задании.
+
+Включаем службу rsyslog, чтобы она запускалась вместе с системой и перезапускаем ее для применения изменений:
+
+***systemctl enable rsyslog***  
+***systemctl restart rsyslog***
+
+<p align="center">
+  <img src="images/module3/26.png" width="600" />
+</p>
+
+> Сервер для приема логов настроен
+
+2. Переходим к настройке клиентов. Начнем с роутеров.
+
+Установим пакет rsyslog на HQ-RTR:
+
+<p align="center">
+  <img src="images/module3/27.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module3/28.png" width="600" />
+</p>
+
+Далее, отредактируем файл конфигурации, расположенный по пути
+/etc/rsyslog.conf:
+
+<p align="center">
+  <img src="images/module3/29.png" width="600" />
+</p>
+
+> В блоке MODULES необходимо раскомментировать модули, которые обеспечивают поддержку логирования. (Все кроме модуля imuxsock, потому что вместо него будет использован модуль imjournal). Модуль imjournal придется дописать вручную.
+
+Теперь опускаемся в самый низ конфига, там расположены правила.
+
+Добавляем в самый конец строку, которая отвечает за отправку логов уровня предупреждения (warning) и выше:
+
+****.warning @@192.168.100.2:514***
+
+<p align="center">
+  <img src="images/module3/30.png" width="600" />
+</p>
+
+Теперь перезапускаем службу rsyslog, чтобы применить изменения.
+
+***systemctl restart rsyslog***
+
+*НА BR-RTR НУЖНО ПОВТОРИТЬ АНАЛАГИЧНО.*
+
+3. Продолжаем настройку клиентов на BR-SRV
+
+Установим на BR-SRV пакет rsyslog:
+
+***apt install rsyslog***
+
+<p align="center">
+  <img src="images/module3/31.png" width="600" />
+</p>
+
+Далее, отредактируем файл конфигурации, расположенный по пути /etc/rsyslog.conf:
+
+<p align="center">
+  <img src="images/module3/32.png" width="600" />
+</p>
+
+> Здесь также необходимо раскомментировать модули imjournal, imklog, immark
+
+<p align="center">
+  <img src="images/module3/33.png" width="600" />
+</p>
+
+> И добавить строку в конец конфига для того, чтобы логи отправлялись на сервер.
+
+Включаем службу rsyslog, чтобы она запускалась вместе с системой и перезапускаем ее для применения изменений:
+
+***systemctl enable rsyslog***  
+***systemctl restart rsyslog***
+
+<p align="center">
+  <img src="images/module3/34.png" width="600" />
+</p>
+
+4. За время пока выполнялась настройка клиентов уже должны появиться логи, проверим каталог /opt на HQ-SRV:
+
+<p align="center">
+  <img src="images/module3/35.png" width="600" />
+</p>
+
+> Как можно заметить, были автоматически созданы каталоги с именами клиентов. В каждом из них есть файл rsyslog.txt
+
+Проверим, что логируются только сообщения уровня warning и выше.
+
+Добавим несколько записей различного уровня в лог на любом из клиентов, например на BR-SRV, командами:
+
+***logger -p user.info “Test info”***
+
+***logger -p user.warning “Test warning”***
+> сообщения уровня warning:
+
+***logger -p user.error “Test error”***
+> сообщения уровня error:
+
+<p align="center">
+  <img src="images/module3/36.png" width="600" />
+</p>
+
+Теперь проверим на HQ-SRV содержимое файла /opt/br-srv/rsyslog.txt:
+
+<p align="center">
+  <img src="images/module3/37.png" width="600" />
+</p>
+
+> Как можно заметить, здесь появились только сообщения уровня warning и error.
+
+5. Перейдем к настройке ротации логов. На HQ-SRV создадим файл /etc/logrotate.d/rsyslog
+Запишем в него следующее содержимое:
+
+<p align="center">
+  <img src="images/module3/38.png" width="600" />
+</p>
+
+> Настройка ротации на этом закончена, каждую неделю будут проверяться логи и если какие-то из них больше 10МБ, они будут сжаты в архив.
+
+### <p align="center"><b>8.	Реализуйте механизм инвентаризации машин HQ-SRV и HQ-CLI через Ansible на BR-SRV</b></p>
+
+1. Для начала необходимо создать каталог, в котором будут размещены отчеты о рабочих местах:
+
+***mkdir /etc/ansible/PC_INFO***
+
+<p align="center">
+  <img src="images/module3/39.inventory_ansible.png" width="600" />
+</p>
+
+2. Далее, создадим плейбук /etc/ansible/inventory.yml:
+
+<p align="center">
+  <img src="images/module3/40.png" width="600" />
+</p>
+
+со следующим содержимым:
+
+<p align="center">
+  <img src="images/module3/41.png" width="600" />
+</p>
+
+3. Проверим работу, командой:
+
+***ansible-playbook /etc/ansible/inventory.yml***
+
+<p align="center">
+  <img src="images/module3/42.png" width="600" />
+</p>
+
+> - Ansible помечает результат как changed, так как фактическое состояние системы меняется. При первом запуске плейбука это ожидаемое поведение.
+> - Если запустить плейбук ещё раз, то Ansible покажет для тех же задач статус ok, потому что требуемое состояние уже достигнуто и ничего менять не нужно.
+
+4. Проверим наличие и содержимое, созданных отчетов:
+
+***ls -la /etc/ansible/PC_INFO***  
+***cat /etc/ansible/PC_INFO/hq-cli.yml***  
+***cat /etc/ansible/PC_INFO/hq-srv.yml***
+
+<p align="center">
+  <img src="images/module3/43.png" width="600" />
+</p>
+
+> Как можно заметить, отчеты созданы и содержат необходимую информацию. Задание выполнено.
+
+### <p align="center"><b>9.	Реализуйте механизм резервного копирования конфигурации для машин HQ-RTR и BR-RTR, через Ansible на BR-SRV</b></p>
+
+1. Создадим также каталог, в котором будут размещены резервные копии конфигураций маршрутизаторов:
+
+***mkdir /etc/ansible/NETWORK_INFO***
+
+<p align="center">
+  <img src="images/module3/44.backup_ansible.png" width="600" />
+</p>
+
+2. И создаём сам плейбук /etc/ansible/backup.yml:
+
+<p align="center">
+  <img src="images/module3/45.png" width="600" />
+</p>
+
+со следующим содержимым:
+
+*ОБЯЗАТЕЛЬНО УСТАНОВИТЕ sudo НА HQ-RTR и BR-RTR*
+
+<p align="center">
+  <img src="images/module3/46.png" width="600" />
+</p>
+
+3. Абсолютно также, как и в предыдущем задании, проверяем его работу, командой:
+
+***ansible-playbook /etc/ansible/backup.yml***
+
+<p align="center">
+  <img src="images/module3/47.png" width="600" />
+</p>
+
+> - Как и в прошлом задании, Ansible помечает результат как changed, так как фактическое состояние системы меняется. При первом запуске плейбука так и должно быть.
+> - И если запустить его ещё раз, то Ansible покажет для тех же задач статус ok, потому что требуемое состояние уже достигнуто и ничего менять не нужно.
+
+4. Проверим наличие созданных отчетов:
+
+***ls -la /etc/ansible/NETWORK_INFO***  
+***ls -la /etc/ansible/NETWORK_INFO/HQ-RTR***  
+***ls -la /etc/ansible/NETWORK_INFO/BR-RTR***  
+
+<p align="center">
+  <img src="images/module3/48.png" width="600" />
+</p>
+
+А также их содержимое, если хотите убедиться, что действительно скопировалось, для примера покажем файл interfaces с маршрутизатора HQ-RTR, остальные можете сами:
+
+***cat /etc/ansible/NETWORK_INFO/HQ-RTR/interfaces***
+
+<p align="center">
+  <img src="images/module3/49.png" width="600" />
+</p>
+
+> По итогу все резервные копии конфигураций созданы и содержат необходимую информацию. Задание выполнено.
