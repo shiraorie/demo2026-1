@@ -927,14 +927,13 @@ Ansible обычно уже использует /etc/ansible как рабоч�
 3. Создание файла инвентаря
 
 Создайте инвентарь файла : /etc/ansible/hosts. Откройте файл /etc/ansible/hosts для редактирования:
-> ВНИМАНИЕ: НУЖНО УБРАТЬ порт 2024 и пользователя sshuser у CLI
 
 <p align="center">
   <img src="images/module2/43.png" width="600" />
 </p>
 
 <p align="center">
-  <img src="images/module2/44.png" width="600" />
+  <img src="images/module2/new-ansible1.png" width="600" />
 </p>
 
 4. Настройка SSH-доступа к машинам
@@ -972,7 +971,7 @@ ________________________________________________________________________________
 </p>
 
 <p align="center">
-  <img src="images/module2/48.png" width="600" />
+  <img src="images/module2/new-ansible2" width="600" />
 </p>
 
 <p align="center">
