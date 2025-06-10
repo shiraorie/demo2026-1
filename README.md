@@ -971,7 +971,7 @@ ________________________________________________________________________________
 </p>
 
 <p align="center">
-  <img src="images/module2/new-ansible2" width="600" />
+  <img src="images/module2/new-ansible2.png" width="600" />
 </p>
 
 <p align="center">
