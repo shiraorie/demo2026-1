@@ -242,7 +242,7 @@
 Задаем имя:  
 
 <p align="center">
-  <img src="images/module1/hq-srv.FQDN..png" width="600" />
+  <img src="images/module1/hq-srv.FQDN.png" width="600" />
 </p>
 
 Прокинем инет:
