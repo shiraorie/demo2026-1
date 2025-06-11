@@ -1619,7 +1619,7 @@ ________________________________________________________________________________
 <p align="center"><b>*BR-RTR *</b></p>
 
 <p align="center">
-  <img src="images/module3/firewall.png" width="600" />
+  <img src="images/module3/firewall.jpg" width="600" />
 </p>
 
 <p align="center">
