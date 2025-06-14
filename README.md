@@ -399,7 +399,7 @@
 - Сведения о настройке протокола занесите в отчёт
 
 <p align="center">
-  <img src="images/module1/58. dhcp.png" width="600" />
+  <img src="images/module1/58..png" width="600" />
 </p>
 
 <p align="center">
