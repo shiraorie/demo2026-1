@@ -616,7 +616,7 @@
 
 > **РЕКОМЕНДАЦИЯ:** 
 > НА BR-SRV скачиваем: apt install -y docker.io docker-compose  
-> НА HQ-SRV скачиваем: apt install -y apache* -y
+> НА HQ-SRV скачиваем: apt install -y apache* -y && apt install -y php php8.2 php-curl php-zip php-xml libapache2-mod-php php-mysql php-mbstring php-gd php-intl php-soap -y
 
 В качестве проверки после перезагрузки можно выполнить аутентификацию от имени доменного пользователя Administrator:
 
@@ -668,7 +668,6 @@ ________________________________________________________________________________
 
 > **РЕКОМЕНДАЦИЯ:**
 > НА BR-SRV скачиваем: apt install –y mariadb-*  
-> НА HQ-SRV скачиваем: apt install -y php php8.2 php-curl php-zip php-xml libapache2-mod-php php-mysql php-mbstring php-gd php-intl php-soap -y
 
 
 ### <p align="center"><b>2. Сконфигурируйте файловое хранилище</b></p>
