@@ -399,7 +399,7 @@
 - Сведения о настройке протокола занесите в отчёт
 
 <p align="center">
-  <img src="images/module1/58. dhcp.png" width="600" />
+  <img src="images/module1/58..png" width="600" />
 </p>
 
 <p align="center">
@@ -514,9 +514,9 @@
 </p>
 
 > **РЕКОМЕНДАЦИЯ:**
-> НА CLI: apt-get update && apt-get remove -y alterator-datetime && apt-get install -y task-auth-ad-sssd && apt-get install -y admc
+> НА CLI: apt-get update && apt-get remove -y alterator-datetime && apt-get install -y task-auth-ad-sssd && apt-get install -y admc  
+> НА CLI: apt-get install -y openssh-server && systemctl restart sshd.  
 > НА HQ-SRV: apt update && apt install mdadm -y
-> НА CLI: apt-get install -y openssh-server && systemctl restart sshd.
 
 Появится синее окно, не пугайтесь, так и должно быть. В первом окне вводим имя домена au-team.irpo, а во втором — имя нашего сервера hq-srv
 
@@ -572,6 +572,8 @@
 
 <p align="center"><b>На клиента ставим необходимые пакеты</b></p>
 
+**<p align="center"><b>(СДЕЛАТЬ,НА ВСЯКИЙ, НА HQ-CLI SNAPSHOT)</b></p>**
+
 <p align="center"><b>*CLI*</b></p>
 
 При установке пакета task-auth-ad-sssd у вас возникнет ошибка, связанная с конфликтом с пакетом alterator-datetime, его необходимо удалить:
@@ -616,7 +618,7 @@
 
 > **РЕКОМЕНДАЦИЯ:** 
 > НА BR-SRV скачиваем: apt install -y docker.io docker-compose  
-> НА HQ-SRV скачиваем: apt install -y apache* -y
+> НА HQ-SRV скачиваем: apt install -y apache* -y && apt install -y php php8.2 php-curl php-zip php-xml libapache2-mod-php php-mysql php-mbstring php-gd php-intl php-soap -y
 
 В качестве проверки после перезагрузки можно выполнить аутентификацию от имени доменного пользователя Administrator:
 
@@ -668,7 +670,6 @@ ________________________________________________________________________________
 
 > **РЕКОМЕНДАЦИЯ:**
 > НА BR-SRV скачиваем: apt install –y mariadb-*  
-> НА HQ-SRV скачиваем: apt install -y php php8.2 php-curl php-zip php-xml libapache2-mod-php php-mysql php-mbstring php-gd php-intl php-soap -y
 
 
 ### <p align="center"><b>2. Сконфигурируйте файловое хранилище</b></p>
@@ -1607,7 +1608,7 @@ ________________________________________________________________________________
 Отредактируем nftables под текст задания:
 
 <p align="center">
-  <img src="images/module3/12.png" width="600" />
+  <img src="images/module3/firewall.jpg" width="600" />
 </p>
 
 Не забываем применять:
