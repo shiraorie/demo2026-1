@@ -1305,6 +1305,10 @@ ________________________________________________________________________________
 ***chmod -R 0755 /var/www/html/moodle***  
 ***chown -R www-data:www-data /var/www/html/moodle***  
 
+<p align="center">
+  <img src="images/module2/moodle_language.jpg" width="600" />
+</p>
+
 Описываем конфигурационный файл для веб-сервера Apache:
 
 ***nano /etc/apache2/sites-available/moodle.conf***
