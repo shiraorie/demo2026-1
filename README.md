@@ -901,7 +901,8 @@ systemctl restart chrony
 BR-R | BR-SRV | CLI: Настройка аналогична HQ-SRV - за исключением указания соответствующих адресов
 
 > **РЕКОМЕНДАЦИЯ:**
-> НА HQ-SRV скачиваем: apt install -y git
+> НА HQ-SRV скачиваем: apt install -y git  
+> НА HQ-RTR скачиваем: apt install nginx -y
 
 ### <p align="center"><b>4. Сконфигурируйте ansible на сервере BR-SRV</b></p>
 
