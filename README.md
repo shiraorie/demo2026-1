@@ -1245,7 +1245,9 @@ apt install -y mariadb-* -y
 имя базы даных - " moodledb ";  
 имя пользователя - "moodle", пароль "P@ssw0rd";
 
-***mysql***
+Вводим следующие команды:
+
+- mysql
 - CREATE DATABASE moodledb DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;  
 - CREATE USER 'moodle'@'localhost' IDENTIFIED BY 'P@ssw0rd';  
 - GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER ON moodle.* TO 'moodle'@'localhost';  
