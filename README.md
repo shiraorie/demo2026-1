@@ -1220,19 +1220,20 @@ ________________________________________________________________________________
 - Основные параметры отметьте в отчёт
 
 <p align="center"><b>*HQ-SRV*</b></p>
+
 > !По сути у нас уже все скачено!
 
 Устанавливаем веб-сервер Apache2 и необходимые пакеты:
 
-***apt install -y apache* -y***
+apt install -y apache* -y
 
 Устанавливаем PHP и необходимые модули:
 
-***apt install -y php php8.2 php-curl php-zip php-xml libapache2-mod-php php-mysql php-mbstring php-gd php-intl php-soap -y***
+apt install -y php php8.2 php-curl php-zip php-xml libapache2-mod-php php-mysql php-mbstring php-gd php-intl php-soap -y
 
 Установка СУБД MySQL:
 
-***apt install -y mariadb-* -y***
+apt install -y mariadb-* -y
 > !По сути у нас уже все скачено!
 
 Включаем и добавляем в автозагрузку MySQL:
@@ -1245,10 +1246,10 @@ ________________________________________________________________________________
 имя пользователя - "moodle", пароль "P@ssw0rd";
 
 ***mysql  
-***> CREATE DATABASE moodledb DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;***  
-***> CREATE USER 'moodle'@'localhost' IDENTIFIED BY 'P@ssw0rd';***  
-***> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER ON moodle.* TO 'moodle'@'localhost';***  
-***> EXIT;***
+> CREATE DATABASE moodledb DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci; 
+> CREATE USER 'moodle'@'localhost' IDENTIFIED BY 'P@ssw0rd';
+> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER ON moodle.* TO 'moodle'@'localhost';
+> EXIT;
 
 ______________________________________________________________________________________
 
