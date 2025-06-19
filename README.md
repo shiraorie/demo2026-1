@@ -571,6 +571,7 @@
 > НА HQ-SRV скачиваем: apt install nfs-kernel-server -y
 
 <p align="center"><b>На клиента ставим необходимые пакеты</b></p>
+**<p align="center"><b>(СДЕЛАТЬ,НА ВСЯКИЙ, НА HQ-CLI SNAPSHOT)</b></p>**
 
 <p align="center"><b>*CLI*</b></p>
 
