@@ -1498,7 +1498,7 @@ ________________________________________________________________________________
 > Установку браузера отметьте в отчёте
 
 > **РЕКОМЕНДАЦИЯ:**
-> Скачиваем на HQ-SRV: apt install cups cups-pdf -y
+> Скачиваем на HQ-SRV: apt install cups cups-pdf -y  
 > Скачиваем на HQ-CLI: apt-get install cups cups-pdf -y
 
 ## <p align="center"><b>МОДУЛЬ 3</b></p>
