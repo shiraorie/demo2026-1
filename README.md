@@ -494,7 +494,7 @@
 
 ### <p align="center"><b>1. Настройте доменный контроллер Samba на машине BR-SRV.</b></p>
 
-**<p align="center"><b>(СДЕЛАТЬ SNAPSHOT BR-SRV)</b></p>**
+**<p align="center"><b>(СДЕЛАТЬ СРАЗУ 3 СНАПШОТА НА BR-SRV(samba), HQ-CLI(Active Directory), HQ-SRV(mdadm))</b></p>**
 
 - Создайте 5 пользователей для офиса HQ: имена пользователей формата user№.hq. Создайте группу hq, введите в эту группу созданных пользователей 
 - Введите в домен машину HQ-CLI 
@@ -572,7 +572,7 @@
 
 <p align="center"><b>На клиента ставим необходимые пакеты</b></p>
 
-**<p align="center"><b>(СДЕЛАТЬ,НА ВСЯКИЙ, НА HQ-CLI SNAPSHOT)</b></p>**
+**<p align="center"><b>(СДЕЛАТЬ,если не сделали, НА HQ-CLI SNAPSHOT)</b></p>**
 
 <p align="center"><b>*CLI*</b></p>
 
@@ -674,7 +674,7 @@ ________________________________________________________________________________
 
 ### <p align="center"><b>2. Сконфигурируйте файловое хранилище</b></p>
 
-<p align="center"><b>(СДЕЛАТЬ SNAPSHOT на HQ-SRV)</b></p>
+<p align="center"><b>(СДЕЛАТЬ SNAPSHOT, если не сделали, на HQ-SRV)</b></p>
 
 - При помощи трёх дополнительных дисков, размером 1Гб каждый, на HQ-SRV сконфигурируйте дисковый массив уровня 5 
 - Имя устройства – md0, конфигурация массива размещается в файле /etc/mdadm.conf 
@@ -901,7 +901,8 @@ systemctl restart chrony
 BR-R | BR-SRV | CLI: Настройка аналогична HQ-SRV - за исключением указания соответствующих адресов
 
 > **РЕКОМЕНДАЦИЯ:**
-> НА HQ-SRV скачиваем: apt install -y git
+> НА HQ-SRV скачиваем: apt install -y git  
+> НА HQ-RTR скачиваем: apt install nginx -y
 
 ### <p align="center"><b>4. Сконфигурируйте ansible на сервере BR-SRV</b></p>
 
@@ -1093,6 +1094,7 @@ ________________________________________________________________________________
 </p>
 
 5. Заполняем необходимые сведения:
+> Пароль: P@ssw0rddd
 
 <p align="center">
   <img src="images/module2/60.png" width="600" />
@@ -1219,20 +1221,21 @@ ________________________________________________________________________________
 - Основные параметры отметьте в отчёт
 
 <p align="center"><b>*HQ-SRV*</b></p>
-> !По сути у нас уже все скачено!
+
+> Ранее в "рекомендациях" должно было быть скачено
 
 Устанавливаем веб-сервер Apache2 и необходимые пакеты:
 
-***apt install -y apache* -y***
+apt install -y apache* -y
 
 Устанавливаем PHP и необходимые модули:
 
-***apt install -y php php8.2 php-curl php-zip php-xml libapache2-mod-php php-mysql php-mbstring php-gd php-intl php-soap -y***
+apt install -y php php8.2 php-curl php-zip php-xml libapache2-mod-php php-mysql php-mbstring php-gd php-intl php-soap -y
 
 Установка СУБД MySQL:
 
-***apt install -y mariadb-* -y***
-> !По сути у нас уже все скачено!
+apt install -y mariadb-* -y
+> Ранее в "рекомендациях" должно было быть скачено
 
 Включаем и добавляем в автозагрузку MySQL:
 
@@ -1243,30 +1246,32 @@ ________________________________________________________________________________
 имя базы даных - " moodledb ";  
 имя пользователя - "moodle", пароль "P@ssw0rd";
 
-***mysql  
-***> CREATE DATABASE moodledb DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;***  
-***> CREATE USER 'moodle'@'localhost' IDENTIFIED BY 'P@ssw0rd';***  
-***> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER ON moodle.* TO 'moodle'@'localhost';***  
-***> EXIT;***
+Вводим следующие команды:
+
+- mysql
+- CREATE DATABASE moodledb DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;  
+- CREATE USER 'moodle'@'localhost' IDENTIFIED BY 'P@ssw0rd';  
+- GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER ON moodledb.* TO 'moodle'@'localhost';  
+- EXIT;
 
 ______________________________________________________________________________________
 
-Если вдруг в веб при вводе данных параметров базы данных будет вылазить ошибка – *данной базы данных не существует, данному пользователю не даны права на создание базы данных*, то удаляем их и создаем заново:
+Если вдруг в веб при вводе параметров базы данных будет вылазить ошибка – *данной базы данных не существует, данному пользователю не даны права на создание базы данных*, то удаляем их и создаем заново:
 
-***>DROP DATABASE moodledb;***
+***>DROP DATABASE moodledb;***  
 ***>DROP USER 'moodle'@'localhost';***
 
 ______________________________________________________________________________________
 
 Устанавливаем git, чтобы можно было скачать проект Moodle:
-> !По сути у нас уже все скачено!
+> Ранее в "рекомендациях" должно было быть скачено
 
 ***apt install -y git***
 
 Загружаем код проекта Moodle:
 
 ***git clone git://git.moodle.org/moodle.git***
-> !По сути у нас уже все скачено!
+> Ранее в "рекомендациях" должно было быть скачено
 
 Переходим в загруженный каталог moodle:
 
@@ -1304,6 +1309,10 @@ ________________________________________________________________________________
 ***chmod -R 777 /var/moodledata***  
 ***chmod -R 0755 /var/www/html/moodle***  
 ***chown -R www-data:www-data /var/www/html/moodle***  
+
+<p align="center">
+  <img src="images/module2/moodle_language.jpg" width="600" />
+</p>
 
 Описываем конфигурационный файл для веб-сервера Apache:
 
@@ -1360,7 +1369,7 @@ ________________________________________________________________________________
 - выбираем Язык - нажимаем "Далее":
 
 <p align="center">
-  <img src="images/module2/84.png" width="600" />
+  <img src="images/module2/84.web-moodle.png" width="600" />
 </p>
 
 3. Подтверждаем пути - правим Каталог данных (в соответствии с созданной ранее директорией - /var/moodledata) - нажимаем "Далее":
@@ -1378,7 +1387,7 @@ ________________________________________________________________________________
 5. Заполняем параметры ранее созданной Базы данных - "пользователя БД, пароль и порт":
 
 ***СЕРВЕР БАЗ ДАННЫХ (ХОСТ) localhost***  
-***НАЗВАНИЕ БАЗЫ ДАННЫХ moodle***  
+***НАЗВАНИЕ БАЗЫ ДАННЫХ moodledb***  
 ***ПОЛЬЗОВАТЕЛЬ БАЗЫ ДАННЫХ moodle***  
 ***ПАРОЛЬ P@ssw0rd***
 
@@ -1460,6 +1469,7 @@ ________________________________________________________________________________
 <p align="center">
   <img src="images/module2/96.png" width="600" />
 </p>
+
 > на hq-rtr в файле /etc/resolv.conf должно быть прописано dns 192.168.100.2
 
 *Если конфигурация правильная, вы увидите сообщение syntax is ok.*
@@ -1486,6 +1496,10 @@ ________________________________________________________________________________
 
 > **ПРИМЕЧАНИЕ:**
 > Установку браузера отметьте в отчёте
+
+> **РЕКОМЕНДАЦИЯ:**
+> Скачиваем на HQ-SRV: apt install cups cups-pdf -y  
+> Скачиваем на HQ-CLI: apt-get install cups cups-pdf -y
 
 ## <p align="center"><b>МОДУЛЬ 3</b></p>
 <p align="center"><b>(1,2 заданий не будет, 7ое задание будет)</b></p>
