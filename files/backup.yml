@@ -1,0 +1,41 @@
+---
+- name: Backup your router configuration HQ-RTR and BR-RTR
+  hosts:
+    - HQ-RTR
+    - BR-RTR
+  gather_facts: no
+  tasks:
+
+    - name: Create local folder backup
+      ansible.builtin.file:
+        path: "/etc/ansible/NETWORK_INFO/{{ inventory_hostname }}/{{ item }}"
+        state: directory
+      loop:
+        - "frr"
+      delegate_to: localhost
+
+    - name: Copy configuration FRR
+      ansible.builtin.fetch:
+        src: "/etc/frr/{{ item }}"
+        dest: "/etc/ansible/NETWORK_INFO/{{ inventory_hostname }}/frr/"
+        flat: yes
+      loop:
+        - "daemons"
+        - "frr.conf"
+        - "frr.conf.sav"
+        - "vtysh.conf"
+      become: yes
+
+    - name: Copy saved rules nftables
+      ansible.builtin.fetch:
+        src: /etc/nftables.conf
+        dest: /etc/ansible/NETWORK_INFO/{{ inventory_hostname }}/nftalbes.conf
+        flat: yes
+      become: yes
+
+    - name: Copy configuration network interfaces
+      ansible.builtin.fetch:
+        src: /etc/network/interfaces
+        dest: /etc/ansible/NETWORK_INFO/{{ inventory_hostname }}/interfaces
+        flat: yes
+      become: yes
