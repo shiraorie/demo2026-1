@@ -1501,21 +1501,23 @@ ________________________________________________________________________________
 
 2. Настройка Nginx как обратного прокси
 
-Создадим конфигурационный файл для сайта в Nginx, в котором настроим виртуальные хосты:
-
-<p align="center">
-  <img src="images/module2/93.nginx.png" width="600" />
-</p>
-
-Добавьте конфигурацию для проксирования запросов в файл reverse-proxy.conf:
+Создадим конфигурационный файл для сайта в Nginx, в котором настроим виртуальные хосты. Добавьте конфигурацию для проксирования запросов в файл reverse-proxy.conf:
 
 - Скачиваем файл с гит:
 
 ***apt install dos2unix -y***
 
+- Переходим в нужную директорию:
+
+cd /etc/nginx/sites-available
+
 ***curl -O https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/reverse-proxy.conf***
 
 - Проверяем его наличие:
+
+<p align="center">
+  <img src="images/module2/93.nginx.png" width="600" />
+</p>
 
 <p align="center">
   <img src="images/module2/94.png" width="600" />
