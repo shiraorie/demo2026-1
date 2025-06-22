@@ -690,7 +690,7 @@ ________________________________________________________________________________
 
 - Проверяем наличие скрипта:
 
-***nano /import_users.sh***
+***nano /opt/import_users.sh***
 
 <p align="center">
   <img src="images/module2/import_users.png" width="600" />
