@@ -2008,6 +2008,19 @@ apt install rsyslog
 </p>
 
 2. И создаём сам плейбук /etc/ansible/backup.yml:
+> *ОБЯЗАТЕЛЬНО УСТАНОВИТЕ sudo НА HQ-RTR и BR-RTR*
+
+- Скачаем файл с github в нужную директорию:
+
+***apt install dos2unix -y***
+
+***cd /etc/ansible***
+
+***curl -O https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/backup.yml***
+
+***dos2unix /etc/ansible/backup.yml***
+
+- Проверяем его содержимое:
 
 <p align="center">
   <img src="images/module3/45.png" width="600" />
