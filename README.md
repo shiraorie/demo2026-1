@@ -676,7 +676,9 @@ ________________________________________________________________________________
 
 - Потом на BR-SRV скачиваем скрипт, который выполнит за нас задание:
 
-***curl -O https://github.com/4bobus/laba/blob/main/files/import_users.sh /opt***
+***cd /opt***
+
+***curl -O https://github.com/4bobus/laba/blob/main/files/import_users.sh***
 
 ***ls /opt***
 
@@ -1046,8 +1048,19 @@ ________________________________________________________________________________
 
 3. В домашней директории пользователя root создаём файл wiki.yml со следующим содержимым:
 
-***nano ~/wiki.yml***
+- Чтобы вручную файл не заполнять просто скачиваем его с github:
 
+***apt install dos2unix -y***
+
+***cd ~/***
+
+***curl -O https://github.com/4bobus/laba/blob/main/files/wiki.yml***
+
+***dos2unix ~/wiki.yml***
+
+- Проверяем его наличие:
+
+***nano ~/wiki.yml***
 
 <p align="center">
   <img src="images/module2/51.png" width="600" />
