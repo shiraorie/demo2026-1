@@ -672,15 +672,15 @@ ________________________________________________________________________________
 
 - Сначала скачаем необходимую утилиту на BR-SRV:
 
-apt install dos2unix -y
+***apt install dos2unix -y***
 
 - Потом на BR-SRV скачиваем скрипт, который выполнит за нас задание:
 
-curl -O https://github.com/4bobus/laba/blob/main/files/import_users.sh /opt
+***curl -O https://github.com/4bobus/laba/blob/main/files/import_users.sh /opt***
 
-ls /opt
+***ls /opt***
 
-dos2unix ~/import_users
+***dos2unix ~/import_users***
 
 <p align="center">
   <img src="images/module2/dos2unix.png" width="600" />
@@ -688,7 +688,7 @@ dos2unix ~/import_users
 
 - Проверяем наличие скрипта:
 
-nano /import_users.sh
+***nano /import_users.sh***
 
 <p align="center">
   <img src="images/module2/import_users.png" width="600" />
@@ -696,9 +696,9 @@ nano /import_users.sh
 
 - Делаем файл исполняемым и выполняем его:
 
-chmod +x /opt/import__users.sh
+***chmod +x /opt/import__users.sh***
 
-/opt/import_users.sh
+***/opt/import_users.sh***
 
 > **РЕКОМЕНДАЦИЯ:**
 > НА BR-SRV скачиваем: apt install –y mariadb-*  
