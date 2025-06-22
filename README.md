@@ -960,17 +960,7 @@ Ansible обычно уже использует /etc/ansible как рабоч�
 
 3. Создание файла инвентаря
 
-Создайте инвентарь файла : /etc/ansible/hosts.
-
-Скачиваем файл с github:
-
-apt install dos2unix -y
-
-curl -O https://github.com/4bobus/laba/blob/main/files/hosts.txt /etc/ansible
-
-dos2unix /etc/ansible/hosts.txt
-
-Проверяем его наличие:
+Создайте инвентарь файла : /etc/ansible/hosts. Открываем файл /etc/ansible/hosts
 
 <p align="center">
   <img src="images/module2/43.png" width="600" />
