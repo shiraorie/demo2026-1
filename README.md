@@ -678,7 +678,7 @@ ________________________________________________________________________________
 
 ***cd /opt***
 
-***curl -O https://github.com/4bobus/laba/blob/main/files/import_users.sh***
+***curl -O https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/import_users.sh***
 
 ***ls /opt***
 
@@ -1054,7 +1054,7 @@ ________________________________________________________________________________
 
 ***cd ~/***
 
-***curl -O https://github.com/4bobus/laba/blob/main/files/wiki.yml***
+***curl -O https://raw.githubusercontent.com/4bobus/laba/main/files/wiki.yml***
 
 ***dos2unix ~/wiki.yml***
 
