@@ -1503,13 +1503,11 @@ ________________________________________________________________________________
 
 Создадим конфигурационный файл для сайта в Nginx, в котором настроим виртуальные хосты. Добавьте конфигурацию для проксирования запросов в файл reverse-proxy.conf:
 
-- Скачиваем файл с гит:
+- Скачиваем файл с гит в необходимую директорию:
 
 ***apt install dos2unix -y***
 
-- Переходим в нужную директорию:
-
-cd /etc/nginx/sites-available
+***cd /etc/nginx/sites-available***
 
 ***curl -O https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/reverse-proxy.conf***
 
@@ -1956,11 +1954,21 @@ apt install rsyslog
 
 2. Далее, создадим плейбук /etc/ansible/inventory.yml:
 
+- Скачиваем его с github в необходимую директори:
+
+***apt install dos2unix -y***
+
+***cd /etc/ansible***
+
+***curl -O https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/inventory.yml***
+
+***dos2unix /etc/ansible/inventory.yml***
+
+- Потом проверяем его содержимое:
+
 <p align="center">
   <img src="images/module3/40.png" width="600" />
 </p>
-
-со следующим содержимым:
 
 <p align="center">
   <img src="images/module3/41.png" width="600" />
