@@ -1509,6 +1509,14 @@ ________________________________________________________________________________
 
 Добавьте конфигурацию для проксирования запросов в файл reverse-proxy.conf:
 
+- Скачиваем файл с гит:
+
+***apt install dos2unix -y***
+
+***curl -O https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/reverse-proxy.conf***
+
+- Проверяем его наличие:
+
 <p align="center">
   <img src="images/module2/94.png" width="600" />
 </p>
