@@ -670,25 +670,36 @@ ________________________________________________________________________________
 
 <p align="center"><b>Выполните импорт пользователей из файла users.csv. Файл будет располагаться на виртуальной машине BR-SRV в папке /opt</b></p>
 
-Сначала скачаем необходимую утилиту на BR-SRV:
+- Сначала скачаем необходимую утилиту на BR-SRV:
 
 apt install dos2unix -y
 
-Потом на BR-SRV скачиваем скрипт, который выполнит за нас задание:
+- Потом на BR-SRV скачиваем скрипт, который выполнит за нас задание:
 
-curl -O https://github.com/4bobus/laba/blob/main/files/import_users.sh ~/import_users
+curl -O https://github.com/4bobus/laba/blob/main/files/import_users.sh /opt
 
-pwd
-
-ls
+ls /opt
 
 dos2unix ~/import_users
 
-Проверяем наличие скрипта 
+<p align="center">
+  <img src="images/module2/dos2unix.png" width="600" />
+</p>
 
-cat /import_users.csv
+- Проверяем наличие скрипта:
 
-Проверяем что 
+nano /import_users.sh
+
+<p align="center">
+  <img src="images/module2/import_users.png" width="600" />
+</p>
+
+- Делаем файл исполняемым и выполняем его:
+
+chmod +x /opt/import__users.sh
+
+/opt/import_users.sh
+
 > **РЕКОМЕНДАЦИЯ:**
 > НА BR-SRV скачиваем: apt install –y mariadb-*  
 
