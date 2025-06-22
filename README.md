@@ -668,6 +668,27 @@ ________________________________________________________________________________
 
 ***%hq ALL=(ALL) NOPASSWD: /bin/cat, /bin/grep, /usr/bin/id***
 
+<p align="center"><b>Выполните импорт пользователей из файла users.csv. Файл будет располагаться на виртуальной машине BR-SRV в папке /opt</b></p>
+
+Сначала скачаем необходимую утилиту на BR-SRV:
+
+apt install dos2unix -y
+
+Потом на BR-SRV скачиваем скрипт, который выполнит за нас задание:
+
+curl -O https://github.com/4bobus/laba/blob/main/files/import_users.sh ~/import_users
+
+pwd
+
+ls
+
+dos2unix ~/import_users
+
+Проверяем наличие скрипта 
+
+cat /import_users.csv
+
+Проверяем что 
 > **РЕКОМЕНДАЦИЯ:**
 > НА BR-SRV скачиваем: apt install –y mariadb-*  
 
