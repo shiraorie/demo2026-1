@@ -670,25 +670,36 @@ ________________________________________________________________________________
 
 <p align="center"><b>Выполните импорт пользователей из файла users.csv. Файл будет располагаться на виртуальной машине BR-SRV в папке /opt</b></p>
 
-Сначала скачаем необходимую утилиту на BR-SRV:
+- Сначала скачаем необходимую утилиту на BR-SRV:
 
-apt install dos2unix -y
+***apt install dos2unix -y***
 
-Потом на BR-SRV скачиваем скрипт, который выполнит за нас задание:
+- Потом на BR-SRV скачиваем скрипт, который выполнит за нас задание:
 
-curl -O https://github.com/4bobus/laba/blob/main/files/import_users.sh ~/import_users
+***curl -O https://github.com/4bobus/laba/blob/main/files/import_users.sh /opt***
 
-pwd
+***ls /opt***
 
-ls
+***dos2unix ~/import_users***
 
-dos2unix ~/import_users
+<p align="center">
+  <img src="images/module2/dos2unix.png" width="600" />
+</p>
 
-Проверяем наличие скрипта 
+- Проверяем наличие скрипта:
 
-cat /import_users.csv
+***nano /import_users.sh***
 
-Проверяем что 
+<p align="center">
+  <img src="images/module2/import_users.png" width="600" />
+</p>
+
+- Делаем файл исполняемым и выполняем его:
+
+***chmod +x /opt/import__users.sh***
+
+***/opt/import_users.sh***
+
 > **РЕКОМЕНДАЦИЯ:**
 > НА BR-SRV скачиваем: apt install –y mariadb-*  
 
@@ -949,7 +960,17 @@ Ansible обычно уже использует /etc/ansible как рабоч�
 
 3. Создание файла инвентаря
 
-Создайте инвентарь файла : /etc/ansible/hosts. Откройте файл /etc/ansible/hosts для редактирования:
+Создайте инвентарь файла : /etc/ansible/hosts.
+
+Скачиваем файл с github:
+
+apt install dos2unix -y
+
+curl -O https://github.com/4bobus/laba/blob/main/files/hosts.txt /etc/ansible
+
+dos2unix /etc/ansible/hosts.txt
+
+Проверяем его наличие:
 
 <p align="center">
   <img src="images/module2/43.png" width="600" />
