@@ -1689,20 +1689,20 @@ ________________________________________________________________________________
 
 <p align="center"><b>*HQ-RTR*</b></p>
 
-Скачаем готовый nftables.conf с github:
+- Скачаем готовый nftables.conf с github:
 > !dos2unix и curl на HQ-RTR уже скачаны!
 
 ***curl -o /etc/nftables.conf https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/hq-rtr/nftables.conf***
 
 ***dos2unix /etc/nftables.conf***
 
-Проверяем содержимое файла /etc/nftables.conf:
+- Проверяем содержимое файла /etc/nftables.conf:
 
 <p align="center">
   <img src="images/module3/firewall.jpg" width="600" />
 </p>
 
-Не забываем применять:
+- Не забываем применять:
 
 <p align="center">
   <img src="images/module3/11.firewall.png" width="600" />
@@ -1710,7 +1710,7 @@ ________________________________________________________________________________
 
 <p align="center"><b>*BR-RTR *</b></p>
 
-Скачаем готовый nftables.conf с github:
+- Скачаем готовый nftables.conf с github:
 
 ***apt install dos2unix -y***
 
@@ -1720,13 +1720,13 @@ ________________________________________________________________________________
 
 ***dos2unix /etc/nftables.conf***
 
-Проверяем содержимое файла /etc/nftables.conf:
+- Проверяем содержимое файла /etc/nftables.conf:
 
 <p align="center">
   <img src="images/module3/firewall.jpg" width="600" />
 </p>
 
-Не забываем применять:
+- Не забываем применять:
 
 <p align="center">
   <img src="images/module3/14.png" width="600" />
