@@ -670,15 +670,15 @@ ________________________________________________________________________________
 
 <p align="center"><b>Выполните импорт пользователей из файла users.csv. Файл будет располагаться на виртуальной машине BR-SRV в папке /opt</b></p>
 
-- Сначала скачаем необходимую утилиту на BR-SRV:
+- Сначала скачаем необходимую утилиту на *BR-SRV*:
 
 ***apt install dos2unix -y***
 
-- Потом на BR-SRV скачиваем скрипт, который выполнит за нас задание:
+***apt install curl -y***
 
-***cd /opt***
+- Потом на BR-SRV скачиваем скрипт, который выполнит за нас задание, в нужную директорию:
 
-***curl -O https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/import_users.sh***
+***curl -o /opt https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/import_users.sh***
 
 ***ls /opt***
 
