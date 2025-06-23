@@ -1057,12 +1057,11 @@ ________________________________________________________________________________
 
 3. В домашней директории пользователя root создаём файл wiki.yml со следующим содержимым:
 
-- Чтобы вручную файл не заполнять просто скачиваем его с github:
+- Чтобы вручную файл не заполнять просто скачиваем его с github в нужную директорию:
 > !dos2unix и curl на BR-SRV уже скачаны!
 
-***cd ~/***
 
-***curl -O https://raw.githubusercontent.com/4bobus/laba/main/files/wiki.yml***
+***curl -o ~/ https://raw.githubusercontent.com/4bobus/laba/main/files/wiki.yml***
 
 ***dos2unix ~/wiki.yml***
 
