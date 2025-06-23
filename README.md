@@ -1507,7 +1507,7 @@ ________________________________________________________________________________
 
 ***curl -o /etc/nginx/sites-available https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/reverse-proxy.conf***
 
-***dos2unix /etc/nginx/sites-available***
+***dos2unix /etc/nginx/sites-available/reverse-proxy.conf***
 
 - Проверяем его наличие:
 
