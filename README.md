@@ -1692,9 +1692,9 @@ ________________________________________________________________________________
 Скачаем готовый nftables.conf с github:
 > !dos2unix и curl на HQ-RTR уже скачаны!
 
-curl -o /etc/nftables.conf https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/hq-rtr/nftables.conf
+***curl -o /etc/nftables.conf https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/hq-rtr/nftables.conf***
 
-dos2unix /etc/nftables.conf 
+***dos2unix /etc/nftables.conf***
 
 Проверяем содержимое файла /etc/nftables.conf:
 
@@ -1712,13 +1712,13 @@ dos2unix /etc/nftables.conf
 
 Скачаем готовый nftables.conf с github:
 
-apt install dos2unix -y
+***apt install dos2unix -y***
 
-apt install curl -y
+***apt install curl -y***
 
-curl -o /etc/nftables.conf https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/br-rtr/nftables.conf
+***curl -o /etc/nftables.conf https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/br-rtr/nftables.conf***
 
-dos2unix /etc/nftables.conf 
+***dos2unix /etc/nftables.conf***
 
 Проверяем содержимое файла /etc/nftables.conf:
 
