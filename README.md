@@ -964,15 +964,10 @@ Ansible обычно уже использует /etc/ansible как рабоч�
 
 Создайте инвентарь файла : /etc/ansible/hosts. Открываем файл /etc/ansible/hosts
 
-- Скачиваем файл с github:
+- Скачиваем файл с github, в нужную директорию:
+> !dos2unix и curl на BR-SRV уже скачаны!
 
-***apt install dos2unix -y***
-
-***apt install curl -y***
-
-***cd /etc/ansible***
-
-***curl -O https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/hosts.file***
+***curl -o /etc/ansible https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/hosts.file***
 
 ***dos2unix /etc/ansible/hosts.file***
 
