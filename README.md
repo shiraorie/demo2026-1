@@ -1985,9 +1985,7 @@ apt install rsyslog
 - Скачиваем его с github в необходимую директори:
 > !dos2unix и curl на BR-SRV уже скачаны!
 
-***cd /etc/ansible***
-
-***curl -O https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/inventory.yml***
+***curl -o /etc/ansible https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/inventory.yml***
 
 ***dos2unix /etc/ansible/inventory.yml***
 
@@ -2040,9 +2038,7 @@ apt install rsyslog
 - Скачаем файл с github в нужную директорию:
 > !dos2unix и curl на BR-SRV уже скачаны!
 
-***cd /etc/ansible***
-
-***curl -O https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/backup.yml***
+***curl -o /etc/ansible https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/backup.yml***
 
 ***dos2unix /etc/ansible/backup.yml***
 
