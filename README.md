@@ -1960,8 +1960,7 @@ apt install rsyslog
 2. Далее, создадим плейбук /etc/ansible/inventory.yml:
 
 - Скачиваем его с github в необходимую директори:
-
-***apt install dos2unix -y***
+> !dos2unix и curl на BR-SRV уже скачаны!
 
 ***cd /etc/ansible***
 
@@ -2016,8 +2015,7 @@ apt install rsyslog
 > *ОБЯЗАТЕЛЬНО УСТАНОВИТЕ sudo НА HQ-RTR и BR-RTR*
 
 - Скачаем файл с github в нужную директорию:
-
-***apt install dos2unix -y***
+> !dos2unix и curl на BR-SRV уже скачаны!
 
 ***cd /etc/ansible***
 
