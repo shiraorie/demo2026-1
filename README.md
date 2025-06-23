@@ -682,7 +682,7 @@ ________________________________________________________________________________
 
 ***ls /opt***
 
-***dos2unix ~/import_users***
+***dos2unix /opt/import_users.sh***
 
 <p align="center">
   <img src="images/module2/dos2unix.png" width="600" />
