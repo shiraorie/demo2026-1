@@ -1490,24 +1490,22 @@ ________________________________________________________________________________
 
 ***apt install nginx -y***
 
-Запустите и активируйте Nginx:
+2. Запустите и активируйте Nginx:
 
 ***systemctl start nginx***  
 ***systemctl enable nginx***
 
-2. Настройка Nginx как обратного прокси
+3. Настройка Nginx как обратного прокси
 
 Создадим конфигурационный файл для сайта в Nginx, в котором настроим виртуальные хосты. Добавьте конфигурацию для проксирования запросов в файл reverse-proxy.conf:
 
-- Скачиваем файл с гит в необходимую директорию:
+- Скачиваем файл с github в необходимую директорию:
 
 ***apt install dos2unix -y***
 
 ***apt install curl -y***
 
-***cd /etc/nginx/sites-available***
-
-***curl -O https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/reverse-proxy.conf***
+***curl -o /etc/nginx/sites-available https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/reverse-proxy.conf***
 
 ***dos2unix /etc/nginx/sites-available***
 
@@ -1521,15 +1519,15 @@ ________________________________________________________________________________
   <img src="images/module2/94.png" width="600" />
 </p>
 
-Сохраните файл и закройте редактор.
+> Сохраните файл и закройте редактор.
 
-Создайте символическую ссылку на этот файл в папке sites-enabled для активации конфигурации:
+- Создайте символическую ссылку на этот файл в папке sites-enabled для активации конфигурации:
 
 <p align="center">
   <img src="images/module2/95.png" width="600" />
 </p>
 
-Проверьте конфигурацию Nginx на наличие синтаксических ошибок:
+- Проверьте конфигурацию Nginx на наличие синтаксических ошибок:
 
 <p align="center">
   <img src="images/module2/96.png" width="600" />
@@ -1537,9 +1535,9 @@ ________________________________________________________________________________
 
 > на hq-rtr в файле /etc/resolv.conf должно быть прописано dns 192.168.100.2
 
-*Если конфигурация правильная, вы увидите сообщение syntax is ok.*
+> *Если конфигурация правильная, вы увидите сообщение syntax is ok.*
 
-Перезагрузите Nginx, чтобы применить изменения:
+- Перезагрузите Nginx, чтобы применить изменения:
 
 ***systemctl reload nginx***
 
