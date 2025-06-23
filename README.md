@@ -1507,9 +1507,13 @@ ________________________________________________________________________________
 
 ***apt install dos2unix -y***
 
+***apt install curl -y***
+
 ***cd /etc/nginx/sites-available***
 
 ***curl -O https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/reverse-proxy.conf***
+
+***dos2unix /etc/nginx/sites-available***
 
 - Проверяем его наличие:
 
