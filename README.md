@@ -2013,11 +2013,11 @@ apt install rsyslog
 
 - Создайте символическую ссылку для доступа по нужному URL:
 
-ln -s /usr/share/zabbix /var/www/html/mon
+***ln -s /usr/share/zabbix /var/www/html/mon***
 
 - Настройте PHP:
 
-sudo nano /etc/php/8.2/apache2/php.ini
+***sudo nano /etc/php/8.2/apache2/php.ini***
 
 - Измените:
 
@@ -2078,7 +2078,7 @@ sudo nano /etc/php/8.2/apache2/php.ini
 </p>
 
 - Забикс агент
-- 
+ 
 ***wget https://repo.zabbix.com/zabbix/7.4/release/debian/pool/main/z/zabbix-release/zabbix-release_7.4-0.2%2Bdebian12_all.deb***
 
 ***sudo dpkg -i zabbix-release_7.4-0.2%2Bdebian12_all.deb***
@@ -2087,9 +2087,54 @@ sudo nano /etc/php/8.2/apache2/php.ini
 
 ***apt install zabbix-agent***
 
-nano /etc/zabbix/zabbix_agentd.conf - там ищешь server serverActive пишешь ип сервера hqsrv типо.
-потом в hsotname ниже чуть чем serverActive пишешь хостнейм.
+= nano /etc/zabbix/zabbix_agentd.conf - там ищешь server serverActive пишешь ип сервера hqsrv типо, потом в hsotname ниже чуть чем serverActive пишешь хостнейм.
 
+<p align="center">
+  <img src="images/module3/new14.png" width="600" />
+</p>
+
+- Идешь в cli в веб версии по скрину что выше добовляешь сревер пишешь ип туда сюда и обезатЛЬНО !!!! прям срочно нужно в хост груп указать Linux server Linux By zubbix agent
+
+<p align="center">
+  <img src="images/module3/new15.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module3/new16.png" width="600" />
+</p>
+
+- Статистика дашборды
+
+<p align="center">
+  <img src="images/module3/new17.png" width="600" />
+</p>
+
+- Редачим:
+
+<p align="center">
+  <img src="images/module3/new18.png" width="600" />
+</p>
+
+Адд виджит пикаем график:
+
+<p align="center">
+  <img src="images/module3/new19.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module3/new20.png" width="600" />
+</p>
+
+- Слева в инпуте выбираем сервера а с право выбираем параметры
+
+<p align="center">
+  <img src="images/module3/new21.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module3/new22.png" width="600" />
+</p>
+> Ну и все типо кайф
 
 ### <p align="center"><b>8.	Реализуйте механизм инвентаризации машин HQ-SRV и HQ-CLI через Ansible на BR-SRV</b></p>
 
