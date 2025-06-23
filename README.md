@@ -1962,13 +1962,133 @@ apt install rsyslog
 
 > Настройка ротации на этом закончена, каждую неделю будут проверяться логи и если какие-то из них больше 10МБ, они будут сжаты в архив.
 
-### <p align="center"><b>•	7. На сервере HQ-SRV реализуйте мониторинг устройств с помощью открытого программного обеспечения. Обеспечьте доступность по URL - https://mon.au-team.irpo</b></p>
+### <p align="center"><b>7. На сервере HQ-SRV реализуйте мониторинг устройств с помощью открытого программного обеспечения. Обеспечьте доступность по URL - https://mon.au-team.irpo</b></p>
 
 -	Мониторить нужно устройства HQ-RTR, HQ-SRV, BR-RTR и BR-SRV
 -	В мониторинге должны визуально отображаться нагрузка на ЦП, объем занятой ОП и основного накопителя
 -	Логин и пароль для службы мониторинга admin P@ssw0rd
 -	Выбор программного обеспечения, основание выбора и основные параметры с указанием порта, на котором работает мониторинг, отметьте в отчёте
 
+1. Сервер забикс:
+
+***wget https://repo.zabbix.com/zabbix/7.4/release/debian/pool/main/z/zabbix-release/zabbix-release_7.4-0.2%2Bdebian12_all.deb***
+
+***sudo dpkg -i zabbix-release_7.4-0.2%2Bdebian12_all.deb***
+
+***sudo apt update***
+
+***sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-agent php php-mysql php-bcmath php-mbstring  zabbix-sql-scripts zabbix-apache-conf mariadb-server***
+
+<p align="center">
+  <img src="images/module3/new1.png" width="600" />
+</p>
+
+***zcat /usr/share/zabbix/sql-scripts/mysql/server.sql.gz | sudo mysql -u zabbix -p Zabbix***
+
+<p align="center">
+  <img src="images/module3/new2.png" width="600" />
+</p>
+
+***sudo nano /etc/zabbix/zabbix_server.conf***
+
+- Укажите:
+
+***DBName=zabbix***  
+***DBUser=zabbix***  
+***DBPassword=P@ssw0rd***
+
+<p align="center">
+  <img src="images/module3/new3.png" width="600" />
+</p>
+
+- Запустите службу:
+
+***sudo systemctl enable --now zabbix-server***
+
+<p align="center">
+  <img src="images/module3/new4.png" width="600" />
+</p>
+
+2. Настройка веб-интерфейса.
+
+- Создайте символическую ссылку для доступа по нужному URL:
+
+ln -s /usr/share/zabbix /var/www/html/mon
+
+- Настройте PHP:
+
+sudo nano /etc/php/8.2/apache2/php.ini
+
+- Измените:
+
+***max_execution_time = 300***  
+***max_input_time = 300***  
+***post_max_size = 16M***  
+
+<p align="center">
+  <img src="images/module3/new5.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module3/new6.png" width="600" />
+</p>
+
+- Перезапустите Apache:
+
+<p align="center">
+  <img src="images/module3/new7.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module3/new8.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module3/new9.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module3/new10.png" width="600" />
+</p>
+
+***sudo systemctl restart apache2***
+
+3. Настроить DNS на HQ-SRV:
+
+<p align="center">
+  <img src="images/module3/new11.png" width="600" />
+</p>
+
+- Теперь интерфейс будет доступен по адресу:
+
+***http://mon.au-team.irpo***
+
+<p align="center">
+  <img src="images/module3/new12.png" width="600" />
+</p>
+
+4. Настройка пользовательских учетных данных.
+
+После установки войдите через браузер и авторизуйтесь с логином "admin" и паролем "P@ssw0rd". Эти данные можно изменить в интерфейсе Zabbix после входа — раздел "Administration → Users"
+
+- ПАРОЛЬ ЛОГИН ОТ ЗАБИКСА admin zabbix МЕНЯЕМ ПАРОЛЬ НА P@ssw0rd
+
+<p align="center">
+  <img src="images/module3/new13.png" width="600" />
+</p>
+
+- Забикс агент
+- 
+***wget https://repo.zabbix.com/zabbix/7.4/release/debian/pool/main/z/zabbix-release/zabbix-release_7.4-0.2%2Bdebian12_all.deb***
+
+***sudo dpkg -i zabbix-release_7.4-0.2%2Bdebian12_all.deb***
+
+***sudo apt update***
+
+***apt install zabbix-agent***
+
+nano /etc/zabbix/zabbix_agentd.conf - там ищешь server serverActive пишешь ип сервера hqsrv типо.
+потом в hsotname ниже чуть чем serverActive пишешь хостнейм.
 
 
 ### <p align="center"><b>8.	Реализуйте механизм инвентаризации машин HQ-SRV и HQ-CLI через Ansible на BR-SRV</b></p>
