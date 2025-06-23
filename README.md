@@ -1681,7 +1681,7 @@ ________________________________________________________________________________
 
 <p align="center"><b>*HQ-RTR*</b></p>
 
-- Скачаем готовый nftables.conf с github:
+- Скачаем готовый nftables.conf с github, укажем путь для замены нашего nftables:
 > !dos2unix и curl на HQ-RTR уже скачаны!
 
 ***curl -o /etc/nftables.conf https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/hq-rtr/nftables.conf***
@@ -1703,7 +1703,7 @@ ________________________________________________________________________________
 
 <p align="center"><b>*BR-RTR *</b></p>
 
-- Скачаем готовый nftables.conf с github:
+- Скачаем готовый nftables.conf с github, укажем путь для замены нашего nftables:
 
 ***apt install dos2unix -y***
 
