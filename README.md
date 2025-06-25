@@ -188,6 +188,10 @@
   <img src="images/module1/30..png" width="600" />
 </p>
 
+Применяем:
+
+***sysctl -p***
+
 <p align="center">
   <img src="images/module1/31..png" width="600" />
 </p>
