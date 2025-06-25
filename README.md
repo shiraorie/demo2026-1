@@ -997,7 +997,7 @@ Ansible обычно уже использует /etc/ansible как рабоч�
 </p>
 
 <p align="center">
-  <img src="images/module2/new-ansible1.png" width="600" />
+  <img src="picture для варинта 2/ansible-hosts.png" width="600" />
 </p>
 
 4. Настройка SSH-доступа к машинам
@@ -1030,7 +1030,7 @@ ________________________________________________________________________________
 </p>
 
 <p align="center">
-  <img src="images/module2/47.png" width="600" />
+  <img src="picture для варинта 2/ansible-hq-srv.png" width="600" />
 </p>
 
 <p align="center">
