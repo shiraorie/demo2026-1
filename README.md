@@ -1032,6 +1032,7 @@ ________________________________________________________________________________
 <p align="center">
   <img src="picture для варинта 2/ansible-hq-srv.png" width="600" />
 </p>
+> Димка забыл прописать порт в /etc/ssh/sshd_config на HQ-SRV, так что прописываем за него и перезагружаем службу systemctl restart sshd
 
 <p align="center">
   <img src="images/module2/new-ansible2.png" width="600" />
