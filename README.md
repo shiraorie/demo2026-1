@@ -915,6 +915,7 @@ ________________________________________________________________________________
 Приводим конфигурационный файл "chrony.conf" к следующему виду:
 
 ***nano /etc/chrony/chrony.conf***
+> На HQ-CLI /etc/chrony.conf
 
 <p align="center">
   <img src="images/module2/39.png" width="600" />
