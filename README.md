@@ -739,7 +739,7 @@ ________________________________________________________________________________
 </p>
 
 <p align="center">
-  <img src="images/module2/19.png" width="600" />
+  <img src="picture для варинта 2/mdadm-1.png" width="600" />
 </p>
 
 Проверяем:
@@ -751,13 +751,13 @@ ________________________________________________________________________________
 Проверьте статус RAID массива:
 
 <p align="center">
-  <img src="images/module2/21.png" width="600" />
+  <img src="picture для варинта 2/mdadm-2.png" width="600" />
 </p>
 
 Сохраните конфигурацию массива в файл /etc/mdadm.conf:
 
 <p align="center">
-  <img src="images/module2/22.png" width="600" />
+  <img src="picture для варинта 2/mdadm-3.png" width="600" />
 </p>
 
 1. Создание файловой системы и настройка монтирования
@@ -765,20 +765,26 @@ ________________________________________________________________________________
 Создайте раздел и отформатируйте его в ext4:
 
 <p align="center">
-  <img src="images/module2/23.png" width="600" />
+  <img src="picture для варинта 2/mdadm-4.png" width="600" />
 </p>
 
 Создайте точку монтирования и настройте автоматическое монтирование в /etc/fstab:
 
 <p align="center">
-  <img src="images/module2/24.png" width="600" />
+  <img src="picture для варинта 2/mdadm-5.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="picture для варинта 2/mdadm-6.png" width="600" />
 </p>
 
 Смонтируйте файловую систему:
 
 <p align="center">
-  <img src="images/module2/25.png" width="600" />
+  <img src="picture для варинта 2/mdadm-7.png" width="600" />
 </p>
+
+**Больше не перезагружай hq-srv(появиться ошибка с raid’ом)**
 
 2. Настройка NFS-сервера на HQ-SRV
 
@@ -791,20 +797,20 @@ ________________________________________________________________________________
 Создайте директорию для общего доступа:
 
 <p align="center">
-  <img src="images/module2/27.png" width="600" />
+  <img src="picture для варинта 2/mdadm-8.png" width="600" />
 </p>
 
 Настройте права доступа для общей папки:
 
 <p align="center">
-  <img src="images/module2/28.png" width="600" />
+  <img src="picture для варинта 2/mdadm-9.png" width="600" />
 </p>
 
 Настройте экспорт NFS для всей сети с разрешением на чтение и запись.  
 Откройте файл /etc/exports и добавьте строку:
 
 <p align="center">
-  <img src="images/module2/29.png" width="600" />
+  <img src="picture для варинта 2/mdadm-10.png" width="600" />
 </p>
 
 Примените изменения в конфигурации NFS:
@@ -835,7 +841,7 @@ ________________________________________________________________________________
 Настройте автомонтирование в /etc/fstab, откройте этот файл и добавьте следующую строку:
 
 <p align="center">
-  <img src="images/module2/33.png" width="600" />
+  <img src="picture для варинта 2/mdadm-11.png" width="600" />
 </p>
 
 Смонтируйте папку вручную (или перезагрузите систему для применения настроек):
@@ -847,7 +853,7 @@ ________________________________________________________________________________
 Проверка подключения NFS на HQ-CLI: 
 
 <p align="center">
-  <img src="images/module2/35.png" width="600" />
+  <img src="picture для варинта 2/mdadm-12.png" width="600" />
 </p>
 
 > **РЕКОМЕНДАЦИЯ:**
