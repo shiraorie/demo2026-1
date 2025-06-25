@@ -2177,6 +2177,10 @@ apt install rsyslog
   <img src="picture для варинта 2/zabbix-parametr3.png" width="600" />
 </p>
 
+<p align="center">
+  <img src="picture для варинта 2/zabbix-parametr4.png" width="600" />
+</p>
+
 > Повезло если все робит
 
 ### <p align="center"><b>8.	Реализуйте механизм инвентаризации машин HQ-SRV и HQ-CLI через Ansible на BR-SRV</b></p>
