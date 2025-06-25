@@ -660,10 +660,6 @@ ________________________________________________________________________________
   <img src="picture для варинта 2/create-user.png" width="600" />
 </p>
 
-<p align="center">
-  <img src="images/module2/16.png" width="600" />
-</p>
-
 <p align="center"><b>Создаем группу hq и в нее добавляем раннее созданных пользователей</b></p>
 
 <p align="center">
