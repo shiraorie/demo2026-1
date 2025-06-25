@@ -516,8 +516,8 @@
 </p>
 
 > **РЕКОМЕНДАЦИЯ:**
-> НА CLI: apt-get update && apt-get remove -y alterator-datetime && apt-get install -y task-auth-ad-sssd && apt-get install -y admc  
-> НА CLI: apt-get install -y openssh-server && systemctl restart sshd.  
+> НА CLI: apt-get update && apt-get remove -y alterator-datetime && apt-get install -y task-auth-ad-sssd && apt-get install -y admc && apt-get install -y openssh-server  
+> НА CLI: systemctl restart sshd.  
 > НА HQ-SRV: apt update && apt install mdadm -y
 
 Появится синее окно, не пугайтесь, так и должно быть. В первом окне вводим имя домена au-team.irpo, а во втором — имя нашего сервера hq-srv
@@ -1014,9 +1014,13 @@ ________________________________________________________________________________
 
 <p align="center"><b>*HQ-CLI*</b></p>
 
+> Ранее в рекомендациях должно было быть скачено
+
 Для hq-cli нужно установить ssh службу: ***apt-get install -y openssh-server***
 
 Перезагружаем ssh на hq-cli: ***systemctl restart sshd***
+
+> Ранне в рекомнедациях должно было быть перезагружено
 
 Для того чтобы зайти в конфиг ssh на альт линукс(cli) нужно ввести команду:
 ***nano /etc/openssh/sshd_config***
@@ -1032,6 +1036,8 @@ ________________________________________________________________________________
 <p align="center">
   <img src="picture для варинта 2/ansible-hq-srv.png" width="600" />
 </p>
+
+> Димка забыл прописать порт 3015 в /etc/ssh/sshd_config на HQ-SRV, так что прописываем за него и перезагружаем службу systemctl restart sshd
 
 <p align="center">
   <img src="images/module2/new-ansible2.png" width="600" />
@@ -1086,7 +1092,7 @@ ________________________________________________________________________________
 ***nano ~/wiki.yml***
 
 <p align="center">
-  <img src="images/module2/51.png" width="600" />
+  <img src="picture для варинта 2/wiki.yml.png" width="600" />
 </p>
 
 > где:
@@ -1115,6 +1121,7 @@ ________________________________________________________________________________
 <p align="center">
   <img src="images/module2/52.png" width="600" />
 </p>
+> Пока скачивается, прописываем трансляцию портов в следующем 6ой задании
 
 <p align="center">
   <img src="images/module2/53.png" width="600" />
@@ -1148,13 +1155,13 @@ ________________________________________________________________________________
 
 Пример заполнения:
 
-Хост базы данных: db  
+Хост базы данных: mariadb  
 Имя базы данных: mediawiki  
 Имя пользователя базы данных: wiki  
 Пароль базы данных: WikiP@ssw0rd  
 
 <p align="center">
-  <img src="images/module2/57.png" width="600" />
+  <img src="picture для варинта 2/settings_mariadb.png" width="600" />
 </p>
 
 <p align="center">
@@ -1197,6 +1204,8 @@ ________________________________________________________________________________
 <p align="center">
   <img src="images/module2/66.png" width="600" />
 </p>
+
+> Здесь тоже по заданию должен быть порт 3015, но Дима забыл прописать его на BR-SRV, снова прописываем за него /etc/ssh/sshd_config и перезагружаем systemctl restart sshd
 
 <p align="center"><b>*BR-SRV:</b></p>
 
@@ -1270,13 +1279,13 @@ ________________________________________________________________________________
 <p align="center"><b>*BR-RTR*</b></p>
 
 <p align="center">
-  <img src="images/module2/76.br-rtr.png" width="600" />
+  <img src="picture для варинта 2/translate-br-rtr.png" width="600" />
 </p>
 
 <p align="center"><b>*HQ-RTR*</b></p>
 
 <p align="center">
-  <img src="images/module2/77.hq-rtr.png" width="600" />
+  <img src="picture для варинта 2/translate-hq-rtr.png" width="600" />
 </p>
 
 ### <p align="center"><b>7. Запустите сервис moodle на сервере HQ-SRV</b></p>
@@ -1521,7 +1530,7 @@ ________________________________________________________________________________
 
 ***apt install curl -y***
 
-***curl -o /etc/nginx/sites-available https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/reverse-proxy.conf***
+***curl -o /etc/nginx/sites-available/reverse-proxy.conf https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/reverse-proxy.conf***
 
 ***dos2unix /etc/nginx/sites-available/reverse-proxy.conf***
 
