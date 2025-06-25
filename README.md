@@ -1148,13 +1148,13 @@ ________________________________________________________________________________
 
 Пример заполнения:
 
-Хост базы данных: db  
+Хост базы данных: mariadb  
 Имя базы данных: mediawiki  
 Имя пользователя базы данных: wiki  
 Пароль базы данных: WikiP@ssw0rd  
 
 <p align="center">
-  <img src="images/module2/57.png" width="600" />
+  <img src="picture для варинта 2/settings_mariadb.png" width="600" />
 </p>
 
 <p align="center">
