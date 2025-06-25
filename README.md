@@ -73,7 +73,7 @@
 Заодно настроим GRE туннель
 
 <p align="center">
-  <img src="images/module1/11..png" width="600" />
+  <img src="picture для варинта 2/int-hq-rtr.png" width="600" />
 </p>
 
 <p align="center">
@@ -101,7 +101,7 @@
 </p>
 
 <p align="center">
-  <img src="images/module1/16. nftables.png" width="600" />
+  <img src="picture для варинта 2/nftables-hq-rtr.png" width="600" />
 </p>
 
 Обязательно добавим в автозагрузку и активируем
@@ -135,16 +135,10 @@
   <img src="images/module1/20..png" width="600" />
 </p>
 
-Переходим к настройке frr (ospf)
+Переходим к настройке frr (ospf), Поставим пароль на frr
 
 <p align="center">
-  <img src="images/module1/21..png" width="600" />
-</p>
-
-Поставим пароль на frr
-
-<p align="center">
-  <img src="images/module1/22..png" width="600" />
+  <img src="picture для варинта 2/frr-hq-rtr.png" width="600" />
 </p>
 
 Не забываем перезапустить
