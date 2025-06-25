@@ -516,8 +516,8 @@
 </p>
 
 > **РЕКОМЕНДАЦИЯ:**
-> НА CLI: apt-get update && apt-get remove -y alterator-datetime && apt-get install -y task-auth-ad-sssd && apt-get install -y admc  
-> НА CLI: apt-get install -y openssh-server && systemctl restart sshd.  
+> НА CLI: apt-get update && apt-get remove -y alterator-datetime && apt-get install -y task-auth-ad-sssd && apt-get install -y admc && apt-get install -y openssh-server
+> НА CLI: systemctl restart sshd.  
 > НА HQ-SRV: apt update && apt install mdadm -y
 
 Появится синее окно, не пугайтесь, так и должно быть. В первом окне вводим имя домена au-team.irpo, а во втором — имя нашего сервера hq-srv
