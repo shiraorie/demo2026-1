@@ -1202,7 +1202,7 @@ ________________________________________________________________________________
 </p>
 
 <p align="center">
-  <img src="images/module2/66.png" width="600" />
+  <img src="picture для варинта 2/downloads-localsettings.png" width="600" />
 </p>
 
 > Здесь тоже по заданию должен быть порт 3015, но Дима забыл прописать его на BR-SRV, снова прописываем за него /etc/ssh/sshd_config и перезагружаем systemctl restart sshd
