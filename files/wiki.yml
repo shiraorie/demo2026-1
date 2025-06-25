@@ -13,7 +13,7 @@ services:
       - ./LocalSettings.php:/var/www/html/LocalSettings.php
 
   database:
-    container_name: db
+    container_name: mariadb
     image: mariadb
     restart: always
     environment:
