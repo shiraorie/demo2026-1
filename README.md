@@ -2009,7 +2009,7 @@ apt install rsyslog
   <img src="images/module3/new1.png" width="600" />
 </p>
 
-***zcat /usr/share/zabbix/sql-scripts/mysql/server.sql.gz | sudo mysql -u zabbix -p Zabbix***
+***zcat /usr/share/zabbix/sql-scripts/mysql/server.sql.gz | sudo mysql -u zabbix -p zabbix***
 
 <p align="center">
   <img src="images/module3/new2.png" width="600" />
