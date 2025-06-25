@@ -1202,7 +1202,7 @@ ________________________________________________________________________________
 </p>
 
 <p align="center">
-  <img src="images/module2/66.png" width="600" />
+  <img src="picture для варинта 2/downloads-localsettings.png" width="600" />
 </p>
 
 > Здесь тоже по заданию должен быть порт 3015, но Дима забыл прописать его на BR-SRV, снова прописываем за него /etc/ssh/sshd_config и перезагружаем systemctl restart sshd
@@ -2178,7 +2178,7 @@ apt install rsyslog
 - Скачиваем его с github в необходимую директори:
 > !dos2unix и curl на BR-SRV уже скачаны!
 
-***curl -o /etc/ansible https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/inventory.yml***
+***curl -o /etc/ansible/inventory.yml https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/inventory.yml***
 
 ***dos2unix /etc/ansible/inventory.yml***
 
@@ -2231,7 +2231,7 @@ apt install rsyslog
 - Скачаем файл с github в нужную директорию:
 > !dos2unix и curl на BR-SRV уже скачаны!
 
-***curl -o /etc/ansible https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/backup.yml***
+***curl -o /etc/ansible/backup.yml https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/backup.yml***
 
 ***dos2unix /etc/ansible/backup.yml***
 
