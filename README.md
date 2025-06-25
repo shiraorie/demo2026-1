@@ -167,7 +167,7 @@
 </p>
 
 <p align="center">
-  <img src="images/module1/27..png" width="600" />
+  <img src="picture для варинта 2/int-br-rtr.png" width="600" />
 </p>
 
 <p align="center">
@@ -191,7 +191,7 @@
 ***nano /etc/nftables.conf***
 
 <p align="center">
-  <img src="images/module1/31..png" width="600" />
+  <img src="picture для варинта 2/nftables-br-rtr.png" width="600" />
 </p>
 
 <p align="center">
@@ -218,12 +218,9 @@
 </p>
 
 <p align="center">
-  <img src="images/module1/37..png" width="600" />
+  <img src="picture для варинта 2/frr-br-rtr.png" width="600" />
 </p>
 
-<p align="center">
-  <img src="images/module1/38..png" width="600" />
-</p>
 
 <p align="center">
   <img src="images/module1/39..png" width="600" />
