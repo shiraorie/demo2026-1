@@ -435,10 +435,6 @@
 </p>
 
 <p align="center">
-  <img src="images/module1/62..png" width="600" />
-</p>
-
-<p align="center">
   <img src="images/module1/63..png" width="600" />
 </p>
 
@@ -469,7 +465,7 @@
 ***nameserver 192.168.100.2***
 
 <p align="center">
-  <img src="images/module1/67. таблица доменных имен.png" width="600" />
+  <img src="picture для варинта 2/dns-tables.png" width="600" />
 </p>
 
 
