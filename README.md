@@ -2050,10 +2050,11 @@ apt install rsyslog
 ***sudo nano /etc/php/8.2/apache2/php.ini***
 
 - Измените:
+> чтобы быстро перемещаться по файлу ищем по строкам - ("CTRL" + "-")
 
-***max_execution_time = 300***  
-***max_input_time = 300***  
-***post_max_size = 16M***  
+***max_execution_time = 300***  /строка 409  
+***max_input_time = 300***  /строка 419  
+***post_max_size = 16M***  /строка 703  
 
 <p align="center">
   <img src="images/module3/new5.png" width="600" />
@@ -2091,7 +2092,7 @@ apt install rsyslog
 
 - Теперь интерфейс будет доступен по адресу:
 
-***http://mon.au-team.irpo***
+***http://mon.au-team.irpo/zabbix***
 
 <p align="center">
   <img src="images/module3/new12.png" width="600" />
@@ -2099,9 +2100,10 @@ apt install rsyslog
 
 4. Настройка пользовательских учетных данных.
 
-После установки войдите через браузер и авторизуйтесь с логином "admin" и паролем "P@ssw0rd". Эти данные можно изменить в интерфейсе Zabbix после входа — раздел "Administration → Users"
 
-- ПАРОЛЬ ЛОГИН ОТ ЗАБИКСА admin zabbix МЕНЯЕМ ПАРОЛЬ НА P@ssw0rd
+После установки войдите через браузер и авторизуйтесь с логином "Admin" и паролем "zabbix" по умолчанию. Эти данные можно изменить в интерфейсе Zabbix после входа — раздел "Administration → Users"
+
+- ПАРОЛЬ - ЛОГИН ОТ ЗАБИКСА, Admin - zabbix. МЕНЯЕМ ПАРОЛЬ НА P@ssw0rd
 
 <p align="center">
   <img src="images/module3/new13.png" width="600" />
@@ -2122,6 +2124,8 @@ apt install rsyslog
 <p align="center">
   <img src="images/module3/new14.png" width="600" />
 </p>
+
+***systemctl restart zabbix-agent.service***
 
 - Идешь в cli в веб версии по скрину что выше добовляешь сревер пишешь ип туда сюда и обезатЛЬНО !!!! прям срочно нужно в хост груп указать Linux server Linux By zubbix agent
 
@@ -2162,7 +2166,15 @@ apt install rsyslog
 </p>
 
 <p align="center">
-  <img src="images/module3/new22.png" width="600" />
+  <img src="picture для варинта 2/zabbix-parametr.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="picture для варинта 2/zabbix-parametr2.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="picture для варинта 2/zabbix-parametr3.png" width="600" />
 </p>
 
 > Повезло если все робит
