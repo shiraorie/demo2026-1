@@ -1270,13 +1270,13 @@ ________________________________________________________________________________
 <p align="center"><b>*BR-RTR*</b></p>
 
 <p align="center">
-  <img src="images/module2/76.br-rtr.png" width="600" />
+  <img src="picture для варинта 2/translate-br-rtr.png" width="600" />
 </p>
 
 <p align="center"><b>*HQ-RTR*</b></p>
 
 <p align="center">
-  <img src="images/module2/77.hq-rtr.png" width="600" />
+  <img src="picture для варинта 2/translate-hq-rtr.png" width="600" />
 </p>
 
 ### <p align="center"><b>7. Запустите сервис moodle на сервере HQ-SRV</b></p>
