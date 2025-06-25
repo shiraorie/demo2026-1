@@ -980,7 +980,7 @@ Ansible обычно уже использует /etc/ansible как рабоч�
 
 ***curl -o /etc/ansible/hosts https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/hosts.file***
 
-***dos2unix /etc/ansible/hosts.file***
+***dos2unix /etc/ansible/hosts***
 
 - Проверяем его наличие:
 
