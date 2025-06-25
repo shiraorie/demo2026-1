@@ -46,7 +46,7 @@
 **ISP преднастроена, но включать ее надо**
 
 <p align="center">
-  <img src="picture для варинта 2/ip-address" width="600" />
+  <img src="picture для варинта 2/ip-address.png" width="600" />
 </p>
 
 
