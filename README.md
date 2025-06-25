@@ -460,7 +460,7 @@
 
 ***systemctl restart dnsmasq***
 
-После настройки dns-сервера прописываем всем машинам в /etc/resolv.conf:
+После настройки dns-сервера прописываем всем машинам -"HQ-SRV, HQ-RTR, BR-RTR, BR-SRV", кроме HQ-CLI (так как настроили для него dhcp) в /etc/resolv.conf:
 
 ***nameserver 192.168.100.2***
 
