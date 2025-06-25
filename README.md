@@ -413,7 +413,7 @@
 </p>
 
 <p align="center">
-  <img src="images/module1/60..png" width="600" />
+  <img src="picture для варинта 2/restart-dhcp.png" width="600" />
 </p>
 
 > **Примечание:**
