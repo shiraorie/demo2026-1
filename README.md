@@ -73,7 +73,7 @@
 Заодно настроим GRE туннель
 
 <p align="center">
-  <img src="images/module1/11..png" width="600" />
+  <img src="picture для варинта 2/int-hq-rtr.png" width="600" />
 </p>
 
 <p align="center">
@@ -101,7 +101,7 @@
 </p>
 
 <p align="center">
-  <img src="images/module1/16. nftables.png" width="600" />
+  <img src="picture для варинта 2/nftables-hq-rtr.png" width="600" />
 </p>
 
 Обязательно добавим в автозагрузку и активируем
@@ -135,16 +135,10 @@
   <img src="images/module1/20..png" width="600" />
 </p>
 
-Переходим к настройке frr (ospf)
+Переходим к настройке frr (ospf), Поставим пароль на frr
 
 <p align="center">
-  <img src="images/module1/21..png" width="600" />
-</p>
-
-Поставим пароль на frr
-
-<p align="center">
-  <img src="images/module1/22..png" width="600" />
+  <img src="picture для варинта 2/frr-hq-rtr.png" width="600" />
 </p>
 
 Не забываем перезапустить
@@ -173,7 +167,7 @@
 </p>
 
 <p align="center">
-  <img src="images/module1/27..png" width="600" />
+  <img src="picture для варинта 2/int-br-rtr.png" width="600" />
 </p>
 
 <p align="center">
@@ -197,7 +191,7 @@
 ***nano /etc/nftables.conf***
 
 <p align="center">
-  <img src="images/module1/31..png" width="600" />
+  <img src="picture для варинта 2/nftables-br-rtr.png" width="600" />
 </p>
 
 <p align="center">
@@ -224,12 +218,9 @@
 </p>
 
 <p align="center">
-  <img src="images/module1/37..png" width="600" />
+  <img src="picture для варинта 2/frr-br-rtr.png" width="600" />
 </p>
 
-<p align="center">
-  <img src="images/module1/38..png" width="600" />
-</p>
 
 <p align="center">
   <img src="images/module1/39..png" width="600" />
@@ -256,7 +247,7 @@
 Прокинем инет:
 
 <p align="center">
-  <img src="images/module1/40. hq-srv.png" width="600" />
+  <img src="picture для варинта 2/int-hq-srv.png" width="600" />
 </p>
 
 Перезапускаем сервис:
@@ -273,11 +264,11 @@
 <p align="center"><b>*BR-SRV*</b></p>
 
 <p align="center">
-  <img src="images/module1/43..png" width="600" />
+  <img src="picture для варинта 2/hostname-br-srv.png" width="600" />
 </p>
 
 <p align="center">
-  <img src="images/module1/42. br-srv.png" width="600" />
+  <img src="picture для варинта 2/int-br-srv.png" width="600" />
 </p>
 
 Перезапускаем сервис:
@@ -296,20 +287,22 @@
 
 ### <p align="center"><b>Создание локальных учетных записей</b></p>
 
-<p align="center"><b>Создайте пользователя sshuser на серверах</b></p>
+<p align="center"><b>Создайте пользователя sshuser на серверах HQ-SRV и BR-SRV</b></p>
+
+- Пароль пользователя sshuser - "P@ssw0rd"
+- Идентификатор пользователя 1015
+- Пользователь sshuser должен иметь возможность запускать sudo без дополнительной аутентификации
 
 <p align="center"><b>*HQ-SRV и BR-SRV*</b></p>
 
 <p align="center">
-  <img src="images/module1/44. sshuser.png" width="600" />
+  <img src="picture для варинта 2/ssh-user.png" width="600" />
 </p>
-
-Пользователь sshuser должен иметь возможность запускать sudo без дополнительной аутентификации.
 
 В дебиане нету судо поэтому скачаем:
 
 <p align="center">
-  <img src="images/module1/45..png" width="600" />
+  <img src="picture для варинта 2/ssh-user2.png" width="600" />
 </p>
 
 <p align="center">
@@ -319,7 +312,11 @@
 НА BR-SRV СДЕЛАЙТЕ ТОЖЕ САМОЕ
 
 
-<p align="center"><b>Создайте пользователя net_admin на маршрутизаторах</b></p>
+<p align="center"><b>Создайте пользователя net_admin на маршрутизаторах HQ-RTR и BR-RTR</b></p>
+
+- Пароль пользователя net_admin - "P@$$word"
+- При настройке на EcoRouter пользователь net_admin должен обладать максимальными привилегиями
+- При настройке ОС на базе Linux, запускать sudo без дополнителььной аутентификации
 
 <p align="center"><b>*HQ-RTR и BR-RTR*</b></p>
 
@@ -346,8 +343,9 @@
 
 ### <p align="center"><b>Настройка безопасного удаленного доступа на серверах HQ-SRV и BR-SRV:</b></p>
 
-- Для подключения используйте порт 2024 
-- Разрешите подключения только пользователю sshuser ● Ограничьте количество попыток входа до двух 
+- Для подключения используйте порт 3015 
+- Разрешите подключения только пользователю sshuser
+- Ограничьте количество попыток входа до двух 
 - Настройте баннер «Authorized access only»
 
 <p align="center"><b>*HQ-SRV и BR-SRV*</b></p>
@@ -359,7 +357,7 @@
 Редактируем файл /etc/ssh/sshd_config:
 
 <p align="center">
-  <img src="images/module1/52..png" width="600" />
+  <img src="picture для варинта 2/ssh-port.png" width="600" />
 </p>
 
 <p align="center">
@@ -415,7 +413,7 @@
 </p>
 
 <p align="center">
-  <img src="images/module1/60..png" width="600" />
+  <img src="picture для варинта 2/restart-dhcp.png" width="600" />
 </p>
 
 > **Примечание:**
@@ -434,10 +432,6 @@
 
 <p align="center">
   <img src="images/module1/61. dns.png" width="600" />
-</p>
-
-<p align="center">
-  <img src="images/module1/62..png" width="600" />
 </p>
 
 <p align="center">
@@ -466,12 +460,12 @@
 
 ***systemctl restart dnsmasq***
 
-После настройки dns-сервера прописываем всем машинам в /etc/resolv.conf:
+После настройки dns-сервера прописываем всем машинам -"HQ-SRV, HQ-RTR, BR-RTR, BR-SRV", кроме HQ-CLI (так как настроили для него dhcp) в /etc/resolv.conf:
 
 ***nameserver 192.168.100.2***
 
 <p align="center">
-  <img src="images/module1/67. таблица доменных имен.png" width="600" />
+  <img src="picture для варинта 2/dns-tables.png" width="600" />
 </p>
 
 
@@ -484,7 +478,7 @@
 ***timedatectl status***
 
 <p align="center">
-  <img src="images/module1/68. часовой пояс.png" width="600" />
+  <img src="picture для варинта 2/hq-cli-timedate.png" width="600" />
 </p>
 
 Если отличается, то устанавливаем:
