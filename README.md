@@ -2001,6 +2001,10 @@ apt install rsyslog
 
 ***sudo dpkg -i zabbix-release_7.4-0.2%2Bdebian12_all.deb***
 
+<p align="center">
+  <img src="picture для варинта 2/zabbix1.png" width="600" />
+</p>
+
 ***sudo apt update***
 
 ***sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-agent php php-mysql php-bcmath php-mbstring  zabbix-sql-scripts zabbix-apache-conf mariadb-server***
@@ -2024,7 +2028,7 @@ apt install rsyslog
 ***DBPassword=P@ssw0rd***
 
 <p align="center">
-  <img src="images/module3/new3.png" width="600" />
+  <img src="picture для варинта 2/zabbix3.png" width="600" />
 </p>
 
 - Запустите службу:
