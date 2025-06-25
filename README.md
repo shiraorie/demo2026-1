@@ -1522,7 +1522,7 @@ ________________________________________________________________________________
 
 ***apt install curl -y***
 
-***curl -o /etc/nginx/sites-available https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/reverse-proxy.conf***
+***curl -o /etc/nginx/sites-available/reverse-proxy.conf https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/reverse-proxy.conf***
 
 ***dos2unix /etc/nginx/sites-available/reverse-proxy.conf***
 
