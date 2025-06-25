@@ -1080,7 +1080,7 @@ ________________________________________________________________________________
 > !dos2unix и curl на BR-SRV уже скачаны!
 
 
-***curl -o ~/ https://raw.githubusercontent.com/4bobus/laba/main/files/wiki.yml***
+***curl -o ~/wiki.yml https://raw.githubusercontent.com/4bobus/laba/main/files/wiki.yml***
 
 ***dos2unix ~/wiki.yml***
 
