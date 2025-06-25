@@ -2123,6 +2123,8 @@ apt install rsyslog
   <img src="images/module3/new14.png" width="600" />
 </p>
 
+***systemctl restart zabbix-agent.service***
+
 - Идешь в cli в веб версии по скрину что выше добовляешь сревер пишешь ип туда сюда и обезатЛЬНО !!!! прям срочно нужно в хост груп указать Linux server Linux By zubbix agent
 
 <p align="center">
@@ -2162,7 +2164,15 @@ apt install rsyslog
 </p>
 
 <p align="center">
-  <img src="images/module3/new22.png" width="600" />
+  <img src="picture для варинта 2/zabbix-parametr.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="picture для варинта 2/zabbix-parametr2.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="picture для варинта 2/zabbix-parametr3.png" width="600" />
 </p>
 
 > Повезло если все робит
