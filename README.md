@@ -680,7 +680,7 @@ ________________________________________________________________________________
 
 - Потом на BR-SRV скачиваем скрипт, который выполнит за нас задание, в нужную директорию:
 
-***curl -o /opt https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/import_users.sh***
+***curl -o /opt/import_users.sh https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/import_users.sh***
 
 ***ls /opt***
 
