@@ -29,7 +29,7 @@
     - name: Copy saved rules nftables
       ansible.builtin.fetch:
         src: /etc/nftables.conf
-        dest: /etc/ansible/NETWORK_INFO/{{ inventory_hostname }}/nftalbes.conf
+        dest: /etc/ansible/NETWORK_INFO/{{ inventory_hostname }}/nftables.conf
         flat: yes
       become: yes
 
