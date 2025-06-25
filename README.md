@@ -2052,9 +2052,9 @@ apt install rsyslog
 - Измените:
 > чтобы быстро перемещаться по файлу ищем по строкам - ("CTRL" + "-")
 
-***max_execution_time = 300***  строка 409  
-***max_input_time = 300***  строка 419  
-***post_max_size = 16M***  строка 703  
+***max_execution_time = 300***  /строка 409  
+***max_input_time = 300***  /строка 419  
+***post_max_size = 16M***  /строка 703  
 
 <p align="center">
   <img src="images/module3/new5.png" width="600" />
