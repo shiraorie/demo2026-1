@@ -1086,7 +1086,7 @@ ________________________________________________________________________________
 ***nano ~/wiki.yml***
 
 <p align="center">
-  <img src="images/module2/51.png" width="600" />
+  <img src="picture для варинта 2/wiki.yml.png" width="600" />
 </p>
 
 > где:
