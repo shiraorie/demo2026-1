@@ -2091,7 +2091,7 @@ apt install rsyslog
 
 - Теперь интерфейс будет доступен по адресу:
 
-***http://mon.au-team.irpo***
+***http://mon.au-team.irpo/zabbix***
 
 <p align="center">
   <img src="images/module3/new12.png" width="600" />
