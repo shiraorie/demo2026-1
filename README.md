@@ -969,7 +969,7 @@ Ansible обычно уже использует /etc/ansible как рабоч�
 - Скачиваем файл с github, в нужную директорию:
 > !dos2unix и curl на BR-SRV уже скачаны!
 
-***curl -o /etc/ansible https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/hosts.file***
+***curl -o /etc/ansible/hosts https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/hosts.file***
 
 ***dos2unix /etc/ansible/hosts.file***
 
