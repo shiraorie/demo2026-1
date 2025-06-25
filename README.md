@@ -247,7 +247,7 @@
 Прокинем инет:
 
 <p align="center">
-  <img src="images/module1/40. hq-srv.png" width="600" />
+  <img src="picture для варинта 2/int-hq-srv.png" width="600" />
 </p>
 
 Перезапускаем сервис:
@@ -264,11 +264,11 @@
 <p align="center"><b>*BR-SRV*</b></p>
 
 <p align="center">
-  <img src="images/module1/43..png" width="600" />
+  <img src="picture для варинта 2/hostname-br-srv.png" width="600" />
 </p>
 
 <p align="center">
-  <img src="images/module1/42. br-srv.png" width="600" />
+  <img src="picture для варинта 2/int-br-srv.png" width="600" />
 </p>
 
 Перезапускаем сервис:
@@ -292,7 +292,7 @@
 <p align="center"><b>*HQ-SRV и BR-SRV*</b></p>
 
 <p align="center">
-  <img src="images/module1/44. sshuser.png" width="600" />
+  <img src="picture для варинта 2/ssh-user.png" width="600" />
 </p>
 
 Пользователь sshuser должен иметь возможность запускать sudo без дополнительной аутентификации.
@@ -300,7 +300,7 @@
 В дебиане нету судо поэтому скачаем:
 
 <p align="center">
-  <img src="images/module1/45..png" width="600" />
+  <img src="picture для варинта 2/ssh-user2.png" width="600" />
 </p>
 
 <p align="center">
