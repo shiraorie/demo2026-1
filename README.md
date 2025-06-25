@@ -46,7 +46,7 @@
 **ISP преднастроена, но включать ее надо**
 
 <p align="center">
-  <img src="images/module1/8. таблица адресации.png" width="600" />
+  <img src="picture для варинта 2/ip-address.png" width="600" />
 </p>
 
 
@@ -187,6 +187,14 @@
 <p align="center">
   <img src="images/module1/30..png" width="600" />
 </p>
+
+Применяем:
+
+***sysctl -p***
+
+Прокинем PAT так, как по приколу тачки, что подключены к роутеру пинговать инет не будут.
+
+***nano /etc/nftables.conf***
 
 <p align="center">
   <img src="images/module1/31..png" width="600" />
