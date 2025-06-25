@@ -478,7 +478,7 @@
 ***timedatectl status***
 
 <p align="center">
-  <img src="images/module1/68. часовой пояс.png" width="600" />
+  <img src="picture для варинта 2/hq-cli-timedate.png" width="600" />
 </p>
 
 Если отличается, то устанавливаем:
