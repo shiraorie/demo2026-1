@@ -1,8 +1,8 @@
-# laba/Вариант 3
+# laba/Вариант 1
 
 ## <p align="center"><b>МОДУЛЬ 1</b></p>
 
- Задание 1: 
+ Задание : 
  Необходимо разработать и настроить инфраструктуру информационно коммуникационной системы согласно предложенной топологии (см. Рисунок 1). Задание включает базовую настройку устройств: 
 - присвоение имен устройствам, 
 - расчет IP-адресации, 
@@ -23,30 +23,33 @@
 <p align="center"><b>User name: m1</b></p>
 <p align="center"><b>Password: modul1</b></p>
 
-Перед включением виртуалок Настроим вланы. По заданию HQ-SRV в 10 влане, а  HQ-CLI в 20. По сути они уже преднастроены, Но можно проверить.
+Перед включением виртуалок Настроим вланы. По заданию HQ-SRV в 100 влане, а  HQ-CLI в 200. По сути они уже преднастроены, Но можно проверить. 
 > **Примечание:**
 > Основные сведения о настройке коммутатора и выбора реализации разделения на VLAN занесите в отчёт
 
+>**Примечание:**
+>Номер Vlan зависит от варианта, смотрите в задание
+
 <p align="center">
-  <img src="picture для варинта 2/vlan1.png" width="600" />
+  <img src="images\module1\4.vlan.png" width="600" />
 </p>
 
 <p align="center">
-  <img src="picture для варинта 2/vlan2.png" width="600" />
+  <img src="images\module1\5. vlan.png" width="600" />
 </p>
 
 <p align="center">
-  <img src="picture для варинта 2/vlan3.png" width="600" />
+  <img src="images\module1\6. vlan.png" width="600" />
 </p>
 
 <p align="center">
-  <img src="picture для варинта 2/vlan4.png" width="600" />
+  <img src="images\module1\7. vlan.png" width="600" />
 </p>
 
 **ISP преднастроена, но включать ее надо**
 
 <p align="center">
-  <img src="picture для варинта 2/ip-address.png" width="600" />
+  <img src="images\module1\table route.png" width="600" />
 </p>
 
 
@@ -73,7 +76,7 @@
 Заодно настроим GRE туннель
 
 <p align="center">
-  <img src="picture для варинта 2/int-hq-rtr.png" width="600" />
+  <img src="images\module1\netowrk hq-rtr.png" width="600" />
 </p>
 
 <p align="center">
