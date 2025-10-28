@@ -31,7 +31,7 @@
 >Номер Vlan зависит от варианта, смотрите в задание
 
 <p align="center">
-  <img src="images\module1\4.vlan.png" width="600" />
+  <img src="images\module1\4. vlan.png" width="600" />
 </p>
 
 <p align="center">
