@@ -1309,7 +1309,7 @@ EXIT;
 
 ***apt install curl -y***
 
-***curl -o /etc/nginx/sites-available/reverse-proxy.conf https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/reverse-proxy.conf***
+***curl -o /etc/nginx/sites-available/default https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/reverse-proxy.conf***
 
 ***dos2unix /etc/nginx/sites-available/reverse-proxy.conf***
 
@@ -1325,59 +1325,83 @@ EXIT;
 
 > Сохраните файл и закройте редактор.
 
-Настроить nginx как реверсивный прокси сервер, приведя файл /etc/nginx/sites-available.d/
+Добавить символическую ссылку на данный файл:
 
-default.conf к следующему виду:
+>ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
 
-vim /etc/nginx/sites-available.d/default.conf
-
-3. Настройка Nginx как обратного прокси
-
-Создадим конфигурационный файл для сайта в Nginx, в котором настроим виртуальные хосты. Добавьте конфигурацию для проксирования запросов в файл reverse-proxy.conf:
-
-- Скачиваем файл с github в необходимую директорию:
-
-***apt install dos2unix -y***
-
-***apt install curl -y***
-
-***curl -o /etc/nginx/sites-available/reverse-proxy.conf https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/reverse-proxy.conf***
-
-***dos2unix /etc/nginx/sites-available/reverse-proxy.conf***
-
-- Проверяем его наличие:
-
+Проверить наличие ошибок в конфигурационных файлах:
 <p align="center">
-  <img src="images/module2/93.nginx.png" width="600" />
+  <img src="images\module2\test nginx.png" width="600" />
 </p>
 
-<p align="center">
-  <img src="images/module2/94.png" width="600" />
-</p>
+Запустить и активировать службу nginx:
+>systemctl enable --now nginx
 
-> Сохраните файл и закройте редактор.
+<p align="center"><b>*HQ-CLI*</b></p>
 
-- Создайте символическую ссылку на этот файл в папке sites-enabled для активации конфигурации:
-
-<p align="center">
-  <img src="images/module2/95.png" width="600" />
-</p>
-
-- Проверьте конфигурацию Nginx на наличие синтаксических ошибок:
+Поскольку в домене SambaDC нет DNS записей ссылающихся на необходимые имена, а на HQ-CLI в качестве DNS-сервера задан адрес именно контроллера домена, поэтому необходимо добавить записи в файл /etc/hosts на виртуальной машине HQ-CLI:
 
 <p align="center">
-  <img src="images/module2/96.png" width="600" />
+  <img src="images\module2\hosts.png" width="600" />
 </p>
 
-> на hq-rtr в файле /etc/resolv.conf должно быть прописано dns 192.168.100.2
+Проверяем возможность доступа до веб ресурсов с браузера на клиенте:
 
-> *Если конфигурация правильная, вы увидите сообщение syntax is ok.*
+>http://web.au-team.irpo
 
-- Перезагрузите Nginx, чтобы применить изменения:
+>http://docker.au-team.irpo
 
-***systemctl reload nginx***
+### <p align="center"><b>10. На маршрутизаторе ISP настройте web-based аутентификацию</b></p>
 
-### <p align="center"><b>9. Удобным способом установите приложение Яндекс Браузере для организаций</b></p>
+- При обращении к сайту web.au-team.irpo клиенту должно быть предложено ввести аутентификационные данные
+- В качестве логина для аутентификации выберите WEB с паролем P@ssw0rd
+- Выберите файл /etc/nginx/.htpasswd в качестве хранилища учётных записей
+- При успешной аутентификации клиент должен перейти на веб сайт.
+
+<p align="center"><b>*ISP*</b></p>
+
+Установить пакет apache2:
+
+>apt install -y apache2
+
+Средствами утилиты htpasswd создать пользователя WEB и добавить информацию о нём в файл /etc/nginx/.htpasswd, задав пароль P@ssw0rd:
+
+htpasswd –c /etc/nginx/.htpasswd WEB
+
+<p align="center">
+  <img src="images\module2\htpasswd.png" width="600" />
+</p>
+
+Добавить web-based аутентификацию для доступа к сайту web.au-team.irpo в конфигурационный файл /etc/nginx/sites-available.d/default.conf:
+
+>nano /etc/nginx/sites-available/default
+
+<p align="center">
+  <img src="images\module2\nginx web based.png" width="600" />
+</p>
+
+Проверить наличие ошибок в конфигурационных файлах:
+
+<p align="center">
+  <img src="images\module2\test nginx.png" width="600" />
+</p>
+
+Перезапустить службу nginx:
+
+>systemctl restart nginx
+
+<p align="center"><b>*HQ-CLI*</b></p>
+
+Проверяем возможность доступа до веб ресурса с браузера на клиенте:
+
+Имя пользователя: WEB
+Пароль: P@ssw0rd
+
+<p align="center">
+  <img src="images\module2\auth.png" width="600" />
+</p>
+
+### <p align="center"><b>11. Удобным способом установите приложение Яндекс Браузере для организаций</b></p>
 
 <p align="center"><b>*HQ-CLI*</b></p>
 
