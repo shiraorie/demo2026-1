@@ -1053,197 +1053,37 @@ P@ssw0rd, порт приложения 8080, при необходимости 
 
 ***systemctl enable --now docker.service***
 
-3. В домашней директории пользователя root создаём файл wiki.yml со следующим содержимым:
-
-- Чтобы вручную файл не заполнять просто скачиваем его с github в нужную директорию:
-> !dos2unix и curl на BR-SRV уже скачаны!
-
-
-***curl -o ~/wiki.yml https://raw.githubusercontent.com/4bobus/laba/main/files/wiki.yml***
-
-***dos2unix ~/wiki.yml***
-
-- Проверяем его наличие:
-
-***nano ~/wiki.yml***
+3. Выполнить монтирование Additional.iso в директорию /mnt:
 
 <p align="center">
-  <img src="picture для варинта 2/wiki.yml.png" width="600" />
+  <img src="images\module2\mount additional.iso.png" width="600" />
 </p>
 
-> где:
-> - services — основной раздел, где мы будем создавать и описывать наши сервисы (контейнеры docker). В данном примере сервиса два: MediaWiki - для приложения mediawiki и database - для базы данных; container_name — имя, которое получит созданный контейнер;
-> - image — имя образа, который будет использоваться для создания контейнера;
-> - restart  поведения контейнера при падении;
-> - ports (внешняя публикация). С помощью данной опции мы можем указывать, на каких портах должен слушать контейнер и на какие порты должны пробрасываться запросы
-> - environment — задаем переменные окружения;
-> - volumes - проброс папок;
-> - links - ссылайтесь на контейнеры в другом сервисе. Укажите либо имя сервиса, либо псевдоним ссылки (SERVICE:ALIAS)
+- Выполнить импорт образа mariadb_latest и site_latest:
 
-***apt install –y mariadb-****
-
-> P.S. После первоначальной настройки через Web-интерфейс с CLI загрузите LocalSettings.php в тот же каталог, что и эта wiki.yml и раскомментируйте следующую строку "# - ./LocalSettings.php:/var/www/html/LocalSettings.php" и используйте docker-compose для перезапуска службы mediawiki
-
-4. Чтобы отдельный volume для хранения базы данных имел правильное имя - создаём его средствами docker:
-
-***docker volume create dbvolume***
-
-5. Выполняем сборку и запуск стека контейнеров с приложением MediaWiki и базой данных описанных в файле wiki.yml:
-
-***docker-compose -f wiki.yml up -d***
-
-Проверяем:
+>docker load < /mnt/docker/site_latest.tar
 
 <p align="center">
-  <img src="images/module2/52.png" width="600" />
+  <img src="images\module2\load site.png" width="600" />
 </p>
-> Пока скачивается, прописываем трансляцию портов в следующем 6ой задании
+
+> docker load < /mnt/docker/mariadb_latest.tar
 
 <p align="center">
-  <img src="images/module2/53.png" width="600" />
+  <img src="images\module2\load mariadb.png" width="600" />
 </p>
 
-<p align="center"><b>*HQ-CLI*</b></p>
-
-***su -***
-
-***echo “192.168.200.2 wiki.au-team.irpo mediawiki” >> /etc/hosts***
-
-1. Переходим в браузер http://wiki.au-team.irpo:8080/ для продолжения установки через веб-интерфейс - нажимаем set up the wiki:
+- Проверить:
 
 <p align="center">
-  <img src="images/module2/54.png" width="600" />
+  <img src="images\module2\image ls.png" width="600" />
 </p>
 
-2. Выбираем необходимый Язык - нажимаем Далее:
+- Скачиваем файл compose.yaml и помещаем его в корневую директорию:
 
-<p align="center">
-  <img src="images/module2/55.png" width="600" />
-</p>
-
-3. После успешной проверки внешней среды - нажимаем Далее:
-
-<p align="center">
-  <img src="images/module2/56.png" width="600" />
-</p>
-
-4. Заполняем параметры подключение к Базе Данных в соответствие с заданными переменными окружения в wiki.yml, которые соответствуют требованиям задания:
-
-Пример заполнения:
-
-Хост базы данных: mariadb  
-Имя базы данных: mediawiki  
-Имя пользователя базы данных: wiki  
-Пароль базы данных: WikiP@ssw0rd  
-
-<p align="center">
-  <img src="picture для варинта 2/settings_mariadb.png" width="600" />
-</p>
-
-<p align="center">
-  <img src="images/module2/58.png" width="600" />
-</p>
-
-5. Заполняем необходимые сведения:
-> Пароль: P@ssw0rddd
-
-<p align="center">
-  <img src="images/module2/60.png" width="600" />
-</p>
-
-<p align="center">
-  <img src="images/module2/61.png" width="600" />
-</p>
-
-<p align="center">
-  <img src="images/module2/62.png" width="600" />
-</p>
-
-<p align="center">
-  <img src="images/module2/63.png" width="600" />
-</p>
-
-6. После чего будет автоматически скачен файл LocalSettings.php - который необходимо передать на BR-SRV в домашнюю директорию пользователя root туда же где лежит wiki.yml:
-
-<p align="center">
-  <img src="images/module2/64.png" width="600" />
-</p>
-
-7. Забираем файл LocalSettings.php с CLI:
-
-<p align="center"><b>*HQ-CLI:*</b></p>
-
-<p align="center">
-  <img src="images/module2/65.png" width="600" />
-</p>
-
-<p align="center">
-  <img src="picture для варинта 2/downloads-localsettings.png" width="600" />
-</p>
-
-> Здесь тоже по заданию должен быть порт 3015, но Дима забыл прописать его на BR-SRV, снова прописываем за него /etc/ssh/sshd_config и перезагружаем systemctl restart sshd
-
-<p align="center"><b>*BR-SRV:</b></p>
-
-Перемещаем в домашнюю директорию пользователя /root:
-
-<p align="center">
-  <img src="images/module2/67.png" width="600" />
-</p>
-
-Проверяем:
-
-<p align="center">
-  <img src="images/module2/68.png" width="600" />
-</p>
-
-_____________________________________________________________________________________
-
-Прямой поиск файла поиск файла LocalSettings.php командой find:
-
-***find / -name LocalSettings.php 2>/dev/null***
-
-<p align="center">
-  <img src="images/module2/70.png" width="600" />
-</p>
-
-Команда "ls"(list) показывает файлы и директории в текущем каталоге.  
-Команда "pwd" показывает каталоr в котором ты находишься.
-
-_____________________________________________________________________________________
-
-<p align="center">
-  <img src="images/module2/71.png" width="600" />
-</p>
-
-Перезапускаем сервисы средствами docker-compose:
-
-***docker-compose -f wiki.yml stop***  
-***docker-compose -f wiki.yml up -d***
+https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/compose.yaml
 
 
-<p align="center">
-  <img src="images/module2/72.png" width="600" />
-</p>
-
-<p align="center"><b>*Снова HQ-CLI:*</b></p>
-
-1. Проверяем доступ к http://wiki.au-team.irpo:8080
-
-
-<p align="center">
-  <img src="images/module2/73.png" width="600" />
-</p>
-
-2. Вход, в моем случае, из под пользователя admin с паролем P@ssw0rddd
-
-<p align="center">
-  <img src="images/module2/74.png" width="600" />
-</p>
-
-<p align="center">
-  <img src="images/module2/75.png" width="600" />
-</p>
 
 ### <p align="center"><b>6. На маршрутизаторах сконфигурируйте статическую трансляцию портов</b></p>
 
