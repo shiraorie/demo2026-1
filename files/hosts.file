@@ -1,5 +1,5 @@
 [hq]
-HQ-SRV ansible_host=sshuser@hq-srv.au-team.irpo ansible_port=3015
+HQ-SRV ansible_host=sshuser@hq-srv.au-team.irpo ansible_port=2026
 HQ-CLI ansible_host=hq-cli.au-team.irpo
 HQ-RTR ansible_host=hq-rtr.au-team.irpo
 
