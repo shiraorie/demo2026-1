@@ -678,11 +678,6 @@ ________________________________________________________________________________
 
 ***%hq ALL=(ALL) NOPASSWD: /bin/cat, /bin/grep, /usr/bin/id***
 
-
-
-
-
-
 ### <p align="center"><b>2. Сконфигурируйте файловое хранилище</b></p>
 
 <p align="center"><b>(СДЕЛАТЬ SNAPSHOT, если не сделали, на HQ-SRV)</b></p>
@@ -1427,13 +1422,19 @@ htpasswd –c /etc/nginx/.htpasswd WEB
 ## <p align="center"><b>МОДУЛЬ 3</b></p>
 <p align="center"><b></b></p>
 
-<p align="center"><b>1. Выполните импорт пользователей из файла users.csv. Файл будет располагаться на виртуальной машине BR-SRV в папке /opt</b></p>
+### <p align="center"><b>1. Выполните импорт пользователей из файла users.csv. Файл будет располагаться на виртуальной машине BR-SRV в папке /opt</b></p>
+
+<p align="center"><b>*BR-SRV*</b></p>
 
 - Сначала скачаем необходимую утилиту на *BR-SRV*:
 
 ***apt install dos2unix -y***
 
 ***apt install curl -y***
+
+- Заберем с iso файл Users.csv
+
+>cp /mnt/Users.csv /opt/
 
 - Потом на BR-SRV скачиваем скрипт, который выполнит за нас задание, в нужную директорию:
 
@@ -1460,6 +1461,132 @@ htpasswd –c /etc/nginx/.htpasswd WEB
 ***chmod +x /opt/import__users.sh***
 
 ***/opt/import_users.sh***
+
+### <p align="center"><b>2.	Выполните настройку центра сертификации на базе HQ-SRV</b></p>
+
+- Необходимо использовать отечественные алгоритмы шифрования
+-	Сертификаты выдаются на 30дней
+-	Обеспечьте доверие сертификату для HQ-CLI
+-	Выдайте сертификаты веб серверам
+-	Перенастройте ранее настроенный реверсивный прокси nginx на протокол https
+-	При обращении к веб серверам https://web.au-team.irpo и https://docker.au-team.irpo у браузера клиента не должно возникать предупреждений
+
+<p align="center"><b>*HQ-SRV*</b></p>
+
+Шаг 1. Установка необходимых компонентов
+
+>apt update
+
+>apt install -y openssl ca-certificates
+
+Создаем каталаги для работы центра сертификации
+
+>mkdir -p /etc/pki/CA/{private,certs,newcerts,crl}
+
+>touch /etc/pki/CA/index.txt
+
+>echo 1000 > /etc/pki/CA/serial
+
+>chmod 700 /etc/pki/CA/private
+
+Создайте корневой ключ и сертификат (RSA 4096, SHA256):
+
+openssl req -x509 -new -nodes \
+   -keyout /etc/pki/CA/private/ca.key \
+   -out /etc/pki/CA/certs/ca.crt \
+   -days 3650 \
+   -sha256 \
+   -subj "/CN=AU-TEAM Root CA"
+
+Шаг 2. Создайте CSR для веб-сервера
+
+> openssl genrsa -out /etc/pki/CA/private/web.au-team.irpo.key 2048
+
+openssl req -new \
+  -key /etc/pki/CA/private/web.au-team.irpo.key \
+  -out /etc/pki/CA/web.au-team.irpo.csr \
+  -subj "/CN=web.au-team.irpo"
+
+openssl genrsa -out /etc/pki/CA/private/docker.au-team.irpo.key 2048
+
+openssl req -new \
+  -key /etc/pki/CA/private/docker.au-team.irpo.key \
+  -out /etc/pki/CA/web.au-team.irpo.csr \
+  -subj "/CN=web.au-team.irpo"
+
+Шаг 3. Создайте конфигурационный файл для openssl ca
+
+Создайте /etc/ssl/openssl-ca.cnf:
+[ ca ]
+default_ca = CA_default
+
+[ CA_default ]
+dir             = /etc/pki/CA
+certs           = $dir/certs
+crl_dir         = $dir/crl
+new_certs_dir   = $dir/newcerts
+database        = $dir/index.txt
+serial          = $dir/serial
+RANDFILE        = $dir/private/.rand
+
+certificate     = $dir/certs/ca.crt
+private_key     = $dir/private/ca.key
+default_days    = 30
+default_md      = sha256
+preserve        = no
+policy          = policy_anything
+
+[ policy_anything ]
+countryName             = optional
+stateOrProvinceName     = optional
+localityName            = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = supplied
+emailAddress            = optional
+
+[ server_cert ]
+basicConstraints        = CA:FALSE
+subjectKeyIdentifier    = hash
+authorityKeyIdentifier  = keyid,issuer
+keyUsage                = critical, digitalSignature, keyEncipherment
+extendedKeyUsage        = serverAuth
+subjectAltName          = @alt_names
+
+[ alt_names ]
+DNS.1 = web.au-team.irpo
+DNS.2 = docker.au-team.irpo  # если нужно для другого сертификата
+
+Шаг 4. Подпишите сертификат (ваша команда — но без ГОСТ)
+openssl ca \
+  -config /etc/ssl/openssl-ca.cnf \
+  -in /etc/pki/CA/web.au-team.irpo.csr \
+  -out /etc/pki/CA/certs/web.au-team.irpo.crt \
+  -extensions server_cert \
+  -days 30 \
+  -batch
+
+openssl ca \
+  -config /etc/ssl/openssl-ca.cnf \
+  -in /etc/pki/CA/docker.au-team.irpo.csr \
+  -out /etc/pki/CA/certs/docker.au-team.irpo.crt \
+  -extensions server_cert \
+  -days 30 \
+  -batch
+
+Шаг 6. Настройка доверия на клиенте HQ-CLI
+Скопируйте корневой сертификат:
+
+Шаг 7. Настройка Nginx на HTTPS
+Пример конфига для web.au-team.irpo:
+mkdir -p /etc/nginx/ssl
+cp /etc/pki/CA/certs/web.au-team.irpo.crt /etc/nginx/ssl/
+cp /etc/pki/CA/private/web.au-team.irpo.key /etc/nginx/ssl/
+chown root:root /etc/nginx/ssl/*
+chmod 600 /etc/nginx/ssl/*.key
+nginx -t && sudo systemctl reload nginx
+
+
 
 ### <p align="center"><b>3.	Перенастройте ip-туннель с базового до уровня туннеля, обеспечивающего шифрование трафика</b></p>
 
