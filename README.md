@@ -1495,12 +1495,12 @@ htpasswd –c /etc/nginx/.htpasswd WEB
 
 Создайте корневой ключ и сертификат (RSA 4096, SHA256):
 
-openssl req -x509 -new -nodes \
+ openssl req -x509 -new -nodes \
    -keyout /etc/pki/CA/private/ca.key \
    -out /etc/pki/CA/certs/ca.crt \
    -days 3650 \
    -sha256 \
-   -subj "/CN=AU-TEAM Root CA"
+   -subj "/CN=AU-TEAM Root CA" *** 
 
 Шаг 2. Создайте CSR для веб-сервера
 
