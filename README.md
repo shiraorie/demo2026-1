@@ -170,7 +170,7 @@
 </p>
 
 <p align="center">
-  <img src="picture для варинта 2/int-br-rtr.png" width="600" />
+  <img src="images\module1\int br-rtr.png" width="600" />
 </p>
 
 <p align="center">
@@ -299,7 +299,7 @@
 <p align="center"><b>*HQ-SRV и BR-SRV*</b></p>
 
 <p align="center">
-  <img src="picture для варинта 2/ssh-user.png" width="600" />
+  <img src="images\module1\sshuser.png" width="600" />
 </p>
 
 В дебиане нету судо поэтому скачаем:
@@ -360,7 +360,7 @@
 Редактируем файл /etc/ssh/sshd_config:
 
 <p align="center">
-  <img src="picture для варинта 2/ssh-port.png" width="600" />
+  <img src="picture для варинта 2\ssh port.png" width="600" />
 </p>
 
 <p align="center">
@@ -438,7 +438,7 @@
 </p>
 
 <p align="center">
-  <img src="images/module1/63..png" width="600" />
+  <img src="images\module1\dnsmasq.png" width="600" />
 </p>
 
 Теперь открываем скрипт-инициализации сервиса dnsmasq
