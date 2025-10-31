@@ -997,7 +997,7 @@ Ansible обычно уже использует /etc/ansible как рабоч�
 - Скачиваем файл с github, в нужную директорию:
 > !dos2unix и curl на BR-SRV уже скачаны!
 
-***curl -o /etc/ansible/hosts https://raw.githubusercontent.com/shoraorie/demo2026-1/main/files/hosts.file***
+***curl -o /etc/ansible/hosts https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/hosts.file***
 
 ***dos2unix /etc/ansible/hosts***
 
@@ -1212,7 +1212,7 @@ apache
 > nano /var/www/html/index.php
 
 <p align="center">
-  <img src="images\module2\index.php.png" width="600" />
+  <img src="images\module2\index.php1.png" width="600" />
 </p>
 
 Перейти в интерфейс управления MariaDB:
