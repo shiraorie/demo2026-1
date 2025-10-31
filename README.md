@@ -1706,7 +1706,7 @@ nginx -t && sudo systemctl reload nginx
 - Скачаем готовый nftables.conf с github, укажем путь для замены нашего nftables:
 > !dos2unix и curl на HQ-RTR уже скачаны!
 
-***curl -o /etc/nftables.conf https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/hq-rtr/nftables.conf***
+***curl -o /etc/nftables.conf https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/hq-rtr/nftables.conf***
 
 ***dos2unix /etc/nftables.conf***
 
@@ -1731,7 +1731,7 @@ nginx -t && sudo systemctl reload nginx
 
 ***apt install curl -y***
 
-***curl -o /etc/nftables.conf https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/br-rtr/nftables.conf***
+***curl -o /etc/nftables.conf https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/br-rtr/nftables.conf***
 
 ***dos2unix /etc/nftables.conf***
 
@@ -2083,7 +2083,7 @@ apt install rsyslog
 3. Настроить DNS на HQ-SRV:
 
 <p align="center">
-  <img src="images/module3/new11.png" width="600" />
+  <img src="images\module3\dnsmasq new.png" width="600" />
 </p>
 
 - Теперь интерфейс будет доступен по адресу:
@@ -2194,7 +2194,7 @@ apt install rsyslog
 - Скачиваем его с github в необходимую директори:
 > !dos2unix и curl на BR-SRV уже скачаны!
 
-***curl -o /etc/ansible/inventory.yml https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/inventory.yml***
+***curl -o /etc/ansible/inventory.yml https://raw.githubusercontent.com/shiraorie/dewmo2026-1/main/files/inventory.yml***
 
 ***dos2unix /etc/ansible/inventory.yml***
 
@@ -2247,7 +2247,7 @@ apt install rsyslog
 - Скачаем файл с github в нужную директорию:
 > !dos2unix и curl на BR-SRV уже скачаны!
 
-***curl -o /etc/ansible/backup.yml https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/backup.yml***
+***curl -o /etc/ansible/backup.yml https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/backup.yml***
 
 ***dos2unix /etc/ansible/backup.yml***
 
