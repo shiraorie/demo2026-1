@@ -1197,7 +1197,7 @@ apache
 Выполнить монтирование Additional.iso в директорию /mnt:
 
 > mount /dev/sr0 /mnt/
-
+ 
 <p align="center">
   <img src="images\module2\mount additional.iso.png" width="600" />
 </p>
@@ -1247,6 +1247,10 @@ EXIT;
 <p align="center">
   <img src="images\module2\maria.png" width="600" />
 </p>
+
+Удалить стандартную станицу
+
+> rm /var/www/html/index.html
 
 Включить и добавить в автозагрузку службу httpd2:
 
