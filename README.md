@@ -997,7 +997,7 @@ Ansible обычно уже использует /etc/ansible как рабоч�
 - Скачиваем файл с github, в нужную директорию:
 > !dos2unix и curl на BR-SRV уже скачаны!
 
-***curl -o /etc/ansible/hosts https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/hosts.file***
+***curl -o /etc/ansible/hosts https://raw.githubusercontent.com/shoraorie/demo2026-1/main/files/hosts.file***
 
 ***dos2unix /etc/ansible/hosts***
 
@@ -1438,7 +1438,7 @@ htpasswd –c /etc/nginx/.htpasswd WEB
 
 - Потом на BR-SRV скачиваем скрипт, который выполнит за нас задание, в нужную директорию:
 
-***curl -o /opt/import_users.sh https://raw.githubusercontent.com/4bobus/laba/refs/heads/main/files/import_users.sh***
+***curl -o /opt/import_users.sh https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/import_users.sh***
 
 ***ls /opt***
 
