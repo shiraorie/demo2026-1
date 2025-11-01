@@ -1493,10 +1493,14 @@ htpasswd –c /etc/nginx/.htpasswd WEB
 
 >chmod 700 /etc/pki/CA/private
 
+<p align="center">
+  <img src="picture для варинта 2\mkdir pki.png" width="600" />
+</p>
+
 Создайте корневой ключ и сертификат (RSA 4096, SHA256):
 
- openssl req -x509 -new -nodes \ 
-   -keyout /etc/pki/CA/private/ca.key \ 
+ openssl req -x509 -new -nodes \
+   -keyout /etc/pki/CA/private/ca.key \
    -out /etc/pki/CA/certs/ca.crt \
    -days 3650 \
    -sha256 \
