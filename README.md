@@ -1361,6 +1361,7 @@ EXIT;
 
 Установить пакет apache2:
 
+
 >apt install -y apache2
 
 Средствами утилиты htpasswd создать пользователя WEB и добавить информацию о нём в файл /etc/nginx/.htpasswd, задав пароль P@ssw0rd:
@@ -1506,66 +1507,53 @@ htpasswd –c /etc/nginx/.htpasswd WEB
    -sha256 \
    -subj "/CN=AU-TEAM Root CA"  
 
+<p align="center">
+  <img src="picture для варинта 2\koren certs.png" width="600" />
+</p>
+
 Шаг 2. Создайте CSR для веб-сервера
 
 > openssl genrsa -out /etc/pki/CA/private/web.au-team.irpo.key 2048
+
+<p align="center">
+  <img src="picture для варинта 2\ssl gen rsa web.png" width="600" />
+</p>
 
 openssl req -new \
   -key /etc/pki/CA/private/web.au-team.irpo.key \
   -out /etc/pki/CA/web.au-team.irpo.csr \
   -subj "/CN=web.au-team.irpo"
 
+<p align="center">
+  <img src="picture для варинта 2\ssl new web.png" width="600" />
+</p>
+
 openssl genrsa -out /etc/pki/CA/private/docker.au-team.irpo.key 2048
 
 openssl req -new \
   -key /etc/pki/CA/private/docker.au-team.irpo.key \
-  -out /etc/pki/CA/web.au-team.irpo.csr \
-  -subj "/CN=web.au-team.irpo"
+  -out /etc/pki/CA/docker.au-team.irpo.csr \
+  -subj "/CN=docker.au-team.irpo"
+
+<p align="center">
+  <img src="picture для варинта 2\ssl genrsa docker.png" width="600" />
+</p>
 
 Шаг 3. Создайте конфигурационный файл для openssl ca
 
-Создайте /etc/ssl/openssl-ca.cnf:
-[ ca ]
-default_ca = CA_default
+curl -o /etc/ssl/openssl-ca.cnf https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/openssl-gost.cnf
 
-[ CA_default ]
-dir             = /etc/pki/CA
-certs           = $dir/certs
-crl_dir         = $dir/crl
-new_certs_dir   = $dir/newcerts
-database        = $dir/index.txt
-serial          = $dir/serial
-RANDFILE        = $dir/private/.rand
+<p align="center">
+  <img src="picture для варинта 2\curl openssl.png" width="600" />
+</p>
 
-certificate     = $dir/certs/ca.crt
-private_key     = $dir/private/ca.key
-default_days    = 30
-default_md      = sha256
-preserve        = no
-policy          = policy_anything
+Проверяем nano /etc/ssl/openssl-ca.cnf:
 
-[ policy_anything ]
-countryName             = optional
-stateOrProvinceName     = optional
-localityName            = optional
-organizationName        = optional
-organizationalUnitName  = optional
-commonName              = supplied
-emailAddress            = optional
+<p align="center">
+  <img src="picture для варинта 2\openssl-ca.cnf.png" width="600" />
+</p>
 
-[ server_cert ]
-basicConstraints        = CA:FALSE
-subjectKeyIdentifier    = hash
-authorityKeyIdentifier  = keyid,issuer
-keyUsage                = critical, digitalSignature, keyEncipherment
-extendedKeyUsage        = serverAuth
-subjectAltName          = @alt_names
-
-[ alt_names ]
-DNS.1 = web.au-team.irpo
-DNS.2 = docker.au-team.irpo  # если нужно для другого сертификата
-
-Шаг 4. Подпишите сертификат (ваша команда — но без ГОСТ)
+Шаг 4. Подпишите сертификат 
 openssl ca \
   -config /etc/ssl/openssl-ca.cnf \
   -in /etc/pki/CA/web.au-team.irpo.csr \
@@ -1573,6 +1561,14 @@ openssl ca \
   -extensions server_cert \
   -days 30 \
   -batch
+
+<p align="center">
+  <img src="images\module2\openssl ca web.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images\module3\openssl vivod.png" width="600" />
+</p>
 
 openssl ca \
   -config /etc/ssl/openssl-ca.cnf \
@@ -1582,19 +1578,80 @@ openssl ca \
   -days 30 \
   -batch
 
+<p align="center">
+  <img src="images\module3\openssl ca docker.png" width="600" />
+</p>
+
 Шаг 6. Настройка доверия на клиенте HQ-CLI
 Скопируйте корневой сертификат:
 
+<p align="center">
+  <img src="images\module3\cp ca crt.png" width="600" />
+</p>
+
+<p align="center"><b>*HQ-CLI*</b></p>
+
+<p align="center">
+  <img src="images\module3\cp cli ca.png" width="600" />
+</p>
+
+
 Шаг 7. Настройка Nginx на HTTPS
+
+Чтобы перекинуть файл с hq-srv на isp нужно закомментить строчки ссш
+
+>nano /etc/ssh/sshd.config
+
+<p align="center">
+  <img src="images\module3\comment sshd.png" width="600" />
+</p>
+
+>systemctl restart sshd
+
+>>> ВАЖНО, ПОСЛЕ НАСТРОЙКИ SSL ВЕРНУТЬ ОБРАТНО, А ТО БАЛЛЫ ПОТЕРЯЕТЕ
+
+<p align="center"><b>*ISP*</b></p>
+
+***curl -o /etc/nginx/sites-available/default https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/reverse-proxy-ssl.conf***
+
 Пример конфига для web.au-team.irpo:
+
 mkdir -p /etc/nginx/ssl
-cp /etc/pki/CA/certs/web.au-team.irpo.crt /etc/nginx/ssl/
-cp /etc/pki/CA/private/web.au-team.irpo.key /etc/nginx/ssl/
+
+
+>scp -P 2026 root@172.16.1.2:/etc/pki/CA/certs/web.au-team.irpo.crt /etc/nginx/ssl/
+
+>scp -P 2026 root@172.16.1.2:/etc/pki/CA/private/web.au-team.irpo.key /etc/nginx/ssl/
+
+>scp -P 2026 root@172.16.1.2:/etc/pki/CA/certs/web.au-team.irpo.crt /etc/nginx/ssl/
+
+>scp -P 2026 root@172.16.1.2:/etc/pki/CA/private/web.au-team.irpo.key /etc/nginx/ssl/
+
+<p align="center">
+  <img src="images\module3\csp.png" width="600" />
+</p>
+
 chown root:root /etc/nginx/ssl/*
 chmod 600 /etc/nginx/ssl/*.key
-nginx -t && sudo systemctl reload nginx
+nginx -t && systemctl reload nginx
 
+<p align="center">
+  <img src="images\module3\nginx ssl.png" width="600" />
+</p>
 
+проверяем
+
+https://docker.au-team.irpo
+
+<p align="center">
+  <img src="images\module3\реезы вщслук.png" width="600" />
+</p>
+
+https://web.au-team.irpo
+
+<p align="center">
+  <img src="images\module3\https web.png" width="600" />
+</p>
 
 ### <p align="center"><b>3.	Перенастройте ip-туннель с базового до уровня туннеля, обеспечивающего шифрование трафика</b></p>
 
