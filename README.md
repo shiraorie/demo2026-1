@@ -1835,6 +1835,10 @@ https://web.au-team.irpo
 
 ### <p align="center"><b>5.	Настройте принт-сервер cups на сервере HQ-SRV.</b></p>
 
+- Опубликуйте виртуальный pdf-принтер
+- На клиенте HQ-CLI подключите виртуальный принтер как принтер по
+умолчанию.
+
 1. Для начала необходимо установить пакеты cups и cups-pdf на HQ-SRV:
 
 <p align="center">
@@ -1848,11 +1852,11 @@ https://web.au-team.irpo
 Далее, необходимо отредактировать конфиг /etc/cups/cupsd.conf  
 
 <p align="center">
-  <img src="images/module3/18.png" width="600" />
+  <img src="images\module3\Listen cups.png" width="600" />
 </p>
 
 <p align="center">
-  <img src="images/module3/19.png" width="600" />
+  <img src="images\module3\CUPS allow.png" width="600" />
 </p>
 
 > Во всех блоках Location необходимо добавить строку Allow all, как на скриншоте
@@ -1865,44 +1869,40 @@ systemctl restart cups
 
 Скачиваем cups:
 
-***apt-get install cups cups-pdf -y***
+***apt-get install cups system-config-printer -y***
+
+Открываем пуск и ищем Print settings
 
 <p align="center">
-  <img src="images/module3/20.png" width="600" />
+  <img src="images\module3\print-settings.png" width="600" />
 </p>
 
-На HQ-CLI выполняем следующую команду для подключения к принт-серверу:
-
-***lpadmin -p CUPS -E -v ipp://hq-srv.au-team.irpo:631/printers/PDF -m everywhere***
-
-Установим принтер CUPS, как принтер по умолчанию:
-
-***lpoptions -d CUPS***
+Жмем add
+Далее ENTER URL, вписываем http://192.168.100.2:631/printers/PDF
 
 <p align="center">
-  <img src="images/module3/21.png" width="600" />
+  <img src="images\module3\CUPS.png" width="600" />
 </p>
 
-> Как можно заметить, принтер CUPS успешно подключен. 
-
-Из-за того, что на HQ-CLI также установлен принт-сервер, можно отключить локальный принтер “Cups-PDF”, чтобы он не мешал.
-
-***lpadmin -x Cups-PDF***
+Жмем forward, опять forward, далее листаем вверх и выбираем  CUPS-PDF
 
 <p align="center">
-  <img src="images/module3/22.png" width="600" />
+  <img src="images\module3\generik.png" width="600" />
 </p>
 
-Теперь у нас остался один принтер. Проверим его работу. Откроем любой текстовый документ и попробуем его распечатать.
+Жмем forward, Aply
+
+Появится print test page
 
 <p align="center">
-  <img src="images/module3/23.png" width="600" />
+  <img src="images\module3\print tst.png" width="600" />
 </p>
 
-Перейдем в веб-интерфейс CUPS по адресу https://hq-srv.au-team.irpo:631    
-- Вкладка *Принтеры*
-- Выбираем наш принтер.
-- Жмем кнопку Показать все задания
+Если видите что принтер в простое то поздравляю 
+
+<p align="center">
+  <img src="images\module3\швду зкштеук.png" width="600" />
+</p>
 
 ### <p align="center"><b>6.	 Реализуйте логирование при помощи rsyslog на устройствах HQ-RTR, BR-RTR, BR-SRV</b></p>
 
