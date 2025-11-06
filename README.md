@@ -438,7 +438,7 @@
 </p>
 
 <p align="center">
-  <img src="images\module1\dnsmasq.png" width="600" />
+  <img src="images\module1\dnsmasq1.png" width="600" />
 </p>
 
 Теперь открываем скрипт-инициализации сервиса dnsmasq
@@ -1235,7 +1235,7 @@ EXIT;
 Изменить кодировку файла
 
 <p align="center">
-  <img src="images\module2\dump.sql.png" width="600" />
+  <img src="images\module2\iconv.png" width="600" />
 </p>
 
 Выполнить импорт схемы и данных из файла dump.sql в базу данных webdb:
