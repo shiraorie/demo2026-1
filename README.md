@@ -1672,7 +1672,7 @@ https://web.au-team.irpo
 На обоих роутерах отредактируйте файл /etc/ipsec.conf, добавив следующее:
 
 <p align="center">
-  <img src="picture для варинта 2/ipsec-hq-rtr.png" width="600" />
+  <img src="images\module3\ipsec hq-rtr.jpg" width="600" />
 </p>
 
 Далее нужно настроить файл ipsec.secrets. Вносим туда строку:
@@ -1680,7 +1680,7 @@ https://web.au-team.irpo
 ***172.16.4.2 172.16.5.2 : PSK “123qweR%”***
 
 <p align="center">
-  <img src="picture для варинта 2/ipsec-hq-rtr-2.png" width="600" />
+  <img src="images\module3\ipsec hq-rtr-1.jpg" width="600" />
 </p>
 
 Ещё один конфиг charon.conf, открываем его b редактируем в нём следующую строку, приводя к виду:
@@ -1715,7 +1715,7 @@ https://web.au-team.irpo
 На обоих роутерах отредактируйте файл /etc/ipsec.conf, добавив следующее:
 
 <p align="center">
-  <img src="picture для варинта 2/ipsec-br-rtr.png" width="600" />
+  <img src="images\module3\ipsec br-rtr.jpg" width="600" />
 </p>
 
 Далее нужно настроить файл ipsec.secrets. Вносим туда строку:
@@ -1723,7 +1723,7 @@ https://web.au-team.irpo
 ***172.16.5.2 172.16.4.2 : PSK “123qweR%”***
 
 <p align="center">
-  <img src="picture для варинта 2/ipsec-br-rtr-2.png" width="600" />
+  <img src="images\module3\ipsec br-rtr-1.jpg" width="600" />
 </p>
 
 Ещё один конфиг charon.conf, открываем его и редактируем в нём следующую строку, приводя к виду:
@@ -1850,17 +1850,11 @@ https://web.au-team.irpo
 
 ***systemctl enable –now cups***
 
-Далее, необходимо отредактировать конфиг /etc/cups/cupsd.conf  
+Настроим CUPS
 
 <p align="center">
-  <img src="images\module3\Listen cups.png" width="600" />
+  <img src="images/module3/cups.jpg" width="600" />
 </p>
-
-<p align="center">
-  <img src="images\module3\CUPS allow.png" width="600" />
-</p>
-
-> Во всех блоках Location необходимо добавить строку Allow all, как на скриншоте
 
 Перезапускаем службу cups для применения изменений:
 
@@ -1871,6 +1865,12 @@ systemctl restart cups
 Скачиваем cups:
 
 ***apt-get install cups system-config-printer -y***
+
+Доббавляем принтер в Хосты клиента
+
+<p align="center">
+  <img src="images/module3/cups-hosts.jpg" width="600" />
+</p>
 
 Открываем пуск и ищем Print settings
 
