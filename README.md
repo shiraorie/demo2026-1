@@ -1212,7 +1212,7 @@ apache
   <img src="images\module2\index.php1.png" width="600" />
 </p>
 
-Перейти в интерфейс управления MariaDB:
+Перейти в интерфейс управления MariaDB: <<Команды ниже не пытайтесь копировать и вставлять, все равно нечего не выйдет>>
 
 >mariadb –u root
 
@@ -1251,7 +1251,7 @@ EXIT;
 
 Включить и добавить в автозагрузку службу httpd2:
 
->systemctl enable --now apache2
+>systemctl enable --now apache2 &&
 >systemctl restart apache2
 
 Проверяем доступ до веб приложения с браузера:
@@ -1279,6 +1279,7 @@ EXIT;
   <img src="images\module2\nftables HQ-rtr.png" width="600" />
 </p>
 
+- /etc/nftables
 ### <p align="center"><b>9. Настройте веб-сервер nginx как обратный прокси-сервер на HQ-RTR</b></p>
 
 - При обращении по доменному имени web.au-team.irpo у клиента должно открываться веб приложение на HQ-SRV
@@ -1307,7 +1308,7 @@ EXIT;
 
 ***curl -o /etc/nginx/sites-available/default https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/reverse-proxy.conf***
 
-***dos2unix /etc/nginx/sites-available/reverse-proxy.conf***
+***dos2unix /etc/nginx/sites-available/default***
 
 - Проверяем его наличие:
 
