@@ -2122,12 +2122,13 @@ apt install rsyslog
 <p align="center">
   <img src="images/module3/new6.png" width="600" />
 </p>
+ - Скачаем конфигурацию ждя ЗАбббикса
+
+ ***curl -o /etc/apache2/sites-avaliable/zabbix.conf https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/zabbix.conf***
 
 - Перезапустите Apache:
 
-<p align="center">
-  <img src="images/module3/new7.png" width="600" />
-</p>
+ - nano /etc/apache2/sites-avaliable/zabbix.conf
 
 <p align="center">
   <img src="images/module3/new8.png" width="600" />
