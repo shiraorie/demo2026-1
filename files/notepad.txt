@@ -1,0 +1,500 @@
+ћќƒ”Ћ№ 2
+
+
+1)BR-SRV:
+
+apt update && apt install -y samba* krb5* winbind smbclient && apt install -y ansible && apt install -y chrony && apt install -y curl && apt install -y dos2unix
+
+
+2)HQ-CLI:
+
+apt-get update && apt-get remove -y alterator-datetime && apt-get install -y task-auth-ad-sssd && apt-get install -y admc && apt-get install -y openssh-server && apt-get install -y chrony && apt-get install -y yandex-browser-stable
+
+
+3)HQ-RTR:
+
+apt update && apt install -y curl && apt install -y dos2unix
+
+
+4)ISP, BR-RTR и HQ-SRV:
+
+apt update && apt install -y chrony && apt install -y curl && apt install -y dos2unix
+
+
+5)BR-SRV:
+
+hostname && domainname au-team.irpo && rm -f /etc/samba/smb.conf && rm -rf /var/lib/samba/ && rm -rf /var/cache/samba/ && mkdir -p /var/lib/samba/sysvol && reboot
+
+
+6)BR-SRV:
+
+samba-tool domain provision
+
+reboot
+
+samba-tool domain info 127.0.0.1
+
+
+7)HQ-CLI:
+
+cat /etc/resolv.conf && host au-team.irpo
+
+reboot
+
+kinit Administrator
+
+id && klist && admc
+
+nano /etc/sudoers
+
+
+8)HQ-SRV:
+
+lsblk
+
+apt update && apt install -y mdadm
+
+sudo mdadm --create --verbose /dev/md0 -l 0 -n 2 /dev/sdb /dev/sdc
+
+lsblk
+
+sudo mdadm --detail --scan --verbose | tee -a /etc/mdadm.conf
+
+sudo mkfs.ext4 /dev/md0
+
+mkdir -p /raid0
+
+apt-get update && apt-get install -y nfs-server cifs-utils
+
+mkdir /raid0/nfs && chmod 777 /raid0/nfs
+
+/raid0/nfs 192.168.10.0/28(rw,no_root_squash)
+
+
+9)HQ-CLI:
+
+192.168.100.2:raid0/nfs /mnt/nfs nfs defaults 0 0
+
+
+10)CHRONY:ISP:
+
+server 127.0.0.1 iburst prefer
+hwtimestamp
+local stratum 5
+allow 0/0
+
+systemctl enable --now chrony && systemctl restart chrony
+
+
+11)CHRONY:BR-RTR, HQ-SRV и BR-SRV:
+
+server 172.16.1.1 iburst prefer
+
+systemctl enable --now chrony && systemctl restart chrony
+
+
+12)CHRONY:HQ-CLI:
+
+nano /etc/chrony.conf
+
+server 172.16.1.1 iburst prefer
+
+systemctl enable --now chronyd && systemctl restart chronyd
+
+
+13)CHRONY:ISP:
+
+chronyc clients
+
+
+14)BR-SRV:
+
+mkdir -p /etc/ansible
+
+curl -o /etc/ansible/hosts https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/hosts.file && dos2unix /etc/ansible/hosts
+
+nano /etc/ansible/hosts
+
+ssh-keygen -t rsa -b 2048
+
+ssh-copy-id hq-rtr.au-team.irpo
+
+ssh-copy-id br-rtr.au-team.irpo
+
+ssh-copy-id hq-cli.au-team.irpo
+
+ssh-copy-id -p 2026 sshuser@hq-srv.au-team.irpo
+
+ansible all -m ping
+
+
+15)BR-SRV:
+apt update && apt install -y docker.io docker-compose && systemctl enable --now docker.service && mount /dev/sr0 /mnt/ && docker load < /mnt/docker/site_latest.tar && docker load < /mnt/docker/mariadb_latest.tar && curl -o ~/compose.yaml https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/compose.yaml
+
+ƒалее настройка проводитс€ напр€мую на BR-SRV
+
+
+16)HQ-SRV:
+
+apt update && apt install -y apache* && apt install -y php php8.2 php-curl php-zip php-xml libapache2-mod-php php-mysql php-mbstring php-gd php-intl php-soap && apt install -y mariadb-* && systemctl enable --now mariadb && systemctl enable --now apache2 && mount /dev/sr0 /mnt/ && cp /mnt/web/index.php /var/www/html && cp /mnt/web/logo.png /var/www/html
+
+ƒалее настройка проводитс€ напр€мую на HQ-SRV
+
+
+17)HQ-SRV:nano /var/www/html/index.php:
+
+<?php
+$servername = "localhost";
+$username = "webc";
+$password = "P@ssw0rd";
+$dbname = "webdb";
+
+ƒалее настройка проводитс€ напр€мую на HQ-SRV
+
+
+18)HQ-SRV:
+
+rm /var/www/html/index.html && systemctl enable --now apache2 && systemctl restart apache2
+
+
+19)NFTABLES:HQ-RTR:
+
+curl -o /etc/nftables.conf https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/hq-rtr/nftables.conf && dos2unix /etc/nftables.conf
+
+nano /etc/nftables.conf
+
+systemctl restart nftables && systemctl enable --now nftables && /etc/nftables.conf
+
+
+20)NFTABLES:BR-RTR:
+
+curl -o /etc/nftables.conf https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/br-rtr/nftables.conf && dos2unix /etc/nftables.conf
+
+nano /etc/nftables.conf
+
+systemctl restart nftables && systemctl enable --now nftables && /etc/nftables.conf
+
+
+21)ISP:
+
+apt update && apt-get install -y nginx && systemctl start nginx && systemctl enable nginx && curl -o /etc/nginx/sites-available/default https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/reverse-proxy.conf && curl -o /etc/nginx/sites-available/reverse-proxy.conf https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/reverse-proxy.conf && dos2unix /etc/nginx/sites-available/default && dos2unix /etc/nginx/sites-available/reverse-proxy.conf
+
+nano /etc/nginx/sites-available/reverse-proxy.conf
+
+ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/ && ln -s /etc/nginx/sites-available/default/etc/nginx/sites-enabled/
+
+nginx -t && systemctl enable --now nginx
+
+
+22)HQ-CLI:
+
+172.16.1.1 web.au-team.irpo
+172.16.2.1 docker.au-team.irpo
+192.168.100.2 hq-srv.au-team.irpo hq-srv
+
+
+23)ISP:
+
+apt update && apt install -y apache2
+
+ƒалее настройка проводитс€ напр€мую на ISP
+
+nginx -t && systemctl restart nginx
+
+
+24)BR-SRV:
+
+cp /mnt/Users.csv /opt/ && curl -o /opt/import_users.sh https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/import_users.sh && dos2unix /opt/import_users.sh && ls /opt
+
+chmod +x /opt/import_users.sh
+
+»мпорт пользователей лучше проводить напр€мую на BR-SRV
+
+
+25)HQ-SRV:
+
+apt update && apt install -y openssl ca-certificates && mkdir -p /etc/pki/CA/{private,certs,newcerts,crl} && touch /etc/pki/CA/index.txt && echo 1000 > /etc/pki/CA/serial && chmod 700 /etc/pki/CA/private
+
+openssl req -x509 -new -nodes -keyout /etc/pki/CA/private/ca.key -out /etc/pki/CA/certs/ca.crt -days 3650 -sha256 -subj "/CN=AU-TEAM Root CA" && openssl genrsa -out /etc/pki/CA/private/web.au-team.irpo.key 2048 && openssl req -new -key /etc/pki/CA/private/web.au-team.irpo.key -out /etc/pki/CA/web.au-team.irpo.csr -subj "/CN=web.au-team.irpo" && openssl genrsa -out /etc/pki/CA/private/docker.au-team.irpo.key 2048 && openssl req -new -key /etc/pki/CA/private/docker.au-team.irpo.key -out /etc/pki/CA/docker.au-team.irpo.csr -subj "/CN=docker.au-team.irpo"
+
+curl -o /etc/ssl/openssl-ca.cnf https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/openssl-gost.cnf
+
+nano /etc/ssl/openssl-ca.cnf
+
+openssl ca -config /etc/ssl/openssl-ca.cnf -in /etc/pki/CA/web.au-team.irpo.csr -out /etc/pki/CA/certs/web.au-team.irpo.crt -extensions server_cert -days 30 -batch && openssl ca -config /etc/ssl/openssl-ca.cnf -in /etc/pki/CA/docker.au-team.irpo.csr -out /etc/pki/CA/certs/docker.au-team.irpo.crt -extensions server_cert -days 30 -batch
+
+ƒалее настройка проводитс€ напр€мую на HQ-SRV
+
+nano /etc/ssh/sshd_config
+
+
+26)HQ-CLI:
+
+cp /mnt/nfs/ca.crt /etc/pki/ca-trust/source/anchors/ && update-ca-trust
+
+
+27)ISP:
+
+curl -o /etc/nginx/sites-available/default https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/reverse-proxy-ssl.conf
+
+mkdir -p /etc/nginx/ssl
+
+scp -P 2026 root@172.16.1.2:/etc/pki/CA/certs/web.au-team.irpo.crt /etc/nginx/ssl/ && scp -P 2026 root@172.16.1.2:/etc/pki/CA/private/web.au-team.irpo.key /etc/nginx/ssl/ && scp -P 2026 root@172.16.1.2:/etc/pki/CA/certs/docker.au-team.irpo.crt /etc/nginx/ssl/ && scp -P 2026 root@172.16.1.2:/etc/pki/CA/private/docker.au-team.irpo.key /etc/nginx/ssl/
+
+chown root:root /etc/nginx/ssl/* && chmod 600 /etc/nginx/ssl/*.key && nginx -t && systemctl reload nginx
+
+
+28)HQ-RTR:
+
+¬ј∆Ќќ! «айти на HQ-SRV и раскоментить строчки ssh в файле - nano /etc/ssh/sshd_config и перезагрузить - systemctl restart sshd
+
+apt update && apt install -y strongswan
+
+nano /etc/ipsec.conf
+
+conn  gre-tunnel
+	auto=start
+	left=172.16.1.2
+	leftsubnet=0.0.0.0/0
+	leftprotoport=47
+	right=172.16.2.2
+	rightsubnet=0.0.0.0/0
+	rightprotoport=47
+	authby=secret
+
+nano /etc/ipsec.secrets
+
+172.16.1.2 172.16.2.2 : PSK У123qweR%Ф
+
+nano /etc/strongswan.d/charon.conf
+
+ipsec restart
+
+
+29)BR-RTR:
+
+apt update && apt install -y strongswan
+
+nano /etc/ipsec.conf
+
+conn  gre-tunnel
+	auto=start
+	left=172.16.2.2
+	leftsubnet=0.0.0.0/0
+	leftprotoport=47
+	right=172.16.1.2
+	rightsubnet=0.0.0.0/0
+	rightprotoport=47
+	authby=secret
+
+nano /etc/ipsec.secrets
+
+172.16.2.2 172.16.1.2 : PSK У123qweR%Ф
+
+nano /etc/strongswan.d/charon.conf
+
+ipsec restart
+
+apt update && apt install -y tcpdump && tcpdump -i ens18 -n -p esp
+
+
+30)HQ-SRV:
+
+apt update && apt install -y cups cups-pdf
+
+systemctl enable Цnow cups && cupsctl --share-printers --remote-any && systemctl restart cups
+
+
+31)HQ-SRV:
+
+apt update && apt install -y rsyslog
+
+nano /etc/rsyslog.conf
+
+$template RemoteLogs, "/opt/%HOSTNAME%/rsyslog.txt"
+*.* ?RemoteLogs
+& stop
+
+systemctl enable rsyslog && systemctl restart rsyslog
+
+
+32)HQ-RTR:
+
+apt update && apt install -y rsyslog
+
+nano /etc/rsyslog.conf
+
+module(load="imjournal")
+
+*.* @@hq-srv.au-team.irpo:514
+
+*.warning @@192.168.100.2:514
+
+systemctl restart rsyslog
+
+
+33)BR-RTR:
+
+apt update && apt install -y rsyslog
+
+nano /etc/rsyslog.conf
+
+module(load="imjournal")
+
+*.* @@hq-srv.au-team.irpo:514
+
+*.warning @@192.168.100.2:514
+
+systemctl restart rsyslog
+
+
+34)BR-SRV:
+
+apt update && apt install -y rsyslog
+
+nano /etc/rsyslog.conf
+
+module(load="imjournal")
+
+*.warning @@192.168.100.2:514
+
+systemctl enable rsyslog && systemctl restart rsyslog
+
+
+35)HQ-SRV:
+
+ls /opt/
+
+
+36)BR-SRV:
+
+logger -p user.info УTest infoФ && logger -p user.warning УTest warningФ && logger -p user.error УTest errorФ
+
+
+37)HQ-SRV:
+
+sudo cat /opt/br-srv/rsyslog.txt
+
+nano /etc/logrotate.d/rsyslog
+
+/opt/*/rsyslog.txt {
+	weekly
+	minsize 10M
+	compress
+	missingok
+	notifempty
+	create 0644 root root
+	rotate 4
+}
+
+
+38)HQ-SRV:
+
+wget https://repo.zabbix.com/zabbix/7.4/release/debian/pool/main/z/zabbix-release/zabbix-release_7.4-0.2+debian12_all.deb
+
+sudo dpkg -i zabbix-release_7.4-0.2+debian12_all.deb
+
+sudo apt update && sudo apt install -y zabbix-server-mysql zabbix-frontend-php zabbix-agent php php-mysql php-bcmath php-mbstring zabbix-sql-scripts zabbix-apache-conf mariadb-server
+
+ƒалее настройка проводитс€ напр€мую на HQ-SRV
+
+zcat /usr/share/zabbix/sql-scripts/mysql/server.sql.gz | sudo mysql -u zabbix -p zabbix
+
+sudo nano /etc/zabbix/zabbix_server.conf
+
+sudo systemctl enable --now zabbix-server
+
+ln -s /usr/share/zabbix /var/www/html/mon
+
+sudo nano /etc/php/8.2/apache2/php.ini
+
+systemctl restart apache2
+
+!zabbix.conf не доступен дл€ копировани€ через moodle.conf!
+
+nano /etc/apache2/sites-available/zabbix.conf
+
+<VirtualHost *:80>
+	ServerName au-team.irpo
+	ServerAlias mon.au-team.irpo
+	DocumentRoot /var/www/html/zabbix/ui
+	Alias /zabbix /usr/share/zabbix/ui
+	<Directory "/usr/share/zabbix/ui">
+		AllowOverride All
+		Options -Indexes +FollowSymLinks
+	</Directory>
+</VirtualHost>
+
+rm -rf /etc/apache2/sites-available/000-default.conf
+
+ln -s /etc/apache2/sites-available/zabbix.conf /etc/apache2/sites-enabled/
+
+sudo systemctl restart apache2
+
+
+39)HQ-SRV:
+
+!—тарые IP-адреса web и docker мен€ютс€ на новые!
+
+nano /etc/dnsmasq.conf
+
+host-record=web.au-team.irpo,172.16.1.2
+host-record=docker.au-team.irpo,172.16.2.2
+
+cname=mon.au-team.irpo,hq-srv.au-team.irpo
+
+systemctl restart dnsmasq
+
+wget https://repo.zabbix.com/zabbix/7.4/release/debian/pool/main/z/zabbix-release/zabbix-release_7.4-0.2+debian12_all.deb
+
+sudo dpkg -i zabbix-release_7.4-0.2+debian12_all.deb
+
+sudo apt update && apt install -y zabbix-agent
+
+nano /etc/zabbix/zabbix_agentd.conf
+
+systemctl restart zabbix-agent.service
+
+
+40)BR-SRV:
+
+mkdir /etc/ansible/PC_INFO
+
+curl -o /etc/ansible/inventory.yml https://raw.githubusercontent.com/shiraorie/dewmo2026-1/main/files/inventory.yml && dos2unix /etc/ansible/inventory.yml
+
+nano /etc/ansible/inventory.yml
+
+ansible-playbook /etc/ansible/inventory.yml
+
+ls -la /etc/ansible/PC_INFO
+
+cat /etc/ansible/PC_INFO/hq-cli.yml
+
+cat /etc/ansible/PC_INFO/hq-srv.yml
+
+
+41)BR-SRV:
+
+mkdir /etc/ansible/NETWORK_INFO
+
+curl -o /etc/ansible/backup.yml https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/backup.yml && dos2unix /etc/ansible/backup.yml
+
+nano /etc/ansible/backup.yml
+
+
+42)HQ-RTR и BR-RTR:
+
+apt update && apt install -y sudo
+
+
+43)BR-SRV:
+
+ansible-playbook /etc/ansible/backup.yml
+
+ls -la /etc/ansible/NETWORK_INFO
+
+ls -la /etc/ansible/NETWORK_INFO/HQ-RTR
+
+ls -la /etc/ansible/NETWORK_INFO/BR-RTR
+
+cat /etc/ansible/NETWORK_INFO/HQ-RTR/interfaces
