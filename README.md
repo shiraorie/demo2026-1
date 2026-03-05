@@ -2182,12 +2182,23 @@ apt install rsyslog
 - nano /etc/zabbix/zabbix_agentd.conf - там ищешь server serverActive пишешь ип сервера hqsrv типо, потом в hsotname ниже чуть чем serverActive пишешь хостнейм.
 
 <p align="center">
-  <img src="images/module3/new14.png" width="600" />
+  <img src="images/module3/HOSTNAME.png" width="600" />
 </p>
+
+<p align="center">
+  <img src="images/module3/SERVER.png" width="600" />
+</p>
+
+
+
 
 ***systemctl restart zabbix-agent.service***
 
 - Идешь в cli в веб версии по скрину что выше добовляешь сревер пишешь ип туда сюда и обезатЛЬНО !!!! прям срочно нужно в хост груп указать Linux server Linux By zubbix agent
+
+<p align="center">
+  <img src="images/module3/HOST.png" width="600" />
+</p>
 
 <p align="center">
   <img src="images/module3/new15.png" width="600" />
