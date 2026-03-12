@@ -2056,6 +2056,8 @@ apt install rsyslog
 
 1. Сервер забикс:
 
+https://mirror.yandex.ru/debian/pool/main/z/zabbix/zabbix-server-mysql_7.0.22+dfsg-1_amd64.deb
+
 ***wget https://repo.zabbix.com/zabbix/7.4/release/debian/pool/main/z/zabbix-release/zabbix-release_7.4-0.2%2Bdebian12_all.deb***
 
 ***sudo dpkg -i zabbix-release_7.4-0.2%2Bdebian12_all.deb***
@@ -2171,6 +2173,8 @@ apt install rsyslog
 
 - Забикс агент
  
+https://mirror.yandex.ru/debian/pool/main/z/zabbix/zabbix-agent2_7.0.22+dfsg-1_amd64.deb
+
 ***wget https://repo.zabbix.com/zabbix/7.4/release/debian/pool/main/z/zabbix-release/zabbix-release_7.4-0.2%2Bdebian12_all.deb***
 
 ***sudo dpkg -i zabbix-release_7.4-0.2%2Bdebian12_all.deb***
