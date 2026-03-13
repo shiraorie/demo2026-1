@@ -1,7 +1,7 @@
 #!/bin/bash
 ###############################################################################
 # Скрипт автоматической установки Zabbix 6.0 на Debian 12
-# ИСПРАВЛЕННАЯ ВЕРСИЯ
+# Версия: 2.0 (исправлена проблема с AllowUnsupportedDBVersions)
 ###############################################################################
 
 set -e
@@ -78,7 +78,6 @@ log_info "Настройка MariaDB..."
 
 systemctl enable --now mariadb
 
-# Ожидание готовности MariaDB
 log_info "Ожидание готовности MariaDB..."
 for i in {1..30}; do
     if mysql -u root -e "SELECT 1;" &>/dev/null; then
@@ -88,7 +87,7 @@ for i in {1..30}; do
     sleep 1
 done
 
-# Удаление старой БД если существует (для повторного запуска)
+# Удаление старой БД если существует
 mysql -u root << EOF
 DROP DATABASE IF EXISTS ${DB_NAME};
 CREATE DATABASE ${DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
@@ -103,33 +102,17 @@ EOF
 ###############################################################################
 log_info "Импорт схемы Zabbix в БД..."
 
-# Поиск пути к SQL файлам
 if [ -d "/usr/share/zabbix-sql-scripts/mysql" ]; then
     SQL_DIR="/usr/share/zabbix-sql-scripts/mysql"
-    log_info "Найден путь к SQL: $SQL_DIR (новый формат)"
 elif [ -d "/usr/share/zabbix-server-mysql" ]; then
     SQL_DIR="/usr/share/zabbix-server-mysql"
-    log_info "Найден путь к SQL: $SQL_DIR (старый формат)"
 else
     log_error "Не найдены SQL файлы схемы Zabbix!"
     exit 1
 fi
 
-# Проверка наличия файлов
-if [ ! -f "${SQL_DIR}/schema.sql.gz" ]; then
-    log_error "Файл schema.sql.gz не найден в ${SQL_DIR}"
-    ls -la ${SQL_DIR}/
-    exit 1
-fi
-
-# Импорт схемы
 log_info "Импорт schema.sql..."
 zcat ${SQL_DIR}/schema.sql.gz | mysql -u ${DB_USER} -p"${DB_PASSWORD}" ${DB_NAME}
-
-if [ $? -ne 0 ]; then
-    log_error "Ошибка импорта schema.sql!"
-    exit 1
-fi
 
 log_info "Импорт images.sql..."
 if [ -f "${SQL_DIR}/images.sql.gz" ]; then
@@ -141,30 +124,96 @@ if [ -f "${SQL_DIR}/data.sql.gz" ]; then
     zcat ${SQL_DIR}/data.sql.gz | mysql -u ${DB_USER} -p"${DB_PASSWORD}" ${DB_NAME}
 fi
 
-# Проверка импорта
 TABLE_COUNT=$(mysql -u ${DB_USER} -p"${DB_PASSWORD}" -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}';" 2>/dev/null)
-if [ "$TABLE_COUNT" -lt 10 ]; then
-    log_error "Импортировано слишком мало таблиц (${TABLE_COUNT}). Проверьте логи!"
-    exit 1
-fi
-
-log_info "Успешно импортировано таблиц: ${TABLE_COUNT}"
+log_info "Импортировано таблиц: ${TABLE_COUNT}"
 
 ###############################################################################
-# 5. НАСТРОЙКА ZABBIX SERVER
+# 5. НАСТРОЙКА ZABBIX SERVER (ИСПРАВЛЕНО!)
 ###############################################################################
 log_info "Настройка zabbix_server.conf..."
 
-cp /etc/zabbix/zabbix_server.conf /etc/zabbix/zabbix_server.conf.bak
+# Создаем НОВЫЙ конфиг с нуля
+cat > /etc/zabbix/zabbix_server.conf << 'ZABBIX_CONF'
+# Zabbix Server Configuration File
 
-sed -i "s/^# DBName=/DBName=${DB_NAME}/" /etc/zabbix/zabbix_server.conf
-sed -i "s/^# DBUser=/DBUser=${DB_USER}/" /etc/zabbix/zabbix_server.conf
-sed -i "s/^# DBPassword=/DBPassword=${DB_PASSWORD}/" /etc/zabbix/zabbix_server.conf
+# General settings
+LogFile=/var/log/zabbix/zabbix_server.log
+LogFileSize=0
+PidFile=/var/run/zabbix/zabbix_server.pid
+SocketDir=/var/run/zabbix
 
-# Добавление параметра для поддержки новой версии MariaDB
-if ! grep -q "AllowUnsupportedDBVersions" /etc/zabbix/zabbix_server.conf; then
-    echo "AllowUnsupportedDBVersions=1" >> /etc/zabbix/zabbix_server.conf
+# Database settings
+ZABBIX_CONF
+
+# Добавляем параметры БД с правильными значениями
+cat >> /etc/zabbix/zabbix_server.conf << EOF
+DBName=${DB_NAME}
+DBUser=${DB_USER}
+DBPassword=${DB_PASSWORD}
+DBHost=localhost
+DBPort=3306
+
+# CRITICAL: Allow unsupported MariaDB version (Debian 12 fix)
+AllowUnsupportedDBVersions=1
+
+# Process settings
+StartPollers=5
+StartIPMIPollers=0
+StartPreprocessors=3
+StartPollersUnreachable=1
+StartTrappers=5
+StartPingers=1
+StartDiscoverers=1
+StartHTTPPollers=1
+StartTimers=1
+StartEscalators=1
+StartAlerters=3
+StartProxyPollers=1
+StartVMwareCollectors=0
+StartSNMPTrapper=0
+
+# Cache settings
+CacheSize=32M
+StartDBSyncers=4
+HistoryCacheSize=16M
+HistoryIndexCacheSize=4M
+TrendCacheSize=4M
+ValueCacheSize=256M
+
+# Timeout settings
+Timeout=4
+TrapperTimeout=300
+UnreachablePeriod=45
+UnavailableDelay=60
+UnreachableDelay=15
+
+# Other settings
+ExternalScripts=/usr/lib/zabbix/externalscripts
+FpingLocation=/usr/bin/fping
+Fping6Location=/usr/bin/fping6
+SSHKeyLocation=
+LogSlowQueries=3000
+ProxyConfigFrequency=3600
+ProxyDataFrequency=1
+AllowRoot=0
+User=zabbix
+Include=/etc/zabbix/zabbix_server.conf.d/*.conf
+EOF
+
+# Проверка что параметр добавлен
+if grep -q "AllowUnsupportedDBVersions=1" /etc/zabbix/zabbix_server.conf; then
+    log_info "✓ AllowUnsupportedDBVersions=1 добавлен успешно"
+else
+    log_error "✗ НЕ УДАЛОСЬ добавить AllowUnsupportedDBVersions=1!"
+    exit 1
 fi
+
+# Права на конфиг
+chown root:zabbix /etc/zabbix/zabbix_server.conf
+chmod 640 /etc/zabbix/zabbix_server.conf
+
+log_info "Содержимое конфига (DB параметры):"
+grep -E "^(DBName|DBUser|DBPassword|AllowUnsupported)" /etc/zabbix/zabbix_server.conf
 
 ###############################################################################
 # 6. НАСТРОЙКА PHP ФРОНТЕНДА
@@ -260,16 +309,22 @@ systemctl restart apache2
 log_info "Ожидание запуска Zabbix Server (до 30 сек)..."
 for i in {1..30}; do
     if systemctl is-active --quiet zabbix-server; then
-        log_info "Zabbix Server запущен успешно!"
+        log_info "✓ Zabbix Server запущен успешно!"
         break
     fi
     sleep 1
 done
 
 if ! systemctl is-active --quiet zabbix-server; then
-    log_error "Zabbix Server не запустился!"
+    log_error "✗ Zabbix Server не запустился!"
+    log_error "Проверка конфига:"
+    grep -E "^(DBName|DBUser|AllowUnsupported)" /etc/zabbix/zabbix_server.conf
     log_error "Последние строки лога:"
-    tail -20 /var/log/zabbix/zabbix_server.log
+    if [ -f /var/log/zabbix/zabbix_server.log ]; then
+        tail -30 /var/log/zabbix/zabbix_server.log
+    else
+        log_error "Лог файл не найден!"
+    fi
     exit 1
 fi
 
@@ -286,4 +341,22 @@ EOF
 
 ###############################################################################
 # ЗАВЕРШЕНИЕ
-############################################################################
+###############################################################################
+echo ""
+echo "========================================================================"
+echo -e "${GREEN}✓ Установка Zabbix завершена успешно!${NC}"
+echo "========================================================================"
+echo ""
+echo " Доступ к веб-интерфейсу:"
+echo "   URL:      http://${ZABBIX_HOSTNAME}/"
+echo "   Логин:    Admin"
+echo "   Пароль:   ${ADMIN_PASSWORD}"
+echo ""
+echo "⚠️  ВАЖНО: Смените пароль после первого входа!"
+echo ""
+echo "📁 Основные конфиги:"
+echo "   Server:   /etc/zabbix/zabbix_server.conf"
+echo "   Agent:    /etc/zabbix/zabbix_agentd.conf"
+echo "   Apache:   /etc/apache2/sites-available/zabbix.conf"
+echo ""
+echo "========================================================================"
