@@ -1,7 +1,7 @@
 #!/bin/bash
 ###############################################################################
 # Скрипт автоматической установки Zabbix 6.0 на Debian 12
-# Версия: 2.0 (исправлена проблема с AllowUnsupportedDBVersions)
+# Версия: 3.0 (РАБОЧАЯ - параметр в конце конфига)
 ###############################################################################
 
 set -e
@@ -87,7 +87,6 @@ for i in {1..30}; do
     sleep 1
 done
 
-# Удаление старой БД если существует
 mysql -u root << EOF
 DROP DATABASE IF EXISTS ${DB_NAME};
 CREATE DATABASE ${DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
@@ -104,115 +103,60 @@ log_info "Импорт схемы Zabbix в БД..."
 
 if [ -d "/usr/share/zabbix-sql-scripts/mysql" ]; then
     SQL_DIR="/usr/share/zabbix-sql-scripts/mysql"
-elif [ -d "/usr/share/zabbix-server-mysql" ]; then
-    SQL_DIR="/usr/share/zabbix-server-mysql"
 else
-    log_error "Не найдены SQL файлы схемы Zabbix!"
-    exit 1
+    SQL_DIR="/usr/share/zabbix-server-mysql"
 fi
 
 log_info "Импорт schema.sql..."
 zcat ${SQL_DIR}/schema.sql.gz | mysql -u ${DB_USER} -p"${DB_PASSWORD}" ${DB_NAME}
-
 log_info "Импорт images.sql..."
-if [ -f "${SQL_DIR}/images.sql.gz" ]; then
-    zcat ${SQL_DIR}/images.sql.gz | mysql -u ${DB_USER} -p"${DB_PASSWORD}" ${DB_NAME}
-fi
-
+[ -f "${SQL_DIR}/images.sql.gz" ] && zcat ${SQL_DIR}/images.sql.gz | mysql -u ${DB_USER} -p"${DB_PASSWORD}" ${DB_NAME}
 log_info "Импорт data.sql..."
-if [ -f "${SQL_DIR}/data.sql.gz" ]; then
-    zcat ${SQL_DIR}/data.sql.gz | mysql -u ${DB_USER} -p"${DB_PASSWORD}" ${DB_NAME}
-fi
+[ -f "${SQL_DIR}/data.sql.gz" ] && zcat ${SQL_DIR}/data.sql.gz | mysql -u ${DB_USER} -p"${DB_PASSWORD}" ${DB_NAME}
 
 TABLE_COUNT=$(mysql -u ${DB_USER} -p"${DB_PASSWORD}" -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}';" 2>/dev/null)
 log_info "Импортировано таблиц: ${TABLE_COUNT}"
 
 ###############################################################################
-# 5. НАСТРОЙКА ZABBIX SERVER (ИСПРАВЛЕНО!)
+# 5. НАСТРОЙКА ZABBIX SERVER (РАБОЧИЙ МЕТОД!)
 ###############################################################################
 log_info "Настройка zabbix_server.conf..."
 
-# Создаем НОВЫЙ конфиг с нуля
-cat > /etc/zabbix/zabbix_server.conf << 'ZABBIX_CONF'
-# Zabbix Server Configuration File
+# НЕ перезаписываем конфиг, а редактируем существующий
+# 1. Раскомментируем и устанавливаем параметры БД
+sed -i "s|^#DBName=.*|DBName=${DB_NAME}|" /etc/zabbix/zabbix_server.conf
+sed -i "s|^#DBUser=.*|DBUser=${DB_USER}|" /etc/zabbix/zabbix_server.conf
+sed -i "s|^#DBPassword=.*|DBPassword=${DB_PASSWORD}|" /etc/zabbix/zabbix_server.conf
 
-# General settings
-LogFile=/var/log/zabbix/zabbix_server.log
-LogFileSize=0
-PidFile=/var/run/zabbix/zabbix_server.pid
-SocketDir=/var/run/zabbix
+# 2. Если параметры без # - заменяем их значения
+sed -i "s|^DBName=.*|DBName=${DB_NAME}|" /etc/zabbix/zabbix_server.conf
+sed -i "s|^DBUser=.*|DBUser=${DB_USER}|" /etc/zabbix/zabbix_server.conf
+sed -i "s|^DBPassword=.*|DBPassword=${DB_PASSWORD}|" /etc/zabbix/zabbix_server.conf
 
-# Database settings
-ZABBIX_CONF
+# 3. Устанавливаем LogFile если не задан
+if ! grep -q "^LogFile=" /etc/zabbix/zabbix_server.conf; then
+    sed -i "s|^#LogFile=.*|LogFile=/var/log/zabbix/zabbix_server.log|" /etc/zabbix/zabbix_server.conf
+fi
 
-# Добавляем параметры БД с правильными значениями
-cat >> /etc/zabbix/zabbix_server.conf << EOF
-DBName=${DB_NAME}
-DBUser=${DB_USER}
-DBPassword=${DB_PASSWORD}
-DBHost=localhost
-DBPort=3306
+# 4. КРИТИЧНО: Добавляем AllowUnsupportedDBVersions=1 В САМЫЙ КОНЕЦ файла
+# Это обходит проверку версии и гарантирует применение параметра
+echo "" >> /etc/zabbix/zabbix_server.conf
+echo "### CUSTOM SETTINGS (added by installer) ###" >> /etc/zabbix/zabbix_server.conf
+echo "AllowUnsupportedDBVersions=1" >> /etc/zabbix/zabbix_server.conf
 
-# CRITICAL: Allow unsupported MariaDB version (Debian 12 fix)
-AllowUnsupportedDBVersions=1
-
-# Process settings
-StartPollers=5
-StartIPMIPollers=0
-StartPreprocessors=3
-StartPollersUnreachable=1
-StartTrappers=5
-StartPingers=1
-StartDiscoverers=1
-StartHTTPPollers=1
-StartTimers=1
-StartEscalators=1
-StartAlerters=3
-StartProxyPollers=1
-StartVMwareCollectors=0
-StartSNMPTrapper=0
-
-# Cache settings
-CacheSize=32M
-StartDBSyncers=4
-HistoryCacheSize=16M
-HistoryIndexCacheSize=4M
-TrendCacheSize=4M
-ValueCacheSize=256M
-
-# Timeout settings
-Timeout=4
-TrapperTimeout=300
-UnreachablePeriod=45
-UnavailableDelay=60
-UnreachableDelay=15
-
-# Other settings
-ExternalScripts=/usr/lib/zabbix/externalscripts
-FpingLocation=/usr/bin/fping
-Fping6Location=/usr/bin/fping6
-SSHKeyLocation=
-LogSlowQueries=3000
-ProxyConfigFrequency=3600
-ProxyDataFrequency=1
-AllowRoot=0
-User=zabbix
-Include=/etc/zabbix/zabbix_server.conf.d/*.conf
-EOF
-
-# Проверка что параметр добавлен
-if grep -q "AllowUnsupportedDBVersions=1" /etc/zabbix/zabbix_server.conf; then
-    log_info "✓ AllowUnsupportedDBVersions=1 добавлен успешно"
+# 5. Проверка
+if tail -5 /etc/zabbix/zabbix_server.conf | grep -q "AllowUnsupportedDBVersions=1"; then
+    log_info "✓ AllowUnsupportedDBVersions=1 добавлен в конец конфига"
 else
-    log_error "✗ НЕ УДАЛОСЬ добавить AllowUnsupportedDBVersions=1!"
+    log_error "✗ Не удалось добавить параметр!"
     exit 1
 fi
 
-# Права на конфиг
+# 6. Права на файл
 chown root:zabbix /etc/zabbix/zabbix_server.conf
 chmod 640 /etc/zabbix/zabbix_server.conf
 
-log_info "Содержимое конфига (DB параметры):"
+log_info "Проверка параметров БД в конфиге:"
 grep -E "^(DBName|DBUser|DBPassword|AllowUnsupported)" /etc/zabbix/zabbix_server.conf
 
 ###############################################################################
@@ -317,14 +261,8 @@ done
 
 if ! systemctl is-active --quiet zabbix-server; then
     log_error "✗ Zabbix Server не запустился!"
-    log_error "Проверка конфига:"
-    grep -E "^(DBName|DBUser|AllowUnsupported)" /etc/zabbix/zabbix_server.conf
-    log_error "Последние строки лога:"
-    if [ -f /var/log/zabbix/zabbix_server.log ]; then
-        tail -30 /var/log/zabbix/zabbix_server.log
-    else
-        log_error "Лог файл не найден!"
-    fi
+    log_error "Последние 20 строк лога:"
+    tail -20 /var/log/zabbix/zabbix_server.log 2>/dev/null || echo "Лог не найден"
     exit 1
 fi
 
