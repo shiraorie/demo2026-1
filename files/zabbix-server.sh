@@ -1,10 +1,10 @@
 #!/bin/bash
 ###############################################################################
 # Скрипт автоматической установки Zabbix 6.0 на Debian 12
-# Зеркало: Yandex Mirror
+# ИСПРАВЛЕННАЯ ВЕРСИЯ
 ###############################################################################
 
-set -e  # Остановка при ошибке
+set -e
 
 # === КОНФИГУРАЦИЯ ===
 DB_PASSWORD="P@ssw0rd"
@@ -14,26 +14,19 @@ ZABBIX_HOSTNAME="mon.au-team.irpo"
 TIMEZONE="Asia/Yekaterinburg"
 ADMIN_PASSWORD="P@ssw0rd"
 
-# Цвета для вывода
+# Цвета
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
 log_info()    { echo -e "${GREEN}[INFO]${NC} $1"; }
 log_warn()    { echo -e "${YELLOW}[WARN]${NC} $1"; }
 log_error()   { echo -e "${RED}[ERROR]${NC} $1"; }
 
-# Проверка прав root
 if [[ $EUID -ne 0 ]]; then
    log_error "Этот скрипт должен быть запущен от root"
    exit 1
-fi
-
-# Проверка ОС
-if [[ ! -f /etc/debian_version ]] || [[ $(cat /etc/debian_version | cut -d. -f1) -lt 12 ]]; then
-    log_error "Скрипт предназначен только для Debian 12 (Bookworm)"
-    exit 1
 fi
 
 log_info "Начало установки Zabbix на $(hostname)"
@@ -43,10 +36,8 @@ log_info "Начало установки Zabbix на $(hostname)"
 ###############################################################################
 log_info "Настройка репозиториев Yandex..."
 
-# Бэкап текущего sources.list
 cp /etc/apt/sources.list /etc/apt/sources.list.bak.$(date +%F-%H%M)
 
-# Создание нового sources.list с зеркалом Яндекса
 cat > /etc/apt/sources.list << EOF
 deb https://mirror.yandex.ru/debian bookworm main contrib non-free non-free-firmware
 deb https://mirror.yandex.ru/debian bookworm-updates main contrib non-free non-free-firmware
@@ -85,66 +76,118 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y \
 ###############################################################################
 log_info "Настройка MariaDB..."
 
-# Запуск MariaDB
 systemctl enable --now mariadb
 
-# Создание БД и пользователя
+# Ожидание готовности MariaDB
+log_info "Ожидание готовности MariaDB..."
+for i in {1..30}; do
+    if mysql -u root -e "SELECT 1;" &>/dev/null; then
+        log_info "MariaDB готова!"
+        break
+    fi
+    sleep 1
+done
+
+# Удаление старой БД если существует (для повторного запуска)
 mysql -u root << EOF
-CREATE DATABASE IF NOT EXISTS ${DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
-CREATE USER IF NOT EXISTS '${DB_USER}'@'localhost' IDENTIFIED BY '${DB_PASSWORD}';
+DROP DATABASE IF EXISTS ${DB_NAME};
+CREATE DATABASE ${DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+DROP USER IF EXISTS '${DB_USER}'@'localhost';
+CREATE USER '${DB_USER}'@'localhost' IDENTIFIED BY '${DB_PASSWORD}';
 GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'localhost';
 FLUSH PRIVILEGES;
 EOF
 
+###############################################################################
+# 4. ИМПОРТ СХЕМЫ ZABBIX
+###############################################################################
 log_info "Импорт схемы Zabbix в БД..."
 
-# Импорт схемы (пакеты Debian содержат сжатые SQL файлы)
-zcat /usr/share/zabbix-sql-scripts/mysql/schema.sql.gz | mysql -u ${DB_USER} -p"${DB_PASSWORD}" ${DB_NAME}
-zcat /usr/share/zabbix-sql-scripts/mysql/images.sql.gz | mysql -u ${DB_USER} -p"${DB_PASSWORD}" ${DB_NAME}
-zcat /usr/share/zabbix-sql-scripts/mysql/data.sql.gz | mysql -u ${DB_USER} -p"${DB_PASSWORD}" ${DB_NAME}
+# Поиск пути к SQL файлам
+if [ -d "/usr/share/zabbix-sql-scripts/mysql" ]; then
+    SQL_DIR="/usr/share/zabbix-sql-scripts/mysql"
+    log_info "Найден путь к SQL: $SQL_DIR (новый формат)"
+elif [ -d "/usr/share/zabbix-server-mysql" ]; then
+    SQL_DIR="/usr/share/zabbix-server-mysql"
+    log_info "Найден путь к SQL: $SQL_DIR (старый формат)"
+else
+    log_error "Не найдены SQL файлы схемы Zabbix!"
+    exit 1
+fi
+
+# Проверка наличия файлов
+if [ ! -f "${SQL_DIR}/schema.sql.gz" ]; then
+    log_error "Файл schema.sql.gz не найден в ${SQL_DIR}"
+    ls -la ${SQL_DIR}/
+    exit 1
+fi
+
+# Импорт схемы
+log_info "Импорт schema.sql..."
+zcat ${SQL_DIR}/schema.sql.gz | mysql -u ${DB_USER} -p"${DB_PASSWORD}" ${DB_NAME}
+
+if [ $? -ne 0 ]; then
+    log_error "Ошибка импорта schema.sql!"
+    exit 1
+fi
+
+log_info "Импорт images.sql..."
+if [ -f "${SQL_DIR}/images.sql.gz" ]; then
+    zcat ${SQL_DIR}/images.sql.gz | mysql -u ${DB_USER} -p"${DB_PASSWORD}" ${DB_NAME}
+fi
+
+log_info "Импорт data.sql..."
+if [ -f "${SQL_DIR}/data.sql.gz" ]; then
+    zcat ${SQL_DIR}/data.sql.gz | mysql -u ${DB_USER} -p"${DB_PASSWORD}" ${DB_NAME}
+fi
+
+# Проверка импорта
+TABLE_COUNT=$(mysql -u ${DB_USER} -p"${DB_PASSWORD}" -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}';" 2>/dev/null)
+if [ "$TABLE_COUNT" -lt 10 ]; then
+    log_error "Импортировано слишком мало таблиц (${TABLE_COUNT}). Проверьте логи!"
+    exit 1
+fi
+
+log_info "Успешно импортировано таблиц: ${TABLE_COUNT}"
 
 ###############################################################################
-# 4. НАСТРОЙКА ZABBIX SERVER
+# 5. НАСТРОЙКА ZABBIX SERVER
 ###############################################################################
 log_info "Настройка zabbix_server.conf..."
 
-# Резервная копия конфига
 cp /etc/zabbix/zabbix_server.conf /etc/zabbix/zabbix_server.conf.bak
 
-# Настройка параметров БД и обход проверки версии MariaDB
 sed -i "s/^# DBName=/DBName=${DB_NAME}/" /etc/zabbix/zabbix_server.conf
 sed -i "s/^# DBUser=/DBUser=${DB_USER}/" /etc/zabbix/zabbix_server.conf
 sed -i "s/^# DBPassword=/DBPassword=${DB_PASSWORD}/" /etc/zabbix/zabbix_server.conf
 
-# Добавление параметра для поддержки новой версии MariaDB (критично для Debian 12)
+# Добавление параметра для поддержки новой версии MariaDB
 if ! grep -q "AllowUnsupportedDBVersions" /etc/zabbix/zabbix_server.conf; then
     echo "AllowUnsupportedDBVersions=1" >> /etc/zabbix/zabbix_server.conf
 fi
 
 ###############################################################################
-# 5. НАСТРОЙКА PHP ФРОНТЕНДА
+# 6. НАСТРОЙКА PHP ФРОНТЕНДА
 ###############################################################################
 log_info "Настройка PHP (Timezone: ${TIMEZONE})..."
 
-# Настройка таймзоны PHP для CLI
-sed -i "s|^;date.timezone =|date.timezone = ${TIMEZONE}|" /etc/php/8.2/apache2/php.ini
-sed -i "s|^date.timezone =.*|date.timezone = ${TIMEZONE}|" /etc/php/8.2/apache2/php.ini
-
-# Настройка параметров PHP для Zabbix
 PHP_INI="/etc/php/8.2/apache2/php.ini"
-sed -i "s/^max_execution_time = .*/max_execution_time = 300/" $PHP_INI
-sed -i "s/^memory_limit = .*/memory_limit = 128M/" $PHP_INI
-sed -i "s/^post_max_size = .*/post_max_size = 16M/" $PHP_INI
-sed -i "s/^upload_max_filesize = .*/upload_max_filesize = 2M/" $PHP_INI
-sed -i "s/^max_input_time = .*/max_input_time = 300/" $PHP_INI
-sed -i "s/^max_input_vars = .*/max_input_vars = 10000/" $PHP_INI
+if [ -f "$PHP_INI" ]; then
+    sed -i "s|^;date.timezone =|date.timezone = ${TIMEZONE}|" $PHP_INI
+    sed -i "s|^date.timezone =.*|date.timezone = ${TIMEZONE}|" $PHP_INI
+    sed -i "s/^max_execution_time = .*/max_execution_time = 300/" $PHP_INI
+    sed -i "s/^memory_limit = .*/memory_limit = 128M/" $PHP_INI
+    sed -i "s/^post_max_size = .*/post_max_size = 16M/" $PHP_INI
+    sed -i "s/^upload_max_filesize = .*/upload_max_filesize = 2M/" $PHP_INI
+    sed -i "s/^max_input_time = .*/max_input_time = 300/" $PHP_INI
+    sed -i "s/^max_input_vars = .*/max_input_vars = 10000/" $PHP_INI
+fi
 
 ###############################################################################
-# 6. НАСТРОЙКА APACHE VIRTUALHOST
+# 7. НАСТРОЙКА APACHE VIRTUALHOST
 ###############################################################################
 log_info "Настройка Apache VirtualHost для ${ZABBIX_HOSTNAME}..."
 
-# Создание конфига виртуального хоста
 cat > /etc/apache2/sites-available/zabbix.conf << EOF
 <VirtualHost *:80>
     ServerName ${ZABBIX_HOSTNAME}
@@ -185,17 +228,14 @@ cat > /etc/apache2/sites-available/zabbix.conf << EOF
 </VirtualHost>
 EOF
 
-# Включение сайта и модулей
 a2ensite zabbix.conf
-a2enmod php8.2
+a2enmod php8.2 2>/dev/null || true
 systemctl reload apache2
 
 ###############################################################################
-# 7. НАСТРОЙКА ZABBIX AGENT
+# 8. НАСТРОЙКА ZABBIX AGENT
 ###############################################################################
 log_info "Настройка Zabbix Agent..."
-
-cp /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak
 
 cat > /etc/zabbix/zabbix_agentd.conf << EOF
 PidFile=/var/run/zabbix/zabbix_agentd.pid
@@ -208,15 +248,15 @@ Include=/etc/zabbix/zabbix_agentd.d/*.conf
 EOF
 
 ###############################################################################
-# 8. ЗАПУСК СЛУЖБ
+# 9. ЗАПУСК СЛУЖБ
 ###############################################################################
 log_info "Запуск служб Zabbix..."
 
+systemctl daemon-reload
 systemctl enable --now zabbix-server
 systemctl enable --now zabbix-agent
 systemctl restart apache2
 
-# Ожидание запуска сервера
 log_info "Ожидание запуска Zabbix Server (до 30 сек)..."
 for i in {1..30}; do
     if systemctl is-active --quiet zabbix-server; then
@@ -227,52 +267,23 @@ for i in {1..30}; do
 done
 
 if ! systemctl is-active --quiet zabbix-server; then
-    log_error "Zabbix Server не запустился! Проверьте логи: /var/log/zabbix/zabbix_server.log"
+    log_error "Zabbix Server не запустился!"
+    log_error "Последние строки лога:"
+    tail -20 /var/log/zabbix/zabbix_server.log
     exit 1
 fi
 
 ###############################################################################
-# 9. СБРОС ПАРОЛЯ ADMIN
+# 10. СБРОС ПАРОЛЯ ADMIN
 ###############################################################################
 log_info "Сброс пароля пользователя Admin..."
 
 mysql -u root ${DB_NAME} << EOF
-UPDATE users SET passwd = MD5('${ADMIN_PASSWORD}'), attempt_failed = 0, attempt_ip = '', attempt_clock = 0 WHERE username = 'Admin';
+DELETE FROM users WHERE username = 'Admin';
+INSERT INTO users (userid, username, passwd, name, surname, url, autologin, autologout, lang, refresh, type, theme, failed_attempts, login_attempts) 
+VALUES ('1', 'Admin', MD5('${ADMIN_PASSWORD}'), 'Zabbix', 'Administrator', '', '0', '900', 'en_US', '30s', '3', 'darkblue', '0', '0');
 EOF
 
 ###############################################################################
-# 10. УБОРКА РЕПОЗИТОРИЕВ YANDEX (ОПЦИОНАЛЬНО)
-###############################################################################
-# Мы оставляем репозитории Яндекса, так как они нужны для будущих обновлений.
-# Если вы хотите вернуться на официальные репозитории Debian, раскомментируйте код ниже:
-
-# log_info "Восстановление оригинальных репозиториев..."
-# mv /etc/apt/sources.list.bak.* /etc/apt/sources.list
-# apt-get update -qq
-
-###############################################################################
 # ЗАВЕРШЕНИЕ
-###############################################################################
-echo ""
-echo "========================================================================"
-echo -e "${GREEN}✓ Установка Zabbix завершена успешно!${NC}"
-echo "========================================================================"
-echo ""
-echo " Доступ к веб-интерфейсу:"
-echo "   URL:      http://${ZABBIX_HOSTNAME}/"
-echo "   Логин:    Admin"
-echo "   Пароль:   ${ADMIN_PASSWORD}"
-echo ""
-echo "⚠️  ВАЖНО: Смените пароль после первого входа!"
-echo ""
-echo "📁 Основные конфиги:"
-echo "   Server:   /etc/zabbix/zabbix_server.conf"
-echo "   Agent:    /etc/zabbix/zabbix_agentd.conf"
-echo "   Apache:   /etc/apache2/sites-available/zabbix.conf"
-echo ""
-echo "📋 Логи:"
-echo "   Server:   /var/log/zabbix/zabbix_server.log"
-echo "   Agent:    /var/log/zabbix/zabbix_agentd.log"
-echo "   Apache:   /var/log/apache2/zabbix-error.log"
-echo ""
-echo "========================================================================"
+############################################################################
