@@ -154,16 +154,7 @@ systemctl reload apache2
 ###############################################################################
 # 6. Zabbix Agent
 ###############################################################################
-log_info "Настройка агента..."
-cat > /etc/zabbix/zabbix_agentd.conf << EOF
-PidFile=/var/run/zabbix/zabbix_agentd.pid
-LogFile=/var/log/zabbix/zabbix_agentd.log
-LogFileSize=0
-Server=127.0.0.1
-ServerActive=127.0.0.1
-Hostname=${ZABBIX_HOSTNAME}
-Include=/etc/zabbix/zabbix_agentd.d/*.conf
-EOF
+
 
 ###############################################################################
 # 7. ЗАПУСК
