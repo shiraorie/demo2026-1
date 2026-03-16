@@ -81,17 +81,22 @@ log_info "Настройка zabbix_server.conf..."
 
 CONF="/etc/zabbix/zabbix_server.conf"
 
+# Функция для замены параметров (учитывает # и пробел)
+set_conf_param() {
+    local param="$1"
+    local value="$2"
+    sed -i "s|^# *${param}=.*|${param}=${value}|" "$CONF"
+    sed -i "s|^${param}=.*|${param}=${value}|" "$CONF"
+}
+
 # Правим ТОЛЬКО нужные строки, не трогая остальное:
-# 1. Параметры БД (раскомментируем и ставим значения)
-sed -i "s|^#*DBName=.*|DBName=${DB_NAME}|" "$CONF"
-sed -i "s|^#*DBUser=.*|DBUser=${DB_USER}|" "$CONF"
-sed -i "s|^#*DBPassword=.*|DBPassword=${DB_PASSWORD}|" "$CONF"
+# Параметры БД
+set_conf_param "DBName" "${DB_NAME}"
+set_conf_param "DBUser" "${DB_USER}"
+set_conf_param "DBPassword" "${DB_PASSWORD}"
 
-# 2. LogFile
-sed -i "s|^#*LogFile=.*|LogFile=/var/log/zabbix-server/zabbix_server.log|" "$CONF"
-
-# 3. PidFile
-sed -i "s|^#*PidFile=.*|PidFile=/run/zabbix/zabbix_server.pid|" "$CONF"
+set_conf_param "LogFile" "/var/log/zabbix-server/zabbix_server.log"
+set_conf_param "PidFile" "/run/zabbix/zabbix_server.pid"
 
 # 4. КРИТИЧНО: AllowUnsupportedDBVersions=1 В САМЫЙ КОНЕЦ файла
 echo "AllowUnsupportedDBVersions=1" >> "$CONF"
