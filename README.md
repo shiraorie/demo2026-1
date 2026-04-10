@@ -2189,6 +2189,11 @@ sudo systemctl restart zabbix-server
   <img src="images/module3/new12.png" width="600" />
 </p>
 
+# На hq-srv выполните команду 
+
+***https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/zabbix.conf.php***
+
+
 4. Настройка пользовательских учетных данных.
 
 
