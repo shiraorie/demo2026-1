@@ -1621,9 +1621,9 @@ mkdir -p /etc/nginx/ssl
 
 >scp -P 2026 root@172.16.1.2:/etc/pki/CA/private/web.au-team.irpo.key /etc/nginx/ssl/
 
->scp -P 2026 root@172.16.1.2:/etc/pki/CA/certs/web.au-team.irpo.crt /etc/nginx/ssl/
+>scp -P 2026 root@172.16.1.2:/etc/pki/CA/certs/docker.au-team.irpo.crt /etc/nginx/ssl/
 
->scp -P 2026 root@172.16.1.2:/etc/pki/CA/private/web.au-team.irpo.key /etc/nginx/ssl/
+>scp -P 2026 root@172.16.1.2:/etc/pki/CA/private/docker.au-team.irpo.key /etc/nginx/ssl/
 
 <p align="center">
   <img src="images\module3\csp.png" width="600" />
