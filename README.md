@@ -2056,93 +2056,106 @@ apt install rsyslog
 
 1. Сервер забикс:
 
-***wget https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/zabbix-release_7.4-0.2%2Bdebian12_all.deb***
+# Для начала вписываем новые репозитории в /etc/apt/sources.list
+ВАЖНО ПОСЛЕ НАСТРОЙКИ ЗАБББИКС СЕРВЕРА УБРАТЬ ЗЕРКАЛО ЧТОБЫ НЕ МЕШАЛО
 
-***sudo dpkg -i zabbix-release_7.4-0.2%2Bdebian12_all.deb***
+***
+deb https://mirror.yandex.ru/debian bookworm main contrib non-free non-free-firmware
 
-<p align="center">
-  <img src="picture для варинта 2/zabbix1.png" width="600" />
-</p>
+deb https://mirror.yandex.ru/debian bookworm-updates main contrib non-free non-free-firmware
 
-***sudo apt update***
+deb https://mirror.yandex.ru/debian bookworm-backports main contrib non-free non-free-firmware
 
-***sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-agent php php-mysql php-bcmath php-mbstring  zabbix-sql-scripts zabbix-apache-conf mariadb-server***
+deb https://mirror.yandex.ru/debian-security bookworm-security main contrib non-free non-free-firmware
+***
 
-<p align="center">
-  <img src="images/module3/new1.png" width="600" />
-</p>
+# Далее скачаем все нужные на пакеты
 
-***zcat /usr/share/zabbix/sql-scripts/mysql/server.sql.gz | sudo mysql -u zabbix -p zabbix***
+*** apt install zabbix-server-mysql zabbix-frontend-php zabbix-agent mariadb-server -y***
 
-<p align="center">
-  <img src="images/module3/new2.png" width="600" />
-</p>
+# Войдите в MariaDB
+sudo mysql -u root -p
 
-***sudo nano /etc/zabbix/zabbix_server.conf***
+# Выполните в MySQL-консоли:
+CREATE DATABASE zabbix CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;\
+CREATE USER 'zabbix'@'localhost' IDENTIFIED BY 'P@ssw0rd';\
+GRANT ALL PRIVILEGES ON zabbix.* TO 'zabbix'@'localhost';\
+FLUSH PRIVILEGES;\
+EXIT;
 
-- Укажите:
+# Для Debian 12 пакеты уже содержат готовые скрипты Не пугайтесь импорт долго происходит
+zcat /usr/share/zabbix-server-mysql/schema.sql.gz | mysql -uzabbix -p zabbix\
+zcat /usr/share/zabbix-server-mysql/images.sql.gz | mysql -uzabbix -p zabbix\
+zcat /usr/share/zabbix-server-mysql/data.sql.gz | mysql -uzabbix -p zabbix
 
-***DBName=zabbix***  
-***DBUser=zabbix***  
-***DBPassword=P@ssw0rd***
 
-<p align="center">
-  <img src="picture для варинта 2/zabbix3.png" width="600" />
-</p>
+# Далее заходим в файл конфига и меняем значения некоторых строчек
 
-- Запустите службу:
+sudo nano /etc/zabbix/zabbix_server.conf
 
-***sudo systemctl enable --now zabbix-server***
+DBName=zabbix\
+DBUser=zabbix\
+DBPassword=P@ssw0rd
 
-<p align="center">
-  <img src="images/module3/new4.png" width="600" />
-</p>
+# Укажите таймзону в конфиге Apache
+sudo nano /etc/apache2/conf-available/zabbix-frontend-php.conf
+# Добавьте или раскомментируйте:
+# php_value date.timezone Asia/Yekaterinvurg
 
-2. Настройка веб-интерфейса.
+# Далее добавим конфиг для апача чтобы заббикс мог работать параллельно докеру
 
-- Создайте символическую ссылку для доступа по нужному URL:
+sudo nano /etc/apache2/sites-available/zabbix.conf
 
-***ln -s /usr/share/zabbix /var/www/html/mon***
+```console
+<VirtualHost *:80> 
+    ServerName mon.au-team.irpo
 
-- Настройте PHP:
+    DocumentRoot /usr/share/zabbix
 
-***sudo nano /etc/php/8.2/apache2/php.ini***
+    <Directory /usr/share/zabbix>
+        Options FollowSymLinks
+        AllowOverride None
+        Require all granted
 
-- Измените:
-> чтобы быстро перемещаться по файлу ищем по строкам - ("CTRL" + "-")
+        <IfModule mod_php.c>
+            php_value max_execution_time 300
+            php_value memory_limit 128M
+            php_value post_max_size 16M
+            php_value upload_max_filesize 2M
+            php_value max_input_time 300
+            php_value max_input_vars 10000
+            php_value date.timezone Europe/Moscow
+        </IfModule>
+    </Directory>
 
-***max_execution_time = 300***  /строка 409  
-***max_input_time = 300***  /строка 419  
-***post_max_size = 16M***  /строка 703  
+    <Directory /usr/share/zabbix/conf>
+        Require all denied
+    </Directory>
+    <Directory /usr/share/zabbix/app>
+        Require all denied
+    </Directory>
+    <Directory /usr/share/zabbix/include>
+        Require all denied
+    </Directory>
+    <Directory /usr/share/zabbix/local>
+        Require all denied
+    </Directory>
 
-<p align="center">
-  <img src="images/module3/new5.png" width="600" />
-</p>
+    ErrorLog ${APACHE_LOG_DIR}/zabbix-error.log
+    CustomLog ${APACHE_LOG_DIR}/zabbix-access.log combined
+</VirtualHost>
+```
 
-<p align="center">
-  <img src="images/module3/new6.png" width="600" />
-</p>
- - Скачаем конфигурацию ждя ЗАбббикса
+# sudo nano /etc/zabbix/zabbix_server.conf
 
- ***curl -o /etc/apache2/sites-avaliable/zabbix.conf https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/zabbix.conf***
+# в конец файла AllowUnsupportedDBVersions=1
 
-- Перезапустите Apache:
 
- - nano /etc/apache2/sites-avaliable/zabbix.conf
+# Включите конфиг и перезагрузите Apache
+sudo a2enconf zabbix-frontend-php
+sudo systemctl restart apache2
+sudo systemctl restart zabbix-server
 
-<p align="center">
-  <img src="images/module3/new8.png" width="600" />
-</p>
-
-<p align="center">
-  <img src="images/module3/new9.png" width="600" />
-</p>
-
-<p align="center">
-  <img src="images/module3/new10.png" width="600" />
-</p>
-
-***sudo systemctl restart apache2***
 
 3. Настроить DNS на HQ-SRV:
 
@@ -2171,13 +2184,6 @@ apt install rsyslog
 
 - Забикс агент
  
-https://mirror.yandex.ru/debian/pool/main/z/zabbix/zabbix-agent2_7.0.22+dfsg-1_amd64.deb
-
-***wget https://raw.githubusercontent.com/shiraorie/demo2026-1/main/files/zabbix-release_7.4-0.2%2Bdebian12_all.deb***
-
-***sudo dpkg -i zabbix-release_7.4-0.2%2Bdebian12_all.deb***
-
-***sudo apt update***
 
 ***apt install zabbix-agent***
 
