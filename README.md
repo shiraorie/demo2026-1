@@ -2150,6 +2150,24 @@ sudo nano /etc/apache2/sites-available/zabbix.conf
 
 # в конец файла AllowUnsupportedDBVersions=1
 
+- Настройте PHP:
+
+***sudo nano /etc/php/8.2/apache2/php.ini***
+
+- Измените:
+> чтобы быстро перемещаться по файлу ищем по строкам - ("CTRL" + "-")
+
+***max_execution_time = 300***  /строка 409  
+***max_input_time = 300***  /строка 419  
+***post_max_size = 16M***  /строка 703  
+
+<p align="center">
+  <img src="images/module3/new5.png" width="600" />
+</p>
+
+<p align="center">
+  <img src="images/module3/new6.png" width="600" />
+</p>
 
 # Включите конфиг и перезагрузите Apache
 sudo a2enconf zabbix-frontend-php
