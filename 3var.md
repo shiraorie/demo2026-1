@@ -20,7 +20,7 @@ br-rtr - ssh root@192.168.200.1
 
 
 
-# laba/Вариант 1
+# laba/Вариант 3
 
 ## <p align="center"><b>МОДУЛЬ 1</b></p>
 
