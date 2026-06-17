@@ -1811,7 +1811,7 @@ https://web.au-team.irpo
 </p>
 
 <p align="center"><b>*BR-RTR *</b></p>
-
+nftables hq-rtr.conf
 - Скачаем готовый nftables.conf с github, укажем путь для замены нашего nftables:
 
 ***apt install dos2unix -y***
@@ -2169,6 +2169,9 @@ sudo nano /etc/apache2/sites-available/zabbix.conf
     CustomLog ${APACHE_LOG_DIR}/zabbix-access.log combined
 </VirtualHost>
 ```
+
+# ln -s /etc/apache2/sites-available/zabbix.conf /etc/apache2/sites-enabled
+
 
 # sudo nano /etc/zabbix/zabbix_server.conf
 
